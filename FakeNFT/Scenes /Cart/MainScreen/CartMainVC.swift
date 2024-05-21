@@ -8,18 +8,38 @@
 import UIKit
 
 final class CartMainVC: UIViewController {
+    private let placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.font = .bodyBold
+        label.textColor = .yaBlackLight
+        label.text = "Корзина пуста"
+        label.textAlignment = .center
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // placeholder label - delete later
-        let label = UILabel()
-        label.text = "Корзина"
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
+        addSubviews()
+        configConstraints()
+    }
+}
+
+// MARK: UI Layout
+extension CartMainVC {
+    private func addSubviews() {
+        let subviews = [placeholderLabel]
+        subviews.forEach { item in
+            item.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(item)
+        }
+    }
+    
+    private func configConstraints() {
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            placeholderLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            placeholderLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            placeholderLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 }
