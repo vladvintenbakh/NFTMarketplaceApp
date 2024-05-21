@@ -44,6 +44,11 @@
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
 		60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */; };
+		C50F978F2BFB65B600C575C8 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F978E2BFB65B600C575C8 /* UserModel.swift */; };
+		C50F97912BFB670A00C575C8 /* StatisticPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */; };
+		C50F97932BFB6B2300C575C8 /* SortingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97922BFB6B2300C575C8 /* SortingView.swift */; };
+		C50F97952BFB6C6D00C575C8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97942BFB6C6D00C575C8 /* ViewController.swift */; };
+		C50F97A02BFD3DA500C575C8 /* UserStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F979F2BFD3DA500C575C8 /* UserStruct.swift */; };
 		E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */; };
 		E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */; };
 		E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */; };
@@ -106,6 +111,11 @@
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogMainVC.swift; sourceTree = "<group>"; };
+		C50F978E2BFB65B600C575C8 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticPresenterProtocol.swift; sourceTree = "<group>"; };
+		C50F97922BFB6B2300C575C8 /* SortingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingView.swift; sourceTree = "<group>"; };
+		C50F97942BFB6C6D00C575C8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C50F979F2BFD3DA500C575C8 /* UserStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStruct.swift; sourceTree = "<group>"; };
 		E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E1CD40D92A96BE7D00BE7FE8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -156,6 +166,7 @@
 			children = (
 				0CF2C2DF2A784C5600FDC837 /* Views */,
 				0CF2C2DE2A784C4C00FDC837 /* Protocols */,
+				C50F97922BFB6B2300C575C8 /* SortingView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -355,9 +366,53 @@
 		60F7C1EF2BF9D81100DEC56C /* Statistics */ = {
 			isa = PBXGroup;
 			children = (
-				60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */,
+				C50F979A2BFCB1B100C575C8 /* Helpers */,
+				C50F978B2BFB656200C575C8 /* StatisticCollection */,
 			);
 			path = Statistics;
+			sourceTree = "<group>";
+		};
+		C50F97882BFA6DA000C575C8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */,
+				C50F97942BFB6C6D00C575C8 /* ViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C50F978B2BFB656200C575C8 /* StatisticCollection */ = {
+			isa = PBXGroup;
+			children = (
+				C50F978C2BFB658200C575C8 /* Model */,
+				C50F97882BFA6DA000C575C8 /* View */,
+				C50F978D2BFB659200C575C8 /* Presenter */,
+			);
+			path = StatisticCollection;
+			sourceTree = "<group>";
+		};
+		C50F978C2BFB658200C575C8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C50F978E2BFB65B600C575C8 /* UserModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C50F978D2BFB659200C575C8 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		C50F979A2BFCB1B100C575C8 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C50F979F2BFD3DA500C575C8 /* UserStruct.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		E19CD5A92A98B55900CA39A5 /* Cell */ = {
@@ -556,6 +611,7 @@
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
+				C50F978F2BFB65B600C575C8 /* UserModel.swift in Sources */,
 				60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
@@ -565,7 +621,9 @@
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
+				C50F97932BFB6B2300C575C8 /* SortingView.swift in Sources */,
 				0C79EE6C2A76DE2E00EE90EA /* ServicesAssemly.swift in Sources */,
+				C50F97952BFB6C6D00C575C8 /* ViewController.swift in Sources */,
 				0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */,
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
@@ -581,7 +639,9 @@
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				60F7C1F12BF9D82900DEC56C /* CartMainVC.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
+				C50F97A02BFD3DA500C575C8 /* UserStruct.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
+				C50F97912BFB670A00C575C8 /* StatisticPresenterProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,7 +820,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -791,7 +851,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

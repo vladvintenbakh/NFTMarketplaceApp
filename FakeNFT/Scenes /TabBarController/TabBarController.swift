@@ -40,11 +40,24 @@ final class TabBarController: UITabBarController {
         let cartMainVC = CartMainVC()
         cartMainVC.tabBarItem = cartTabBarItem
         
-        let statisticsMainVC = StatisticsMainVC()
-        statisticsMainVC.tabBarItem = statisticsTabBarItem
+        /*let statisticsMainVC = StatisticsMainVC(viewModel: StatisticsMainVC)
+         statisticsMainVC.tabBarItem = statisticsTabBarItem
+         
+         viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticsMainVC]
+         
+         view.backgroundColor = .systemBackground
+         }
+         }*/
+        
+        let userModel = UserModel()
+        let statisticsMainVC = StatisticPresenter(for: userModel)
+        let statisticVC = UINavigationController(rootViewController: StatisticsMainVC(
+            viewModel: statisticsMainVC
+        ))
+        statisticVC.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticsMainVC]
-
+        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
+        
         view.backgroundColor = .systemBackground
     }
 }
