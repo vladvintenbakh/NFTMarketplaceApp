@@ -141,6 +141,6 @@ extension CatalogMainVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let collectionViewController = CollectionViewController()
         collectionViewController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(collectionViewController, animated: true)
+        navigationController?.pushViewController(collectionViewController, animated: true)
     }
 }
