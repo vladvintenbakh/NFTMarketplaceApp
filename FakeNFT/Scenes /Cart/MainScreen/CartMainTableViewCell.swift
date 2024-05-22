@@ -8,5 +8,104 @@
 import UIKit
 
 final class CartMainTableViewCell: UITableViewCell {
+    static let identifier = "CartMainTableViewCell"
     
+    private let cardImage = {
+        let image = UIImageView()
+        image.layer.cornerRadius = 12
+        image.image = UIImage(named: "MockNFTCard1")
+        return image
+    }()
+    
+    private let nftNameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .yaBlackLight
+        label.font = .bodyBold
+        label.text = "April"
+        return label
+    }()
+    
+    private let ratingStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 2
+        return stack
+    }()
+    
+    private let priceDescriptionLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Цена"
+        label.textColor = .yaBlackLight
+        label.font = .caption2
+        return label
+    }()
+    
+    private let priceValueLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .yaBlackLight
+        label.font = .bodyBold
+        label.textAlignment = .center
+        label.text = "1.78 ETH"
+        return label
+    }()
+    
+    private let removeFromCartButton: UIButton = {
+        let button = UIButton()
+        // TODO: add the custom image to assets and set
+        return button
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        addSubviews()
+        configConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: UI Layout
+extension CartMainTableViewCell {
+    func addSubviews() {
+        for index in 1...5 {
+            let image = UIImageView(image: UIImage(systemName: "star"))
+            image.tag = index
+            ratingStack.addArrangedSubview(image)
+        }
+        
+        let subviews = [cardImage, nftNameLabel, ratingStack,
+                        priceDescriptionLabel, priceValueLabel, removeFromCartButton]
+        subviews.forEach { item in
+            item.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(item)
+        }
+    }
+    
+    func configConstraints() {
+        NSLayoutConstraint.activate([
+            cardImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            cardImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            cardImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            cardImage.heightAnchor.constraint(equalToConstant: 108),
+            cardImage.widthAnchor.constraint(equalToConstant: 108),
+            
+            nftNameLabel.leadingAnchor.constraint(equalTo: cardImage.trailingAnchor, constant: 20),
+            nftNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            
+            ratingStack.leadingAnchor.constraint(equalTo: nftNameLabel.leadingAnchor),
+            ratingStack.topAnchor.constraint(equalTo: nftNameLabel.bottomAnchor, constant: 4),
+            
+            priceDescriptionLabel.leadingAnchor.constraint(equalTo: nftNameLabel.leadingAnchor),
+            priceDescriptionLabel.topAnchor.constraint(equalTo: ratingStack.bottomAnchor, constant: 12),
+            
+            priceValueLabel.leadingAnchor.constraint(equalTo: nftNameLabel.leadingAnchor),
+            priceValueLabel.topAnchor.constraint(equalTo: priceDescriptionLabel.bottomAnchor, constant: 2),
+            
+            removeFromCartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            removeFromCartButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
 }
