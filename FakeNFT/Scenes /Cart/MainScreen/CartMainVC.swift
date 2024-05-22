@@ -138,6 +138,16 @@ extension CartMainVC: UITableViewDataSource {
             for: indexPath
         ) as? CartMainTableViewCell
         guard let cell else { return UITableViewCell() }
+        cell.delegate = self
         return cell
+    }
+}
+
+// MARK: CartMainTableViewCellDelegate
+extension CartMainVC: CartMainTableViewCellDelegate {
+    func didPressRemoveFromCartButton() {
+        let deletionVC = CartItemDeletionVC()
+        deletionVC.modalPresentationStyle = .overFullScreen
+        present(deletionVC, animated: true)
     }
 }

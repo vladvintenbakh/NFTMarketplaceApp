@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol CartMainTableViewCellDelegate: AnyObject {
+    func didPressRemoveFromCartButton()
+}
+
 final class CartMainTableViewCell: UITableViewCell {
     static let identifier = "CartMainTableViewCell"
+    
+    weak var delegate: CartMainTableViewCellDelegate?
     
     private let cardImage = {
         let image = UIImageView()
@@ -49,9 +55,10 @@ final class CartMainTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let removeFromCartButton: UIButton = {
+    private lazy var removeFromCartButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "DeleteFromCartIcon"), for: .normal)
+        button.addTarget(self, action: #selector(removeButtonPressed), for: .touchUpInside)
         return button
     }()
     
@@ -69,7 +76,7 @@ final class CartMainTableViewCell: UITableViewCell {
 
 // MARK: UI Layout
 extension CartMainTableViewCell {
-    func addSubviews() {
+    private func addSubviews() {
         for index in 1...5 {
             let imageName = index < 3 ? "FilledRatingStar" : "UnfilledRatingStar"
             let image = UIImageView(image: UIImage(named: imageName))
@@ -85,7 +92,7 @@ extension CartMainTableViewCell {
         }
     }
     
-    func configConstraints() {
+    private func configConstraints() {
         NSLayoutConstraint.activate([
             cardImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             cardImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
@@ -108,5 +115,12 @@ extension CartMainTableViewCell {
             removeFromCartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             removeFromCartButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
+    }
+}
+
+// MARK: Interaction Methods
+extension CartMainTableViewCell {
+    @objc func removeButtonPressed() {
+        delegate?.didPressRemoveFromCartButton()
     }
 }
