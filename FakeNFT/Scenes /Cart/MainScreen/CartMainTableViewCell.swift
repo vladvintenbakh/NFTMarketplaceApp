@@ -45,7 +45,7 @@ final class CartMainTableViewCell: UITableViewCell {
         label.textColor = .yaBlackLight
         label.font = .bodyBold
         label.textAlignment = .center
-        label.text = "1.78 ETH"
+        label.text = "1,78 ETH"
         return label
     }()
     
@@ -71,7 +71,8 @@ final class CartMainTableViewCell: UITableViewCell {
 extension CartMainTableViewCell {
     func addSubviews() {
         for index in 1...5 {
-            let image = UIImageView(image: UIImage(systemName: "UnfilledRatingStar"))
+            let imageName = index < 3 ? "FilledRatingStar" : "UnfilledRatingStar"
+            let image = UIImageView(image: UIImage(named: imageName))
             image.tag = index
             ratingStack.addArrangedSubview(image)
         }

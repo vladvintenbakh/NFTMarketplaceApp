@@ -38,12 +38,13 @@ final class TabBarController: UITabBarController {
         catalogMainVC.tabBarItem = catalogTabBarItem
         
         let cartMainVC = CartMainVC()
-        cartMainVC.tabBarItem = cartTabBarItem
+        let cartNavigationVC = UINavigationController(rootViewController: cartMainVC)
+        cartNavigationVC.tabBarItem = cartTabBarItem
         
         let statisticsMainVC = StatisticsMainVC()
         statisticsMainVC.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticsMainVC]
+        viewControllers = [profileMainVC, catalogMainVC, cartNavigationVC, statisticsMainVC]
 
         view.backgroundColor = .systemBackground
     }
