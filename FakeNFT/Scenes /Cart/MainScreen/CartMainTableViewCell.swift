@@ -51,7 +51,7 @@ final class CartMainTableViewCell: UITableViewCell {
     
     private let removeFromCartButton: UIButton = {
         let button = UIButton()
-        // TODO: add the custom image to assets and set
+        button.setImage(UIImage(named: "DeleteFromCartIcon"), for: .normal)
         return button
     }()
     
@@ -71,7 +71,7 @@ final class CartMainTableViewCell: UITableViewCell {
 extension CartMainTableViewCell {
     func addSubviews() {
         for index in 1...5 {
-            let image = UIImageView(image: UIImage(systemName: "star"))
+            let image = UIImageView(image: UIImage(systemName: "UnfilledRatingStar"))
             image.tag = index
             ratingStack.addArrangedSubview(image)
         }
