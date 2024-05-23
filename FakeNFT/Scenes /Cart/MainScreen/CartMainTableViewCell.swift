@@ -120,7 +120,7 @@ extension CartMainTableViewCell {
 
 // MARK: Interaction Methods
 extension CartMainTableViewCell {
-    @objc func removeButtonPressed() {
+    @objc private func removeButtonPressed() {
         delegate?.didPressRemoveFromCartButton()
     }
 }

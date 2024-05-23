@@ -132,7 +132,7 @@ extension CartMainVC {
 
 // MARK: Interaction Methods
 extension CartMainVC {
-    @objc func paymentButtonPressed() {
+    @objc private func paymentButtonPressed() {
         let navigationVC = UINavigationController(rootViewController: PaymentVC())
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)

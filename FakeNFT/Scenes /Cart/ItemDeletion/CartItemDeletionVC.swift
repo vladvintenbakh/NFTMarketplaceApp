@@ -108,11 +108,11 @@ extension CartItemDeletionVC {
 
 // MARK: Interaction Methods
 extension CartItemDeletionVC {
-    @objc func deleteButtonPressed() {
+    @objc private func deleteButtonPressed() {
         
     }
     
-    @objc func cancelButtonPressed() {
+    @objc private func cancelButtonPressed() {
         dismiss(animated: true)
     }
 }

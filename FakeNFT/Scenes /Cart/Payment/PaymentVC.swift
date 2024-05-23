@@ -15,7 +15,9 @@ final class PaymentVC: UIViewController {
     
     private let currencyCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.isScrollEnabled = false
+        collection.allowsMultipleSelection = false
+        collection.allowsSelection = true
+        collection.isUserInteractionEnabled = true
         collection.register(PaymentCollectionViewCell.self,
                             forCellWithReuseIdentifier: PaymentCollectionViewCell.identifier)
         return collection
@@ -45,7 +47,12 @@ final class PaymentVC: UIViewController {
         return label
     }()
     
-    private let payButton = CartReusableUIComponents.standardButton(text: "Оплатить")
+    private lazy var payButton: UIButton = {
+        let button = CartReusableUIComponents.standardButton(text: "Оплатить")
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(payButtonPressed), for: .touchUpInside)
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,6 +131,13 @@ extension PaymentVC {
     }
 }
 
+// MARK: Interaction Methods
+extension PaymentVC {
+    @objc private func payButtonPressed() {
+        
+    }
+}
+
 // MARK: UICollectionViewDataSource
 extension PaymentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -167,5 +181,22 @@ extension PaymentVC: UICollectionViewDelegateFlowLayout {
         let width = (currencyCollection.frame.width / 2) - 23
         let height = 46.0
         return CGSize(width: width, height: height)
+    }
+}
+
+extension PaymentVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? PaymentCollectionViewCell
+        guard let cell else { return }
+        
+        payButton.isEnabled = true
+        cell.toggleSelectionTo(true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? PaymentCollectionViewCell
+        guard let cell else { return }
+        
+        cell.toggleSelectionTo(false)
     }
 }

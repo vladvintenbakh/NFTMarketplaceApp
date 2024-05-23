@@ -14,6 +14,7 @@ final class PaymentCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .yaLightGrayLight
         view.layer.cornerRadius = 12
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -97,5 +98,14 @@ extension PaymentCollectionViewCell {
     
     func setCurrencyCode(_ code: String) {
         currencyCodeLabel.text = code
+    }
+    
+    func toggleSelectionTo(_ isSelected: Bool) {
+        if isSelected {
+            grayBackgroundView.layer.borderWidth = 1
+            grayBackgroundView.layer.borderColor = UIColor.yaBlackLight.cgColor
+        } else {
+            grayBackgroundView.layer.borderWidth = 0
+        }
     }
 }
