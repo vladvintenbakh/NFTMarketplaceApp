@@ -8,16 +8,25 @@
 import UIKit
 import WebKit
 
-protocol ProfileViewControllerDelegate {
-    func passWebsiteName(_ website: String?)
-}
 
 final class WebViewController: UIViewController {
 
     // MARK: - UI Properties
     var webView: WKWebView!
-    var websiteName: String?
-    let network = NetworkManager()
+
+    // MARK: - Other Properties
+    var presenter: WebViewPresenterProtocol?
+    //    let network = NetworkManager()
+
+    // MARK: - Init
+    init(presenter: WebViewPresenterProtocol?) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life cycles
     override func viewDidLoad() {
@@ -28,30 +37,28 @@ final class WebViewController: UIViewController {
     }
 
     // MARK: - Private methods
+    private func setupNavigation() {
+        navigationController?.navigationBar.topItem?.title = ""
+        navigationController?.navigationBar.tintColor = UIColor.black
+    }
+
     private func setupLayout() {
-        view.backgroundColor = Constants.AppColors.appBackground
+        setupNavigation()
+        view.backgroundColor = UIColor.background
         view.fullViewWithSafeAreas(webView)
+    }
+
+    private func showWebSite() {
+        guard let request = presenter?.configureRequest() else { print("Oops"); return }
+        webView.load(request)
     }
 }
 
+// MARK: - WKNavigationDelegate
 extension WebViewController: WKNavigationDelegate {
 
     func setupWeb() {
         webView = WKWebView(frame: view.bounds)
         webView.navigationDelegate = self
-    }
-
-    private func showWebSite() {
-        guard let urlString = websiteName,
-              let url = URL(string: urlString) else { print("!!!!"); return }
-        let request = URLRequest(url: url)
-        webView.load(request)
-    }
-}
-
-extension WebViewController: ProfileViewControllerDelegate {
-    
-    func passWebsiteName(_ website: String?) {
-        websiteName = website
     }
 }

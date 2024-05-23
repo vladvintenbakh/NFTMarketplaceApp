@@ -48,13 +48,13 @@ final class ProfileMainVC: UIViewController {
 
     // MARK: - Other Properties
     let presenter: ProfilePresenterProtocol?
+    var delegate: ProfileViewControllerDelegate?
 
     var count = 0
     var favoriteNFT = 0
 
     //    let networkManager = NetworkManager()
     //    let progressIndicator = ProgressIndicator()
-    //    var delegate: ProfileViewControllerDelegate?
     //    var apiData: ApiModel?
 
     // MARK: - Init
@@ -237,10 +237,11 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func goToWebScreen() {
-//        let vc = WebViewController()
-//        self.delegate = vc
-//        delegate?.passWebsiteName(webSiteLabel.text)
-//        navigationController?.pushViewController(vc, animated: true)
+        let presenter = WebViewPresenter()
+        self.delegate = presenter
+        let vc = WebViewController(presenter: presenter)
+        delegate?.passWebsiteName(webSiteLabel.text)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
