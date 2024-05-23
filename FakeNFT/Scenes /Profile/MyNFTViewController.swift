@@ -14,7 +14,7 @@ final class MyNFTViewController: UIViewController {
         let table = UITableView()
         table.dataSource = self
         table.delegate = self
-        table.register(MyNFTTableViewCell.self, forCellReuseIdentifier: MyNFTTableViewCell.identifier)
+        table.register(MyNFTTableViewCell.self)
         table.separatorStyle = .none
         table.allowsSelection = false
         return table
@@ -38,7 +38,7 @@ final class MyNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        isNeedToShowPlaceholder()
+        showOrHidePlaceholder()
     }
 
     // MARK: - IB Action
@@ -73,7 +73,7 @@ final class MyNFTViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(sortButtonTapped))
     }
 
-    private func isNeedToShowPlaceholder() {
+    private func showOrHidePlaceholder() {
         let data = presenter.mockArrayOfNFT
         if data.isEmpty {
             showPlaceholder()
@@ -151,30 +151,3 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         cell.priceNumberLabel.text = nft.price
     }
 }
-
-//MARK: - SwiftUI
-import SwiftUI
-struct ProviderMy : PreviewProvider {
-    static var previews: some View {
-        ContainterView().edgesIgnoringSafeArea(.all)
-    }
-
-    struct ContainterView: UIViewControllerRepresentable {
-        func makeUIViewController(context: Context) -> UIViewController {
-            return MyNFTViewController(presenter: MyNFTPresenter())
-        }
-
-        typealias UIViewControllerType = UIViewController
-
-
-        let viewController = MyNFTViewController(presenter: MyNFTPresenter())
-        func makeUIViewController(context: UIViewControllerRepresentableContext<ProviderMy.ContainterView>) -> MyNFTViewController {
-            return viewController
-        }
-
-        func updateUIViewController(_ uiViewController: ProviderMy.ContainterView.UIViewControllerType, context: UIViewControllerRepresentableContext<ProviderMy.ContainterView>) {
-
-        }
-    }
-}
-

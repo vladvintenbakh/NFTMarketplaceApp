@@ -8,18 +8,16 @@
 import UIKit
 import WebKit
 
-
 final class WebViewController: UIViewController {
 
     // MARK: - UI Properties
     var webView: WKWebView!
 
     // MARK: - Other Properties
-    var presenter: WebViewPresenterProtocol?
-    //    let network = NetworkManager()
+    var presenter: WebViewPresenterProtocol
 
     // MARK: - Init
-    init(presenter: WebViewPresenterProtocol?) {
+    init(presenter: WebViewPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -37,19 +35,19 @@ final class WebViewController: UIViewController {
     }
 
     // MARK: - Private methods
-    private func setupNavigation() {
-        navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
-    }
-
     private func setupLayout() {
         setupNavigation()
         view.backgroundColor = UIColor.background
         view.fullViewWithSafeAreas(webView)
     }
 
+    private func setupNavigation() {
+        navigationController?.navigationBar.topItem?.title = ""
+        navigationController?.navigationBar.tintColor = UIColor.black
+    }
+
     private func showWebSite() {
-        guard let request = presenter?.configureRequest() else { print("Oops"); return }
+        guard let request = presenter.configureRequest() else { print("Oops"); return }
         webView.load(request)
     }
 }

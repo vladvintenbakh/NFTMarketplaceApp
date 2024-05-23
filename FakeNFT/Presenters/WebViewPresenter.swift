@@ -22,7 +22,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
 
     func configureRequest() -> URLRequest? {
         guard let urlString = websiteName,
-              let url = URL(string: urlString) else { print("!!!!"); return nil}
+              let url = URL(string: urlString) else { print("Issue with URL"); return nil}
         let request = URLRequest(url: url)
         return request
     }

@@ -10,6 +10,7 @@ import Foundation
 protocol FavoriteNFTPresenterProtocol {
     var mockArrayOfNFT: [NFTModel] { get }
     
+    func getNumberOfRows() -> Int
 }
 
 final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
@@ -28,31 +29,5 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
-    }
-
-    func priceSorting() {
-        mockArrayOfNFT.sort {
-            guard let priceString1 = $0.price,
-                  let priceString2 = $1.price,
-                  let priceDouble1 = Double(priceString1),
-                  let priceDouble2 = Double(priceString2) else { print("Sorting problem"); return false}
-            return priceDouble1 > priceDouble2
-        }
-    }
-
-    func ratingSorting() {
-        mockArrayOfNFT.sort {
-            guard let rating1 = $0.rating,
-                  let rating2 = $1.rating else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
-    }
-
-    func nameSorting() {
-        mockArrayOfNFT.sort {
-            guard let rating1 = $0.name,
-                  let rating2 = $1.name else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
     }
 }

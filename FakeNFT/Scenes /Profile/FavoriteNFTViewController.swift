@@ -27,8 +27,7 @@ final class FavoriteNFTViewController: UIViewController {
     } ()
 
     // MARK: - Other properties
-    var presenter: FavoriteNFTPresenter
-//     var favorites = [Int]()
+    var presenter: FavoriteNFTPresenterProtocol
 
     // MARK: - Init
     init(presenter: FavoriteNFTPresenter) {
@@ -43,13 +42,12 @@ final class FavoriteNFTViewController: UIViewController {
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupNavigation()
         setupLayout()
+        showOrHidePlaceholder()
     }
 
     // MARK: - Private properties
-    private func isNeedToShowPlaceholder() {
+    private func showOrHidePlaceholder() {
         let favorites = presenter.mockArrayOfNFT
         if favorites.isEmpty {
             showPlaceholder()
@@ -67,15 +65,9 @@ final class FavoriteNFTViewController: UIViewController {
         view.centerView(placeholder)
     }
 
-    private func setupNavigation() {
-        title = "Избранные NFT"
-
-        // Убираем тут Back в стрелке обратно
-        navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
-    }
-
     private func setupLayout() {
+        setupNavigation()
+
         view.backgroundColor = UIColor.background
 
         view.addSubViews([favNFTCollection])
@@ -87,6 +79,13 @@ final class FavoriteNFTViewController: UIViewController {
             favNFTCollection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
+    private func setupNavigation() {
+        title = "Избранные NFT"
+        // Убираем тут Back в стрелке обратно
+        navigationController?.navigationBar.topItem?.title = ""
+        navigationController?.navigationBar.tintColor = UIColor.black
+    }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
@@ -97,6 +96,7 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell else { return UICollectionViewCell()}
+
         configureCell(cell: cell, indexPath: indexPath)
         return cell
     }

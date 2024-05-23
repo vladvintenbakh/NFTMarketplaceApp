@@ -37,8 +37,6 @@ final class EditProfileViewController: UIViewController {
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupNavigation()
         setupLayout()
     }
 
@@ -57,16 +55,18 @@ final class EditProfileViewController: UIViewController {
     }
 
     // MARK: - Private methods
+    private func setupLayout() {
+        setupNavigation()
+
+        view.backgroundColor = UIColor.background
+
+        setupContentStack()
+    }
+
     private func setupNavigation() {
         let closeImage = UIImage(named: "plus")
         let colorImage = closeImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(closeButtonTapped))
-    }
-
-    private func setupLayout() {
-        view.backgroundColor = UIColor.background
-
-        setupContentStack()
     }
 
     private func setupContentStack() {
@@ -204,31 +204,5 @@ final class EditProfileViewController: UIViewController {
         stack.axis = .vertical
         stack.spacing = 8
         return stack
-    }
-}
-
-//MARK: - SwiftUI
-import SwiftUI
-struct ProviderEditProfile : PreviewProvider {
-    static var previews: some View {
-        ContainterView().edgesIgnoringSafeArea(.all)
-    }
-
-    struct ContainterView: UIViewControllerRepresentable {
-        func makeUIViewController(context: Context) -> UIViewController {
-            return EditProfileViewController()
-        }
-
-        typealias UIViewControllerType = UIViewController
-
-
-        let viewController = EditProfileViewController()
-        func makeUIViewController(context: UIViewControllerRepresentableContext<ProviderEditProfile.ContainterView>) -> EditProfileViewController {
-            return viewController
-        }
-
-        func updateUIViewController(_ uiViewController: ProviderEditProfile.ContainterView.UIViewControllerType, context: UIViewControllerRepresentableContext<ProviderEditProfile.ContainterView>) {
-
-        }
     }
 }

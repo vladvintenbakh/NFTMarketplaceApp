@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class FavoriteNFTCollectionViewCell: UICollectionViewCell {
+final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
 
     static let identifier = "FavNFTCollectionViewCell"
 

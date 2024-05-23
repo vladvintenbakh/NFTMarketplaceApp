@@ -50,12 +50,9 @@ final class ProfileMainVC: UIViewController {
     let presenter: ProfilePresenterProtocol?
     var delegate: ProfileViewControllerDelegate?
 
+    let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
     var count = 0
     var favoriteNFT = 0
-
-    //    let networkManager = NetworkManager()
-    //    let progressIndicator = ProgressIndicator()
-    //    var apiData: ApiModel?
 
     // MARK: - Init
     init(presenter: ProfilePresenterProtocol?) {
@@ -70,11 +67,8 @@ final class ProfileMainVC: UIViewController {
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupLayout()
-
         updateUIWithMockData()
-//        getDataFromNetwork()
     }
 
     // MARK: - IB Actions
@@ -85,40 +79,6 @@ final class ProfileMainVC: UIViewController {
     }
 
     // MARK: - Private methods
-//    private func getDataFromNetwork() {
-//        fetchDataFromNetwork()
-//        progressIndicator.show()
-//        networkManager.dataUpdated = { [weak self] in
-//            guard let self else { return }
-//            updateData()
-//            updateUI()
-//            progressIndicator.succeed()
-//        }
-//    }
-
-//    private func fetchDataFromNetwork() {
-//        networkManager.performRequest()
-//    }
-
-//    private func updateData() {
-//        apiData = networkManager.decodedData
-//    }
-
-//    private func updateUI() {
-//        guard let data = apiData,
-//              let nfts = data.nfts else { return }
-//        DispatchQueue.main.async {
-//            self.nameLabel.text = data.name
-//            let imageURL = self.networkManager.profileImageURL
-//            self.photoImage.kf.setImage(with: imageURL)
-//            self.aboutMeLabel.text = data.description
-//            self.webSiteLabel.text = data.website
-//            self.count = nfts.count
-//            self.nftTable.reloadData()
-//        }
-//    }
-
-
     private func updateUIWithMockData() {
         guard let data = presenter?.mockData,
               let imageName = data.avatar,
@@ -189,7 +149,7 @@ final class ProfileMainVC: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        rowNames.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -208,9 +168,8 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func fillInCellName(cell: UITableViewCell, indexPath: IndexPath) {
-        let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
         let name = rowNames[indexPath.row]
-
+        
         switch name {
         case "Мои NFT": cell.textLabel?.text = "\(name) (\(count))"
         case "Избранные NFT": cell.textLabel?.text = "\(name) (\(favoriteNFT))"
@@ -244,31 +203,5 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
         let vc = WebViewController(presenter: presenter)
         delegate?.passWebsiteName(webSiteLabel.text)
         navigationController?.pushViewController(vc, animated: true)
-    }
-}
-
-//MARK: - SwiftUI
-import SwiftUI
-struct ProviderProfile : PreviewProvider {
-    static var previews: some View {
-        ContainterView().edgesIgnoringSafeArea(.all)
-    }
-
-    struct ContainterView: UIViewControllerRepresentable {
-        func makeUIViewController(context: Context) -> UIViewController {
-            return ProfileMainVC(presenter: ProfilePresenter())
-        }
-
-        typealias UIViewControllerType = UIViewController
-
-
-        let viewController = ProfileMainVC(presenter: ProfilePresenter())
-        func makeUIViewController(context: UIViewControllerRepresentableContext<ProviderProfile.ContainterView>) -> ProfileMainVC {
-            return viewController
-        }
-
-        func updateUIViewController(_ uiViewController: ProviderProfile.ContainterView.UIViewControllerType, context: UIViewControllerRepresentableContext<ProviderProfile.ContainterView>) {
-
-        }
     }
 }

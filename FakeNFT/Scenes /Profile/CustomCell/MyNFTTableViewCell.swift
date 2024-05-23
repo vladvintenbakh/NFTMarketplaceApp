@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MyNFTTableViewCell: UITableViewCell {
+final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     static let identifier = "MyNFTTableViewCell"
 
@@ -93,7 +93,7 @@ final class MyNFTTableViewCell: UITableViewCell {
 
         let nameStack = UIStackView(arrangedSubviews: [nameView, ratingImage, authorLabel])
         nameStack.axis = .vertical
-        nameStack.spacing = 4
+        nameStack.spacing = 5
 
         let view1 = UIView()
         let view2 = UIView()
