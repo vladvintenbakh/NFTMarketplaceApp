@@ -17,12 +17,11 @@ final class ProfileMainVC: UIViewController {
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         table.separatorInset = .zero
-        table.layoutMargins = .zero
         return table
     } ()
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = Constants.AppFonts.bold22
+        label.font = UIFont.headline3
         return label
     } ()
     private lazy var photoImage: UIImageView = {
@@ -30,83 +29,110 @@ final class ProfileMainVC: UIViewController {
         let imageSize = CGFloat(70)
         imagePhotoView.widthAnchor.constraint(equalToConstant: imageSize).isActive = true
         imagePhotoView.heightAnchor.constraint(equalToConstant: imageSize).isActive = true
+        imagePhotoView.contentMode = .scaleAspectFit
         imagePhotoView.round(squareSize: imageSize)
-        imagePhotoView.layer.borderWidth = 0.5
         return imagePhotoView
     } ()
     private lazy var aboutMeLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = Constants.AppFonts.regular13
+        label.font = UIFont.caption2
         return label
     } ()
     private lazy var webSiteLabel: UILabel = {
         let label = UILabel()
-//        label.text = "Joaquin Phoenix.com"
-        label.font = Constants.AppFonts.regular15
-        label.textColor = Constants.AppColors.appBlue
+        label.font = UIFont.caption1
+        label.textColor = UIColor.yaBlue
         return label
     } ()
 
     // MARK: - Other Properties
-    let networkManager = NetworkManager()
-    let progressIndicator = ProgressIndicator()
-    var delegate: ProfileViewControllerDelegate?
+    let presenter: ProfilePresenterProtocol?
 
-    var count = 0
-    var apiData: ApiModel?
+    //    let networkManager = NetworkManager()
+    //    let progressIndicator = ProgressIndicator()
+    //    var delegate: ProfileViewControllerDelegate?
+
+        var count = 0
+    //    var apiData: ApiModel?
+
+    // MARK: - Init
+    init(presenter: ProfilePresenterProtocol?) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupLayout()
-        getDataFromNetwork()
+
+        updateUIWithMockData()
+//        getDataFromNetwork()
     }
 
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
-        let vc = EditProfileViewController()
-        let EditVC = UINavigationController(rootViewController: vc)
-        present(EditVC, animated: true)
+//        let vc = EditProfileViewController()
+//        let EditVC = UINavigationController(rootViewController: vc)
+//        present(EditVC, animated: true)
     }
 
     // MARK: - Private methods
-    private func getDataFromNetwork() {
-        fetchDataFromNetwork()
-        progressIndicator.show()
-        networkManager.dataUpdated = { [weak self] in
-            guard let self else { return }
-            updateData()
-            updateUI()
-            progressIndicator.succeed()
-        }
-    }
+//    private func getDataFromNetwork() {
+//        fetchDataFromNetwork()
+//        progressIndicator.show()
+//        networkManager.dataUpdated = { [weak self] in
+//            guard let self else { return }
+//            updateData()
+//            updateUI()
+//            progressIndicator.succeed()
+//        }
+//    }
 
-    private func fetchDataFromNetwork() {
-        networkManager.performRequest()
-    }
+//    private func fetchDataFromNetwork() {
+//        networkManager.performRequest()
+//    }
 
-    private func updateData() {
-        apiData = networkManager.decodedData
-    }
+//    private func updateData() {
+//        apiData = networkManager.decodedData
+//    }
 
-    private func updateUI() {
-        guard let data = apiData,
-              let nfts = data.nfts else { return }
-        DispatchQueue.main.async {
-            self.nameLabel.text = data.name
-            let imageURL = self.networkManager.profileImageURL
-            self.photoImage.kf.setImage(with: imageURL)
-            self.aboutMeLabel.text = data.description
-            self.webSiteLabel.text = data.website
-            self.count = nfts.count
-            self.nftTable.reloadData()
-        }
+//    private func updateUI() {
+//        guard let data = apiData,
+//              let nfts = data.nfts else { return }
+//        DispatchQueue.main.async {
+//            self.nameLabel.text = data.name
+//            let imageURL = self.networkManager.profileImageURL
+//            self.photoImage.kf.setImage(with: imageURL)
+//            self.aboutMeLabel.text = data.description
+//            self.webSiteLabel.text = data.website
+//            self.count = nfts.count
+//            self.nftTable.reloadData()
+//        }
+//    }
+
+
+    private func updateUIWithMockData() {
+        guard let data = presenter?.mockData,
+              let imageName = data.avatar,
+              let nftList = data.nfts else { return }
+
+        nameLabel.text = data.name
+        let image =  UIImage(named: imageName)
+        photoImage.image = image
+        aboutMeLabel.text = data.description
+        webSiteLabel.text = data.website
+        count = nftList.count
     }
 
     private func setupLayout() {
-        view.backgroundColor = Constants.AppColors.appBackground
+        view.backgroundColor = UIColor.background
 
         setupNavigation()
 
@@ -117,24 +143,24 @@ final class ProfileMainVC: UIViewController {
         let editImage = UIImage(systemName: "square.and.pencil")
         let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(Constants.AppColors.appBlack, renderingMode: .alwaysOriginal)
+        let colorImage = boldImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
     }
 
     private func setupContentStack() {
         let photoAndNameStack = setupPersonalDataStack()
 
-        let stack = UIStackView(arrangedSubviews: [photoAndNameStack, nftTable])
-        stack.axis = .vertical
-        stack.spacing = 40
-
-        view.addSubViews([stack])
+        view.addSubViews([photoAndNameStack, nftTable])
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            photoAndNameStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            photoAndNameStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            photoAndNameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
+
+            nftTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
+            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -0),
+            nftTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 
@@ -146,8 +172,8 @@ final class ProfileMainVC: UIViewController {
 
         let dataStack = UIStackView(arrangedSubviews: [photoStack, aboutMeLabel, webSiteLabel])
         dataStack.axis = .vertical
-
         dataStack.distribution = .equalCentering
+
         NSLayoutConstraint.activate([
             aboutMeLabel.topAnchor.constraint(equalTo: photoStack.bottomAnchor, constant: 20),
             webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
@@ -177,7 +203,7 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
         } else {
             cell.textLabel?.text = "\(name)"
         }
-        cell.textLabel?.font = Constants.AppFonts.bold17
+        cell.textLabel?.font = UIFont.bodyBold
         let disclosureImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 7, height: 12))
         disclosureImage.image = UIImage(named: "chevron")
         cell.accessoryView = disclosureImage
@@ -193,24 +219,22 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func goToMyNFTScreen() {
-        let vc = MyNFTViewController()
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = MyNFTViewController()
+//        navigationController?.pushViewController(vc, animated: true)
     }
 
     private func goToFavNFTScreen() {
-        let vc = FavoriteNFTViewController()
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = FavoriteNFTViewController()
+//        navigationController?.pushViewController(vc, animated: true)
     }
 
     private func goToWebScreen() {
-        let vc = WebViewController()
-        self.delegate = vc
-        delegate?.passWebsiteName(webSiteLabel.text)
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = WebViewController()
+//        self.delegate = vc
+//        delegate?.passWebsiteName(webSiteLabel.text)
+//        navigationController?.pushViewController(vc, animated: true)
     }
 }
-}
-
 
 //MARK: - SwiftUI
 import SwiftUI
@@ -221,13 +245,13 @@ struct ProviderProfile : PreviewProvider {
 
     struct ContainterView: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> UIViewController {
-            return ProfileMainVC()
+            return ProfileMainVC(presenter: ProfilePresenter())
         }
 
         typealias UIViewControllerType = UIViewController
 
 
-        let viewController = ProfileMainVC()
+        let viewController = ProfileMainVC(presenter: ProfilePresenter())
         func makeUIViewController(context: UIViewControllerRepresentableContext<ProviderProfile.ContainterView>) -> ProfileMainVC {
             return viewController
         }
