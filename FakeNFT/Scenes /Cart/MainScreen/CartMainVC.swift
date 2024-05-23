@@ -49,7 +49,11 @@ final class CartMainVC: UIViewController {
         return label
     }()
     
-    private let proceedToPaymentButton = CartReusableUIComponents.standardButton(text: "К оплате")
+    private lazy var proceedToPaymentButton: UIButton = {
+        let button = CartReusableUIComponents.standardButton(text: "К оплате")
+        button.addTarget(self, action: #selector(paymentButtonPressed), for: .touchUpInside)
+        return button
+    }()
     
     private lazy var itemInfoStack: UIStackView = {
         let stack = UIStackView()
@@ -123,6 +127,15 @@ extension CartMainVC {
             bottomHorizontalStack.topAnchor.constraint(equalTo: grayBackgroundView.topAnchor, constant: 16),
             bottomHorizontalStack.bottomAnchor.constraint(equalTo: grayBackgroundView.bottomAnchor, constant: -16)
         ])
+    }
+}
+
+// MARK: Interaction Methods
+extension CartMainVC {
+    @objc func paymentButtonPressed() {
+        let navigationVC = UINavigationController(rootViewController: PaymentVC())
+        navigationVC.modalPresentationStyle = .fullScreen
+        present(navigationVC, animated: true)
     }
 }
 
