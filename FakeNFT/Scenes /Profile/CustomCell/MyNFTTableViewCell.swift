@@ -49,13 +49,13 @@ final class MyNFTTableViewCell: UITableViewCell {
     }
 
     func setupContentView() {
-        let view1 = setupNFTImage()
-        let view2 = setupNameView()
-        let view3 = setupPriceView()
+        let imageContainer = setupNFTImage()
+        let nameContainer = setupNameView()
+        let priceContainer = setupPriceView()
 
-        let contentStack = UIStackView(arrangedSubviews: [view1, view2, view3])
+        let contentStack = UIStackView(arrangedSubviews: [imageContainer, nameContainer, priceContainer])
         contentStack.axis = .horizontal
-        contentStack.spacing = 20
+        contentStack.spacing = 10
         contentStack.distribution = .fillEqually
 
         contentView.addSubViews([contentStack])
@@ -70,13 +70,19 @@ final class MyNFTTableViewCell: UITableViewCell {
 
     func setupNFTImage() -> UIView {
         let view = UIView()
+        let likeImage = UIImageView()
+        let heartImage = UIImage(named: "likeInactive")
+        likeImage.image = heartImage
 
-        view.addSubViews([nftImageView])
+        view.addSubViews([nftImageView, likeImage])
         NSLayoutConstraint.activate([
             nftImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
-            nftImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nftImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            nftImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
+            nftImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
+
+            likeImage.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 12),
+            likeImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            likeImage.heightAnchor.constraint(equalToConstant: 16),
+            likeImage.widthAnchor.constraint(equalToConstant: 18),
         ])
 
         return view

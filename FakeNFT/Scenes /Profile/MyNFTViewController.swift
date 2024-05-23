@@ -91,13 +91,23 @@ final class MyNFTViewController: UIViewController {
         view.centerView(placeholder)
     }
 
-
     private func showAlert() {
         let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
         let closeAction = UIAlertAction(title: "Закрыть", style: .cancel)
-        let priceSorting = UIAlertAction(title: "По цене", style: .default) { _ in }
-        let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { _ in }
-        let nameSorting = UIAlertAction(title: "По названию", style: .default) { _ in }
+        
+        let priceSorting = UIAlertAction(title: "По цене", style: .default) { _ in
+            self.presenter.priceSorting()
+            self.myNFTTable.reloadData()
+        }
+        let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+            self.presenter.ratingSorting()
+            self.myNFTTable.reloadData()
+        }
+
+        let nameSorting = UIAlertAction(title: "По названию", style: .default) { _ in
+            self.presenter.nameSorting()
+            self.myNFTTable.reloadData()
+        }
 
         alert.addAction(closeAction)
         alert.addAction(priceSorting)
@@ -127,11 +137,13 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     private func configureCell(cell: MyNFTTableViewCell, indexPath: IndexPath) {
         let nft = presenter.mockArrayOfNFT[indexPath.row]
         guard let imageName = nft.imageName,
-              let author = nft.author else { print("Ooopsss"); return }
+              let author = nft.author,
+              let rating = nft.rating else { print("Ooopsss"); return }
+        
         cell.nftImageView.image = UIImage(named: imageName)
         cell.nameView.text = nft.name
 
-        let ratingName = "rating"+"\(nft.rating)"
+        let ratingName = "rating"+"\(rating)"
         let ratingImage = UIImage(named: ratingName)
         cell.ratingImage.image = ratingImage
 
