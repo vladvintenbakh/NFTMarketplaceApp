@@ -82,6 +82,7 @@ extension PaymentVC {
         // TODO: Replace with a custom button image from the design
         backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
         backButton.tintColor = .yaBlackLight
+        backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
@@ -133,6 +134,10 @@ extension PaymentVC {
 
 // MARK: Interaction Methods
 extension PaymentVC {
+    @objc private func backButtonPressed() {
+        dismiss(animated: true)
+    }
+    
     @objc private func payButtonPressed() {
         
     }
