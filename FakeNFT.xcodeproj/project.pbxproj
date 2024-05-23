@@ -50,6 +50,7 @@
 		604418DA2BFC6E270046664E /* PaymentPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604418D92BFC6E270046664E /* PaymentPresenter.swift */; };
 		604418DC2BFC6E5D0046664E /* PaymentOutcomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604418DB2BFC6E5D0046664E /* PaymentOutcomeVC.swift */; };
 		604418DE2BFC6E870046664E /* PaymentOutcomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604418DD2BFC6E870046664E /* PaymentOutcomePresenter.swift */; };
+		607FE7222BFF50B5000AE150 /* AlertUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FE7212BFF50B5000AE150 /* AlertUtility.swift */; };
 		60F7C1F12BF9D82900DEC56C /* CartMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F02BF9D82900DEC56C /* CartMainVC.swift */; };
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
@@ -122,6 +123,7 @@
 		604418D92BFC6E270046664E /* PaymentPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentPresenter.swift; sourceTree = "<group>"; };
 		604418DB2BFC6E5D0046664E /* PaymentOutcomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentOutcomeVC.swift; sourceTree = "<group>"; };
 		604418DD2BFC6E870046664E /* PaymentOutcomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentOutcomePresenter.swift; sourceTree = "<group>"; };
+		607FE7212BFF50B5000AE150 /* AlertUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUtility.swift; sourceTree = "<group>"; };
 		60F7C1F02BF9D82900DEC56C /* CartMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
@@ -394,6 +396,7 @@
 				604418CF2BFC6D6C0046664E /* ItemDeletion */,
 				604418CA2BFC6CE90046664E /* MainScreen */,
 				60025CA02BFC722E00DC2AAB /* CartReusableUIComponents.swift */,
+				607FE7212BFF50B5000AE150 /* AlertUtility.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -644,6 +647,7 @@
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				60F7C1F12BF9D82900DEC56C /* CartMainVC.swift in Sources */,
+				607FE7222BFF50B5000AE150 /* AlertUtility.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
 			);

@@ -75,6 +75,7 @@ final class CartMainVC: UIViewController {
         
         let sortButton = UIButton()
         sortButton.setImage(UIImage(named: "CartSortIcon"), for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonPressed), for: .touchUpInside)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
         
         placeholderLabel.isHidden = true
@@ -137,6 +138,11 @@ extension CartMainVC {
         let navigationVC = UINavigationController(rootViewController: PaymentVC())
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
+    }
+    
+    @objc private func sortButtonPressed() {
+        let alert = AlertUtility.cartMainScreenSortAlert()
+        present(alert, animated: true)
     }
 }
 
