@@ -138,7 +138,9 @@ extension PaymentVC {
     }
     
     @objc private func payButtonPressed() {
-        
+        let paymentOutcomeVC = PaymentOutcomeVC()
+        paymentOutcomeVC.modalPresentationStyle = .fullScreen
+        present(paymentOutcomeVC, animated: true)
     }
 }
 
