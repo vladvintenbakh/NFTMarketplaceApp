@@ -79,8 +79,7 @@ extension PaymentVC {
         ]
         
         let backButton = UIButton(type: .system)
-        // TODO: Replace with a custom button image from the design
-        backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
+        backButton.setImage(UIImage(named: "NavbarBackButton"), for: .normal)
         backButton.tintColor = .yaBlackLight
         backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
