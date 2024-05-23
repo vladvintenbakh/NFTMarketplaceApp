@@ -25,4 +25,10 @@ extension UIView {
             $0.translatesAutoresizingMaskIntoConstraints = false }
     }
 
+    func round(squareSize: CGFloat) {
+        self.heightAnchor.constraint(equalToConstant: squareSize).isActive = true
+        self.widthAnchor.constraint(equalToConstant: squareSize).isActive = true
+        self.clipsToBounds = true
+        self.layer.cornerRadius = squareSize / 2
+    }
 }

@@ -14,6 +14,7 @@ struct ProfileModel: Codable {
     let description: String?
     let website: String?
     let nfts: [String]?
+    let favoriteNFT: [String]?
     let id: String?
 }
 
@@ -29,8 +30,9 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     var mockData = ProfileModel(name: "Joaquin Phoenix",
                                 avatar: "phoenix",
                                 description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.",
-                                website: "JoaquinPhoenix.com",
+                                website: "https://www.ivi.tv/person/hoakin_feniks",
                                 nfts: ["1", "2", "3"],
+                                favoriteNFT: [],
                                 id: "123123123")
 
 

@@ -49,11 +49,12 @@ final class ProfileMainVC: UIViewController {
     // MARK: - Other Properties
     let presenter: ProfilePresenterProtocol?
 
+    var count = 0
+    var favoriteNFT = 0
+
     //    let networkManager = NetworkManager()
     //    let progressIndicator = ProgressIndicator()
     //    var delegate: ProfileViewControllerDelegate?
-
-        var count = 0
     //    var apiData: ApiModel?
 
     // MARK: - Init
@@ -78,9 +79,9 @@ final class ProfileMainVC: UIViewController {
 
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
-//        let vc = EditProfileViewController()
-//        let EditVC = UINavigationController(rootViewController: vc)
-//        present(EditVC, animated: true)
+        let vc = EditProfileViewController()
+        let EditVC = UINavigationController(rootViewController: vc)
+        present(EditVC, animated: true)
     }
 
     // MARK: - Private methods
@@ -121,7 +122,8 @@ final class ProfileMainVC: UIViewController {
     private func updateUIWithMockData() {
         guard let data = presenter?.mockData,
               let imageName = data.avatar,
-              let nftList = data.nfts else { return }
+              let nftList = data.nfts,
+              let favList = data.favoriteNFT else { return }
 
         nameLabel.text = data.name
         let image =  UIImage(named: imageName)
@@ -129,6 +131,7 @@ final class ProfileMainVC: UIViewController {
         aboutMeLabel.text = data.description
         webSiteLabel.text = data.website
         count = nftList.count
+        favoriteNFT = favList.count
     }
 
     private func setupLayout() {
@@ -196,18 +199,23 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
-        let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
-        let name = rowNames[indexPath.row]
-        if name == rowNames.first {
-            cell.textLabel?.text = "\(name) (\(count))"
-        } else {
-            cell.textLabel?.text = "\(name)"
-        }
+        fillInCellName(cell: cell, indexPath: indexPath)
         cell.textLabel?.font = UIFont.bodyBold
         let disclosureImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 7, height: 12))
         disclosureImage.image = UIImage(named: "chevron")
         cell.accessoryView = disclosureImage
         cell.selectionStyle = .none
+    }
+
+    private func fillInCellName(cell: UITableViewCell, indexPath: IndexPath) {
+        let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
+        let name = rowNames[indexPath.row]
+
+        switch name {
+        case "Мои NFT": cell.textLabel?.text = "\(name) (\(count))"
+        case "Избранные NFT": cell.textLabel?.text = "\(name) (\(favoriteNFT))"
+        default: cell.textLabel?.text = "\(name)"
+        }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
