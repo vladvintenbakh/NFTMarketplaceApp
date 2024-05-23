@@ -12,5 +12,6 @@ struct User {
     let username: String
     let nftNum: String
     let avatar: UIImage
+    let description: String
 }
 

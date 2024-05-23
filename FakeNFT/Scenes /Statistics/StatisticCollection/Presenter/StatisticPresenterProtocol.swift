@@ -10,15 +10,18 @@ import Foundation
 protocol StatisticPresenterProtocol: AnyObject {
     var onSortButtonTap: (() -> Void)? { get set }
     var onUsersListChange: (() -> Void)? { get set }
+    var onUserProfileDidTap: ((User) -> Void)? { get set }
     var allUsers: [User] { get }
     func sortButtonDidTap()
     func sortByNameDidTap()
     func sortByRatingDidTap()
+    func userProfileDidTap(withIndex indexPath: IndexPath)
 }
 
 final class StatisticPresenter: StatisticPresenterProtocol {
     var onSortButtonTap: (() -> Void)?
     var onUsersListChange: (() -> Void)?
+    var onUserProfileDidTap: ((User) -> Void)?
 
     private(set) var allUsers: [User] = [] {
         didSet {
@@ -43,5 +46,10 @@ final class StatisticPresenter: StatisticPresenterProtocol {
 
     func sortByRatingDidTap() {
         allUsers = userModel.sortUsersByRating()
+    }
+    
+    func userProfileDidTap(withIndex indexPath: IndexPath) {
+        let userInfo = allUsers[indexPath.row]
+        onUserProfileDidTap?(userInfo)
     }
 }

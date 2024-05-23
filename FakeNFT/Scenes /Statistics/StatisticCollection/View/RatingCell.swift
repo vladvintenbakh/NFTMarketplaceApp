@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  RatingCell.swift
 //  FakeNFT
 //
 //  Created by Сергей Ващенко on 20.05.24.

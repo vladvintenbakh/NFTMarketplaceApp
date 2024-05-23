@@ -52,7 +52,7 @@ final class TabBarController: UITabBarController {
         let userModel = UserModel()
         let statisticsMainVC = StatisticPresenter(for: userModel)
         let statisticVC = UINavigationController(rootViewController: StatisticsMainVC(
-            viewModel: statisticsMainVC
+            presenter: statisticsMainVC
         ))
         statisticVC.tabBarItem = statisticsTabBarItem
 
