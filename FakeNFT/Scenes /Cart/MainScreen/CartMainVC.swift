@@ -20,6 +20,7 @@ final class CartMainVC: UIViewController {
     private let cartItemTable: UITableView = {
         let table = UITableView()
         table.separatorStyle = .none
+        table.allowsSelection = false
         table.register(CartMainTableViewCell.self,
                        forCellReuseIdentifier: CartMainTableViewCell.identifier)
         return table
