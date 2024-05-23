@@ -11,10 +11,28 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell {
 
     static let identifier = "FavNFTCollectionViewCell"
 
-    var stack = UIStackView()
-    let nftImageView = UIImageView()
-    let nameView = UILabel()
-    let priceView = UIView()
+    lazy var nftImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        return imageView
+    } ()
+    lazy var nameView: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.bodyBold
+        return label
+    } ()
+    lazy var ratingImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .left
+        return imageView
+    } ()
+    lazy var priceNumberLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.caption1
+        return label
+    } ()
 
     let cellHeight = CGFloat(168)
 
@@ -28,46 +46,53 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell {
     }
 
     func setupContentView() {
-        let view1 = setupNFTImage()
-        let view2 = setupNameView()
+        let imageContainer = setupNFTImage()
+        let nameContainer = setupNameView()
 
-        stack = UIStackView(arrangedSubviews: [view1, view2])
-        stack.axis = .horizontal
-        stack.spacing = 5
-        stack.distribution = .fillEqually
+        let contentStack = UIStackView(arrangedSubviews: [imageContainer, nameContainer])
+        contentStack.axis = .horizontal
+        contentStack.spacing = 12
+        contentStack.distribution = .fillEqually
 
-        contentView.addSubViews([stack])
+        contentView.addSubViews([contentStack])
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: contentView.topAnchor),
-            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            stack.heightAnchor.constraint(equalToConstant: 80),
-            stack.widthAnchor.constraint(equalToConstant: 168),
+            contentStack.topAnchor.constraint(equalTo: contentView.topAnchor),
+            contentStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            contentStack.heightAnchor.constraint(equalToConstant: 80),
+            contentStack.widthAnchor.constraint(equalToConstant: cellHeight),
         ])
     }
 
     func setupNFTImage() -> UIView {
         let view = UIView()
-        let nftImage = UIImage(named: "NFT card")
-        let imageView = UIImageView(image: nftImage)
-        view.fullView(imageView)
+        let likeImage = UIImageView()
+        let heartImage = UIImage(named: "likeInactive")?.withTintColor(UIColor.yaRed)
+        likeImage.image = heartImage
+
+        view.addSubViews([nftImageView, likeImage])
+        NSLayoutConstraint.activate([
+            likeImage.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 6),
+            likeImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            likeImage.heightAnchor.constraint(equalToConstant: 18),
+            likeImage.widthAnchor.constraint(equalToConstant: 21),
+        ])
+
         return view
     }
 
     func setupNameView() -> UIView {
         let view = UIView()
 
-        nameView.text = "Lilo"
-        nameView.font = UIFont.bodyBold
+        let currencyLabel = UILabel()
+        currencyLabel.text = "ETH"
+        currencyLabel.font = UIFont.caption1
 
-        let starImage = UIImageView(image: UIImage(named: "rating1"))
-        starImage.contentMode = .left
+        let priceCurrencyStack = UIStackView(arrangedSubviews: [priceNumberLabel, currencyLabel, UIView()])
+        priceCurrencyStack.axis = .horizontal
+        priceCurrencyStack.spacing = 5
 
-        let priceNumberLabel = UILabel()
-        priceNumberLabel.text = "1,78 ETH"
-        priceNumberLabel.font = UIFont.caption1
-
-        let nameStack = UIStackView(arrangedSubviews: [nameView, starImage, priceNumberLabel])
+        let nameStack = UIStackView(arrangedSubviews: [nameView, ratingImage, priceCurrencyStack])
         nameStack.axis = .vertical
         nameStack.spacing = 4
 

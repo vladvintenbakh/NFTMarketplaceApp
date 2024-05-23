@@ -44,6 +44,8 @@
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
 		60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */; };
+		732134942BFFB07000CBC9A7 /* FavoriteNFTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */; };
+		732134962BFFB10F00CBC9A7 /* FavoriteNFTPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732134952BFFB10F00CBC9A7 /* FavoriteNFTPresenter.swift */; };
 		73BF333C2BFF428A00D0AF25 /* ProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BF333B2BFF428A00D0AF25 /* ProfilePresenter.swift */; };
 		73DFDDE72BFF7AAE006DECC3 /* WebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DFDDE62BFF7AAE006DECC3 /* WebViewPresenter.swift */; };
 		73E0BF7C2BFF7E0A00D2BC5F /* MyNFTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */; };
@@ -114,6 +116,8 @@
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogMainVC.swift; sourceTree = "<group>"; };
+		732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteNFTViewController.swift; sourceTree = "<group>"; };
+		732134952BFFB10F00CBC9A7 /* FavoriteNFTPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNFTPresenter.swift; sourceTree = "<group>"; };
 		73BF333B2BFF428A00D0AF25 /* ProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePresenter.swift; sourceTree = "<group>"; };
 		73DFDDE62BFF7AAE006DECC3 /* WebViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewPresenter.swift; sourceTree = "<group>"; };
 		73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNFTViewController.swift; sourceTree = "<group>"; };
@@ -368,6 +372,7 @@
 				60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */,
 				73EA615C2BFF59860089BCFB /* EditProfileViewController.swift */,
 				73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */,
+				732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */,
 				73EA615E2BFF6EA80089BCFB /* WebViewController.swift */,
 			);
 			path = Profile;
@@ -387,6 +392,7 @@
 				73BF333B2BFF428A00D0AF25 /* ProfilePresenter.swift */,
 				73DFDDE62BFF7AAE006DECC3 /* WebViewPresenter.swift */,
 				73E0BF822BFF82EC00D2BC5F /* MyNFTPresenter.swift */,
+				732134952BFFB10F00CBC9A7 /* FavoriteNFTPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -594,6 +600,8 @@
 				0C79EE662A76DDFF00EE90EA /* NftDetailViewController.swift in Sources */,
 				73BF333C2BFF428A00D0AF25 /* ProfilePresenter.swift in Sources */,
 				E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */,
+				732134962BFFB10F00CBC9A7 /* FavoriteNFTPresenter.swift in Sources */,
+				732134942BFFB07000CBC9A7 /* FavoriteNFTViewController.swift in Sources */,
 				73E0BF832BFF82EC00D2BC5F /* MyNFTPresenter.swift in Sources */,
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,

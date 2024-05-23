@@ -233,8 +233,9 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func goToFavNFTScreen() {
-//        let vc = FavoriteNFTViewController()
-//        navigationController?.pushViewController(vc, animated: true)
+        let presenter = FavoriteNFTPresenter()
+        let vc = FavoriteNFTViewController(presenter: presenter)
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     private func goToWebScreen() {
