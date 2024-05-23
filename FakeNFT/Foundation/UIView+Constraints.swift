@@ -44,4 +44,28 @@ extension UIView {
             subview.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
+    func centerView(_ subview: UIView) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
+
+        self.addSubview(subview)
+
+        NSLayoutConstraint.activate([
+            subview.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            subview.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+    }
+
+    func fullView(_ subview: UIView) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
+
+        self.addSubview(subview)
+
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: self.topAnchor),
+            subview.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            subview.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            subview.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
 }
