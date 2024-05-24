@@ -171,9 +171,11 @@ extension PaymentVC: UICollectionViewDataSource {
         
         let currencyCode = currencyCodes[indexPath.row]
         
-        cell.setImage(UIImage(named: "\(imagePrefix)PaymentIcon") ?? UIImage())
-        cell.setCurrencyName(currencyName)
-        cell.setCurrencyCode(currencyCode)
+        cell.configUI(
+            image: UIImage(named: "\(imagePrefix)PaymentIcon") ?? UIImage(),
+            currencyName: currencyName,
+            currencyCode: currencyCode
+        )
         
         return cell
     }
