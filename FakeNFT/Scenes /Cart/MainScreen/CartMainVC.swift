@@ -161,7 +161,7 @@ extension CartMainVC {
     }
     
     @objc private func sortButtonPressed() {
-        let alert = AlertUtility.cartMainScreenSortAlert()
+        let alert = presenter.createSortAlert()
         present(alert, animated: true)
     }
     
