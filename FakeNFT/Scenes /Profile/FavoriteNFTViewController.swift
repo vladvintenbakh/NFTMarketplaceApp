@@ -97,22 +97,9 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell else { return UICollectionViewCell()}
 
-        configureCell(cell: cell, indexPath: indexPath)
-        return cell
-    }
-
-    private func configureCell(cell: FavoriteNFTCollectionViewCell, indexPath: IndexPath) {
         let nft = presenter.mockArrayOfNFT[indexPath.row]
-        guard let imageName = nft.imageName,
-              let rating = nft.rating else { print("Ooopsss"); return }
+        cell.configureCell(nft)
 
-        cell.nftImageView.image = UIImage(named: imageName)
-        cell.nameView.text = nft.name
-
-        let ratingName = "rating"+"\(rating)"
-        let ratingImage = UIImage(named: ratingName)
-        cell.ratingImage.image = ratingImage
-
-        cell.priceNumberLabel.text = nft.price
+        return cell
     }
 }

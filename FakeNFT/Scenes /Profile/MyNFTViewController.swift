@@ -22,7 +22,8 @@ final class MyNFTViewController: UIViewController {
 
     // MARK: - Other properties
     var presenter: MyNFTPresenterProtocol
-    let cellHeight = CGFloat(140)
+
+    private let cellHeight = CGFloat(140)
 
     // MARK: - Init
     init(presenter: MyNFTPresenterProtocol) {
@@ -95,16 +96,19 @@ final class MyNFTViewController: UIViewController {
         let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
         let closeAction = UIAlertAction(title: "Закрыть", style: .cancel)
         
-        let priceSorting = UIAlertAction(title: "По цене", style: .default) { _ in
+        let priceSorting = UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             self.presenter.priceSorting()
             self.myNFTTable.reloadData()
         }
-        let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             self.presenter.ratingSorting()
             self.myNFTTable.reloadData()
         }
 
-        let nameSorting = UIAlertAction(title: "По названию", style: .default) { _ in
+        let nameSorting = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             self.presenter.nameSorting()
             self.myNFTTable.reloadData()
         }
@@ -126,28 +130,14 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell else { return UITableViewCell()}
-        configureCell(cell: cell, indexPath: indexPath)
+        
+        let nft = presenter.mockArrayOfNFT[indexPath.row]
+        cell.configureCell(nft)
+
         return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         cellHeight
-    }
-
-    private func configureCell(cell: MyNFTTableViewCell, indexPath: IndexPath) {
-        let nft = presenter.mockArrayOfNFT[indexPath.row]
-        guard let imageName = nft.imageName,
-              let author = nft.author,
-              let rating = nft.rating else { print("Ooopsss"); return }
-        
-        cell.nftImageView.image = UIImage(named: imageName)
-        cell.nameView.text = nft.name
-
-        let ratingName = "rating"+"\(rating)"
-        let ratingImage = UIImage(named: ratingName)
-        cell.ratingImage.image = ratingImage
-
-        cell.authorLabel.text = "от "+"\(author)"
-        cell.priceNumberLabel.text = nft.price
     }
 }

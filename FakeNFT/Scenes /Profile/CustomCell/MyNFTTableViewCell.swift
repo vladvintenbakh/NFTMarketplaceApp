@@ -9,36 +9,39 @@ import UIKit
 
 final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
+    // MARK: - Static Properties
     static let identifier = "MyNFTTableViewCell"
 
-    lazy var nftImageView: UIImageView = {
+    // MARK: - Private Properties
+    private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     } ()
-    lazy var nameView: UILabel = {
+    private lazy var nameView: UILabel = {
         let label = UILabel()
         label.font = UIFont.bodyBold
         return label
     } ()
-    lazy var ratingImage: UIImageView = {
+    private lazy var ratingImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .left
         return imageView
     } ()
-    lazy var priceNumberLabel: UILabel = {
+    private lazy var priceNumberLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.bodyBold
         return label
     } ()
-    lazy var authorLabel: UILabel = {
+    private lazy var authorLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.caption2
         return label
     } ()
 
-    let cellHeight = CGFloat(140)
+    private let cellHeight = CGFloat(140)
 
+    // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupContentView()
@@ -48,7 +51,8 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setupContentView() {
+    // MARK: - Private Methods
+    private func setupContentView() {
         let imageContainer = setupNFTImage()
         let nameContainer = setupNameView()
         let priceContainer = setupPriceView()
@@ -68,7 +72,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         ])
     }
 
-    func setupNFTImage() -> UIView {
+    private func setupNFTImage() -> UIView {
         let view = UIView()
         let likeImage = UIImageView()
         let heartImage = UIImage(named: "likeInactive")
@@ -88,7 +92,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         return view
     }
 
-    func setupNameView() -> UIView {
+    private func setupNameView() -> UIView {
         let view = UIView()
 
         let nameStack = UIStackView(arrangedSubviews: [nameView, ratingImage, authorLabel])
@@ -107,7 +111,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         return view
     }
 
-    func setupPriceView() -> UIView {
+    private func setupPriceView() -> UIView {
         let view = UIView()
 
         let priceLabel = UILabel()
@@ -137,5 +141,22 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         view.fullView(finalStack)
         
         return view
+    }
+
+    // MARK: - Public Methods
+    func configureCell(_ nft: NFTModel) {
+        guard let imageName = nft.imageName,
+              let author = nft.author,
+              let rating = nft.rating else { print("Ooopsss"); return }
+
+        nftImageView.image = UIImage(named: imageName)
+        nameView.text = nft.name
+
+        let ratingName = "rating"+"\(rating)"
+        let ratingStars = UIImage(named: ratingName)
+        ratingImage.image = ratingStars
+
+        authorLabel.text = "от "+"\(author)"
+        priceNumberLabel.text = nft.price
     }
 }

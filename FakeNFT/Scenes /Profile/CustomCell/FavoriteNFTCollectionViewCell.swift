@@ -9,33 +9,36 @@ import UIKit
 
 final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
 
+    // MARK: - Static Properties
     static let identifier = "FavNFTCollectionViewCell"
 
-    lazy var nftImageView: UIImageView = {
+    // MARK: - Private Properties
+    private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
         return imageView
     } ()
-    lazy var nameView: UILabel = {
+    private lazy var nameView: UILabel = {
         let label = UILabel()
         label.font = UIFont.bodyBold
         return label
     } ()
-    lazy var ratingImage: UIImageView = {
+    private lazy var ratingImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .left
         return imageView
     } ()
-    lazy var priceNumberLabel: UILabel = {
+    private lazy var priceNumberLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.caption1
         return label
     } ()
 
-    let cellHeight = CGFloat(168)
+    private let cellHeight = CGFloat(168)
 
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupContentView()
@@ -45,7 +48,8 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setupContentView() {
+    // MARK: - Private Methods
+    private func setupContentView() {
         let imageContainer = setupNFTImage()
         let nameContainer = setupNameView()
 
@@ -64,7 +68,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         ])
     }
 
-    func setupNFTImage() -> UIView {
+    private func setupNFTImage() -> UIView {
         let view = UIView()
         let likeImage = UIImageView()
         let heartImage = UIImage(named: "likeInactive")?.withTintColor(UIColor.yaRed)
@@ -81,7 +85,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         return view
     }
 
-    func setupNameView() -> UIView {
+    private func setupNameView() -> UIView {
         let view = UIView()
 
         let currencyLabel = UILabel()
@@ -106,5 +110,20 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         view.fullView(finalStack)
 
         return view
+    }
+
+    // MARK: - Public Methods
+    func configureCell(_ nft: NFTModel) {
+        guard let imageName = nft.imageName,
+              let rating = nft.rating else { print("Ooopsss"); return }
+
+        nftImageView.image = UIImage(named: imageName)
+        nameView.text = nft.name
+
+        let ratingName = "rating"+"\(rating)"
+        let ratingStars = UIImage(named: ratingName)
+        ratingImage.image = ratingStars
+
+        priceNumberLabel.text = nft.price
     }
 }
