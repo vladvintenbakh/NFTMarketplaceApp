@@ -32,6 +32,11 @@ extension UIView {
         self.layer.cornerRadius = squareSize / 2
     }
 
+    func setSquareSize(_ size: CGFloat) {
+        self.heightAnchor.constraint(equalToConstant: size).isActive = true
+        self.widthAnchor.constraint(equalToConstant: size).isActive = true
+    }
+
     func fullViewWithSafeAreas(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
 

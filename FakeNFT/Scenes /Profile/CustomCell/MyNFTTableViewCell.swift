@@ -16,6 +16,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.setSquareSize(108)
         return imageView
     } ()
     private lazy var nameView: UILabel = {
@@ -38,6 +39,15 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         label.font = UIFont.caption2
         return label
     } ()
+    private lazy var likeButton: UIButton = {
+        let button = UIButton()
+        let heartImage = UIImage(named: "likeInactive")
+        button.setImage(heartImage, for: .normal)
+        button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        button.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        return button
+    } ()
 
     private let cellHeight = CGFloat(140)
 
@@ -51,45 +61,31 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - IB Action
+    @objc func likeButtonTapped(_ sender: UIButton) {
+        print("likeButtonTapped")
+    }
+
     // MARK: - Private Methods
     private func setupContentView() {
-        let imageContainer = setupNFTImage()
         let nameContainer = setupNameView()
         let priceContainer = setupPriceView()
 
-        let contentStack = UIStackView(arrangedSubviews: [imageContainer, nameContainer, priceContainer])
+        let contentStack = UIStackView(arrangedSubviews: [nftImageView, nameContainer, priceContainer])
         contentStack.axis = .horizontal
-        contentStack.spacing = 10
-        contentStack.distribution = .fillEqually
+        contentStack.spacing = 20
 
-        contentView.addSubViews([contentStack])
+        contentView.addSubViews([contentStack, likeButton])
 
         NSLayoutConstraint.activate([
-            contentStack.topAnchor.constraint(equalTo: contentView.topAnchor),
+            contentStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            contentStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             contentStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            contentStack.heightAnchor.constraint(equalToConstant: cellHeight)
+
+            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 12),
+            likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: -12),
         ])
-    }
-
-    private func setupNFTImage() -> UIView {
-        let view = UIView()
-        let likeImage = UIImageView()
-        let heartImage = UIImage(named: "likeInactive")
-        likeImage.image = heartImage
-
-        view.addSubViews([nftImageView, likeImage])
-        NSLayoutConstraint.activate([
-            nftImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
-            nftImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
-
-            likeImage.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 12),
-            likeImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            likeImage.heightAnchor.constraint(equalToConstant: 16),
-            likeImage.widthAnchor.constraint(equalToConstant: 18),
-        ])
-
-        return view
     }
 
     private func setupNameView() -> UIView {
@@ -99,14 +95,12 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         nameStack.axis = .vertical
         nameStack.spacing = 5
 
-        let view1 = UIView()
-        let view2 = UIView()
-
-        let finalStack = UIStackView(arrangedSubviews: [view1, nameStack, view2])
-        finalStack.axis = .vertical
-        finalStack.distribution = .equalCentering
-
-        view.fullView(finalStack)
+        view.addSubViews([nameStack])
+        NSLayoutConstraint.activate([
+            nameStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            nameStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
 
         return view
     }
@@ -131,15 +125,13 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         priceStack.axis = .vertical
         priceStack.spacing = 2
 
-        let view1 = UIView()
-        let view2 = UIView()
+        view.addSubViews([priceStack])
+        NSLayoutConstraint.activate([
+            priceStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            priceStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            priceStack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
 
-        let finalStack = UIStackView(arrangedSubviews: [view1, priceStack, view2])
-        finalStack.axis = .vertical
-        finalStack.distribution = .equalCentering
-
-        view.fullView(finalStack)
-        
         return view
     }
 

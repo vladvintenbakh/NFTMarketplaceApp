@@ -24,6 +24,7 @@ final class MyNFTViewController: UIViewController {
     var presenter: MyNFTPresenterProtocol
 
     private let cellHeight = CGFloat(140)
+    private let tableConstraints = CGFloat(20)
 
     // MARK: - Init
     init(presenter: MyNFTPresenterProtocol) {
@@ -55,10 +56,10 @@ final class MyNFTViewController: UIViewController {
         view.addSubViews([myNFTTable])
 
         NSLayoutConstraint.activate([
-            myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: tableConstraints),
+            myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tableConstraints),
+            myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tableConstraints),
+            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -tableConstraints)
         ])
     }
 
@@ -75,8 +76,8 @@ final class MyNFTViewController: UIViewController {
     }
 
     private func showOrHidePlaceholder() {
-        let data = presenter.mockArrayOfNFT
-        if data.isEmpty {
+        let isDataEmpty = presenter.isArrayOfNFTEmpty()
+        if isDataEmpty {
             showPlaceholder()
         } else {
             myNFTTable.isHidden = false
@@ -130,8 +131,8 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell else { return UITableViewCell()}
-        
-        let nft = presenter.mockArrayOfNFT[indexPath.row]
+
+        let nft = presenter.getNFT(with: indexPath)
         cell.configureCell(nft)
 
         return cell

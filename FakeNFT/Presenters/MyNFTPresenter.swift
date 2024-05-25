@@ -17,9 +17,9 @@ struct NFTModel: Codable {
 }
 
 protocol MyNFTPresenterProtocol {
-    var mockArrayOfNFT: [NFTModel] { get }
-
     func getNumberOfRows() -> Int
+    func getNFT(with indexPath: IndexPath) -> NFTModel
+    func isArrayOfNFTEmpty() -> Bool 
     func priceSorting()
     func ratingSorting()
     func nameSorting()
@@ -39,8 +39,17 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
         mockArrayOfNFT = [mockNFT1, mockNFT2, mockNFT3]
     }
 
+    func isArrayOfNFTEmpty() -> Bool {
+        return mockArrayOfNFT.isEmpty
+    }
+
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
+    }
+
+    func getNFT(with indexPath: IndexPath) -> NFTModel {
+        let nft = mockArrayOfNFT[indexPath.row]
+        return nft
     }
 
     func priceSorting() {
