@@ -12,7 +12,7 @@ final class CartSortingMethodStorage {
     
     var savedSortingMethod: CartSortingMethod? {
         get {
-            if let rawValue = UserDefaults.standard.value(forKey: storageKey) as? String {
+            if let rawValue = UserDefaults.standard.string(forKey: storageKey) {
                 return CartSortingMethod(rawValue: rawValue)
             }
             return nil
