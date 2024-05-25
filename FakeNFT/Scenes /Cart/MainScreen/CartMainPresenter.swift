@@ -16,15 +16,20 @@ final class CartMainPresenter {
     
     private var cartItems: [CartItem] = [
         CartItem(id: "1", nftName: "April", imageName: "MockNFTCard1", rating: 1, price: 1.80),
-        CartItem(id: "2", nftName: "Betty", imageName: "MockNFTCard2", rating: 5, price: 1.79),
         CartItem(id: "3", nftName: "Chloe", imageName: "MockNFTCard3", rating: 3, price: 1.50),
+        CartItem(id: "2", nftName: "Betty", imageName: "MockNFTCard2", rating: 5, price: 1.79),
     ]
+    
+    private let cartSortingMethodStorage = CartSortingMethodStorage()
     
     func attachView(_ view: CartMainVC) {
         self.view = view
     }
     
     func viewWillAppear() {
+        let sortingMethod = cartSortingMethodStorage.savedSortingMethod ?? .name
+        if !cartItems.isEmpty { sortBy(sortingMethod) }
+        
         view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
         view?.updateTotals()
     }
@@ -68,6 +73,7 @@ final class CartMainPresenter {
         case .name:
             cartItems.sort { $0.nftName < $1.nftName }
         }
+        cartSortingMethodStorage.savedSortingMethod = sortingMethod
         view?.updateTotals()
     }
 }

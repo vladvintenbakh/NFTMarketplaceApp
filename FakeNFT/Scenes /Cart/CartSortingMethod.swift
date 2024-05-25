@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CartSortingMethod {
+enum CartSortingMethod: String {
     case price
     case rating
     case name
