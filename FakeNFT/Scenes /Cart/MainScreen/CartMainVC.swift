@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CartMainVCProtocol {
+    
+}
+
 final class CartMainVC: UIViewController {
     private let placeholderLabel: UILabel = {
         let label = UILabel()
@@ -36,7 +40,6 @@ final class CartMainVC: UIViewController {
     
     private let itemCountLabel: UILabel = {
         let label = UILabel()
-        label.text = "3 NFT"
         label.textColor = .yaBlackLight
         label.font = .caption1
         return label
@@ -44,7 +47,6 @@ final class CartMainVC: UIViewController {
     
     private let totalPriceLabel: UILabel = {
         let label = UILabel()
-        label.text = "5,34 ETH"
         label.textColor = .yaGreen
         label.font = .bodyBold
         return label
@@ -70,20 +72,38 @@ final class CartMainVC: UIViewController {
         return stack
     }()
     
+    private lazy var sortButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "CartSortIcon"), for: .normal)
+        button.addTarget(self, action: #selector(sortButtonPressed), for: .touchUpInside)
+        return button
+    }()
+    
+    private let presenter: CartMainPresenter
+    
+    init(presenter: CartMainPresenter) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let sortButton = UIButton()
-        sortButton.setImage(UIImage(named: "CartSortIcon"), for: .normal)
-        sortButton.addTarget(self, action: #selector(sortButtonPressed), for: .touchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
-        
-        placeholderLabel.isHidden = true
+        presenter.attachView(self)
         
         cartItemTable.dataSource = self
         
         addSubviews()
         configConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.viewWillAppear()
     }
 }
 
@@ -144,12 +164,30 @@ extension CartMainVC {
         let alert = AlertUtility.cartMainScreenSortAlert()
         present(alert, animated: true)
     }
+    
+    func toggleEmptyPlaceholderTo(_ isCartEmpty: Bool) {
+        placeholderLabel.isHidden = !isCartEmpty
+        cartItemTable.isHidden = isCartEmpty
+        grayBackgroundView.isHidden = isCartEmpty
+        bottomHorizontalStack.isHidden = isCartEmpty
+        navigationItem.rightBarButtonItem = isCartEmpty ? nil : UIBarButtonItem(customView: sortButton)
+    }
+    
+    func updateTotals() {
+        cartItemTable.reloadData()
+        
+        let itemCount = presenter.numberOfCartItems()
+        itemCountLabel.text = "\(itemCount) NFT"
+        
+        let totalPrice = presenter.cartTotalPrice()
+        totalPriceLabel.text = String(format: "%.2f ETH", totalPrice)
+    }
 }
 
 // MARK: UITableViewDataSource
 extension CartMainVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return presenter.numberOfCartItems()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -158,8 +196,9 @@ extension CartMainVC: UITableViewDataSource {
             for: indexPath
         ) as? CartMainTableViewCell
         guard let cell else { return UITableViewCell() }
-        cell.delegate = self
-        return cell
+        let configuredCell = presenter.configCell(cell, at: indexPath)
+        configuredCell.delegate = self
+        return configuredCell
     }
 }
 

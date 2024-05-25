@@ -19,7 +19,6 @@ final class CartMainTableViewCell: UITableViewCell {
     private let cardImage = {
         let image = UIImageView()
         image.layer.cornerRadius = 12
-        image.image = UIImage(named: "MockNFTCard1")
         return image
     }()
     
@@ -27,11 +26,10 @@ final class CartMainTableViewCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .yaBlackLight
         label.font = .bodyBold
-        label.text = "April"
         return label
     }()
     
-    private let ratingStack: UIStackView = {
+    private lazy var ratingStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 2
@@ -51,7 +49,6 @@ final class CartMainTableViewCell: UITableViewCell {
         label.textColor = .yaBlackLight
         label.font = .bodyBold
         label.textAlignment = .center
-        label.text = "1,78 ETH"
         return label
     }()
     
@@ -67,6 +64,12 @@ final class CartMainTableViewCell: UITableViewCell {
         
         addSubviews()
         configConstraints()
+        
+        for index in 1...5 {
+            let image = UIImageView()
+            image.tag = index
+            ratingStack.addArrangedSubview(image)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -77,13 +80,6 @@ final class CartMainTableViewCell: UITableViewCell {
 // MARK: UI Layout
 extension CartMainTableViewCell {
     private func addSubviews() {
-        for index in 1...5 {
-            let imageName = index < 3 ? "FilledRatingStar" : "UnfilledRatingStar"
-            let image = UIImageView(image: UIImage(named: imageName))
-            image.tag = index
-            ratingStack.addArrangedSubview(image)
-        }
-        
         let subviews = [cardImage, nftNameLabel, ratingStack,
                         priceDescriptionLabel, priceValueLabel, removeFromCartButton]
         subviews.forEach { item in
@@ -122,5 +118,22 @@ extension CartMainTableViewCell {
 extension CartMainTableViewCell {
     @objc private func removeButtonPressed() {
         delegate?.didPressRemoveFromCartButton()
+    }
+    
+    func configUI(cartItem: CartItem) {
+        nftNameLabel.text = cartItem.nftName
+        cardImage.image = UIImage(named: cartItem.imageName)
+        priceValueLabel.text = String(format: "%.2f ETH", cartItem.price)
+        
+        setRatingTo(cartItem.rating)
+    }
+    
+    private func setRatingTo(_ rating: Int) {
+        for (index, subview) in ratingStack.subviews.enumerated() {
+            let imageName = index < rating ? "FilledRatingStar" : "UnfilledRatingStar"
+            if let imageView = subview as? UIImageView {
+                imageView.image = UIImage(named: imageName)
+            }
+        }
     }
 }

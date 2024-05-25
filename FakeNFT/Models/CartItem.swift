@@ -9,7 +9,7 @@ import Foundation
 
 struct CartItem {
     let id: String
-    let title: String
+    let nftName: String
     let imageName: String
     let rating: Int
     let price: Double
