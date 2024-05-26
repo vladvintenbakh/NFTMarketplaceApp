@@ -11,6 +11,19 @@ import SafariServices
 final class PaymentPresenter {
     weak private var view: PaymentVC?
     
+    private var selectedCurrency: PaymentCurrency?
+    
+    private let currencies = [
+        PaymentCurrency(id: "1", imageName: "BitcoinPaymentIcon", currencyName: "Bitcoin", currencyCode: "BTC"),
+        PaymentCurrency(id: "2", imageName: "DogecoinPaymentIcon", currencyName: "Dogecoin", currencyCode: "DOGE"),
+        PaymentCurrency(id: "3", imageName: "TetherPaymentIcon", currencyName: "Tether", currencyCode: "USDT"),
+        PaymentCurrency(id: "4", imageName: "ApeCoinPaymentIcon", currencyName: "Apecoin", currencyCode: "APE"),
+        PaymentCurrency(id: "5", imageName: "SolanaPaymentIcon", currencyName: "Solana", currencyCode: "SOL"),
+        PaymentCurrency(id: "6", imageName: "EthereumPaymentIcon", currencyName: "Ethereum", currencyCode: "ETH"),
+        PaymentCurrency(id: "7", imageName: "CardanoPaymentIcon", currencyName: "Cardano", currencyCode: "ADA"),
+        PaymentCurrency(id: "8", imageName: "ShibaInuPaymentIcon", currencyName: "Shiba Inu", currencyCode: "SHIB"),
+    ]
+    
     private let userAgreementURL = URL(string: "https://yandex.ru/legal/practicum_termsofuse/")
     
     func attachView(_ view: PaymentVC) {
@@ -22,4 +35,29 @@ final class PaymentPresenter {
         let safariVC = SFSafariViewController(url: userAgreementURL)
         view?.present(safariVC, animated: true)
     }
+    
+    func returnToCartMainScreen() {
+        view?.dismiss(animated: true)
+    }
+    
+    func processPaymentAttempt() {
+        let paymentOutcomeVC = PaymentOutcomeVC()
+        paymentOutcomeVC.modalPresentationStyle = .fullScreen
+        view?.present(paymentOutcomeVC, animated: true)
+    }
+    
+    func numberOfCurrencies() -> Int {
+        return currencies.count
+    }
+    
+    func configCell(_ cell: PaymentCollectionViewCell, at indexPath: IndexPath) -> PaymentCollectionViewCell {
+        cell.configUI(currency: currencies[indexPath.row])
+        return cell
+    }
+    
+    func setSelectedCurrency(indexPath: IndexPath) {
+        selectedCurrency = currencies[indexPath.row]
+    }
+    
+    
 }

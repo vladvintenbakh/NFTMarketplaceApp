@@ -8,10 +8,6 @@
 import UIKit
 
 final class PaymentVC: UIViewController {
-    private let currencyNames = ["Bitcoin", "Dogecoin", "Tether", "Apecoin",
-                                 "Solana", "Ethereum", "Cardano", "Shiba Inu"]
-    
-    private let currencyCodes = ["BTC", "DOGE", "USDT", "APE", "SOL", "ETH", "ADA", "SHIB"]
     
     private let presenter: PaymentPresenter
     
@@ -152,13 +148,11 @@ extension PaymentVC {
 // MARK: Interaction Methods
 extension PaymentVC {
     @objc private func backButtonPressed() {
-        dismiss(animated: true)
+        presenter.returnToCartMainScreen()
     }
     
     @objc private func payButtonPressed() {
-        let paymentOutcomeVC = PaymentOutcomeVC()
-        paymentOutcomeVC.modalPresentationStyle = .fullScreen
-        present(paymentOutcomeVC, animated: true)
+        presenter.processPaymentAttempt()
     }
     
     @objc private func userAgreementLinkPressed() {
@@ -169,7 +163,7 @@ extension PaymentVC {
 // MARK: UICollectionViewDataSource
 extension PaymentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return presenter.numberOfCurrencies()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -179,27 +173,9 @@ extension PaymentVC: UICollectionViewDataSource {
         ) as? PaymentCollectionViewCell
         guard let cell else { return UICollectionViewCell() }
         
-        let currencyName = currencyNames[indexPath.row]
+        let configuredCell = presenter.configCell(cell, at: indexPath)
         
-        var imagePrefix = ""
-        switch currencyName {
-        case "Shiba Inu":
-            imagePrefix += "ShibaInu"
-        case "Apecoin":
-            imagePrefix += "ApeCoin"
-        default:
-            imagePrefix += currencyName
-        }
-        
-        let currencyCode = currencyCodes[indexPath.row]
-        
-        cell.configUI(
-            image: UIImage(named: "\(imagePrefix)PaymentIcon") ?? UIImage(),
-            currencyName: currencyName,
-            currencyCode: currencyCode
-        )
-        
-        return cell
+        return configuredCell
     }
 }
 
@@ -221,6 +197,8 @@ extension PaymentVC: UICollectionViewDelegate {
         
         payButton.isEnabled = true
         cell.toggleSelectionTo(true)
+        
+        presenter.setSelectedCurrency(indexPath: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
