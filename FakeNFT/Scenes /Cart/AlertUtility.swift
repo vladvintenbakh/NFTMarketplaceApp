@@ -37,4 +37,20 @@ final class AlertUtility {
         
         return alert
     }
+    
+    static func paymentErrorAlert(retryCompletion: @escaping () -> ()) -> UIAlertController {
+        let alert = UIAlertController(title: "Не удалось произвести оплату",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        
+        let retryAction = UIAlertAction(title: "Повторить", style: .default) { _ in
+            retryCompletion()
+        }
+        
+        [cancelAction, retryAction].forEach { action in alert.addAction(action) }
+        
+        return alert
+    }
 }

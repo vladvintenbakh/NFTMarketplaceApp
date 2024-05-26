@@ -43,12 +43,13 @@ final class PaymentPresenter {
     func processPaymentAttempt() {
         guard let selectedCurrency else { return }
         
-        let validCurrencies = ["Bitcoin", "Dogecoin"]
-        
-        if validCurrencies.contains(selectedCurrency.currencyName) {
+        if ["Bitcoin", "Dogecoin"].contains(selectedCurrency.currencyName) {
             let paymentOutcomeVC = PaymentOutcomeVC()
             paymentOutcomeVC.modalPresentationStyle = .fullScreen
             view?.present(paymentOutcomeVC, animated: true)
+        } else {
+            let paymentErrorAlert = AlertUtility.paymentErrorAlert { [weak self] in self?.processPaymentAttempt() }
+            view?.present(paymentErrorAlert, animated: true)
         }
     }
     
@@ -64,6 +65,4 @@ final class PaymentPresenter {
     func setSelectedCurrency(indexPath: IndexPath) {
         selectedCurrency = currencies[indexPath.row]
     }
-    
-    
 }
