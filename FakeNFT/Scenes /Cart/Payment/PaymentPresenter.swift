@@ -8,8 +8,14 @@
 import UIKit
 import SafariServices
 
+protocol PaymentPresenterDelegate: AnyObject {
+    func didPurchaseItems()
+}
+
 final class PaymentPresenter {
     weak private var view: PaymentVC?
+    
+    weak var delegate: PaymentPresenterDelegate?
     
     private var selectedCurrency: PaymentCurrency?
     
@@ -47,6 +53,7 @@ final class PaymentPresenter {
             let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
             paymentOutcomeVC.modalPresentationStyle = .fullScreen
             view?.present(paymentOutcomeVC, animated: true)
+            delegate?.didPurchaseItems()
         } else {
             let paymentErrorAlert = AlertUtility.paymentErrorAlert { [weak self] in self?.processPaymentAttempt() }
             view?.present(paymentErrorAlert, animated: true)

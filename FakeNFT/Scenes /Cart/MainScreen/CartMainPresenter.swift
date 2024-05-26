@@ -86,6 +86,8 @@ final class CartMainPresenter {
     
     func displayPaymentVC() {
         let paymentPresenter = PaymentPresenter()
+        paymentPresenter.delegate = self
+        
         let paymentVC = PaymentVC(presenter: paymentPresenter)
         let navigationVC = UINavigationController(rootViewController: paymentVC)
         navigationVC.modalPresentationStyle = .fullScreen
@@ -101,3 +103,10 @@ extension CartMainPresenter: CartItemDeletionPresenterDelegate {
     }
 }
 
+// MARK: PaymentPresenterDelegate
+extension CartMainPresenter: PaymentPresenterDelegate {
+    func didPurchaseItems() {
+        cartItems = []
+        view?.updateTotals()
+    }
+}
