@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol CartMainVCProtocol {
-    
-}
-
 final class CartMainVC: UIViewController {
     private let placeholderLabel: UILabel = {
         let label = UILabel()

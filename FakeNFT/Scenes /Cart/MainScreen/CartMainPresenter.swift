@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol CartMainPresenterProtocol {
-    
-}
-
 final class CartMainPresenter {
     weak private var view: CartMainVC?
     
@@ -79,17 +75,21 @@ final class CartMainPresenter {
     
     func displayDeletionConfirmationFor(indexPath: IndexPath) {
         let cartItem = cartItems[indexPath.row]
-        let deletionVC = CartItemDeletionVC(cartItem: cartItem)
+        let deletionPresenter = CartItemDeletionPresenter(
+            delegate: self, 
+            cartItem: cartItem
+        )
+        let deletionVC = CartItemDeletionVC(presenter: deletionPresenter)
         deletionVC.modalPresentationStyle = .overFullScreen
-        deletionVC.delegate = self
         view?.present(deletionVC, animated: true)
     }
 }
 
-// MARK: CartItemDeletionVCDelegate
-extension CartMainPresenter: CartItemDeletionVCDelegate {
+// MARK: CartItemDeletionPresenterDelegate
+extension CartMainPresenter: CartItemDeletionPresenterDelegate {
     func didConfirmDeletionFor(cartItem: CartItem) {
         cartItems.removeAll { $0.id == cartItem.id }
         view?.updateTotals()
     }
 }
+

@@ -7,12 +7,8 @@
 
 import UIKit
 
-protocol CartItemDeletionVCDelegate: AnyObject {
-    func didConfirmDeletionFor(cartItem: CartItem)
-}
-
 final class CartItemDeletionVC: UIViewController {
-    weak var delegate: CartItemDeletionVCDelegate?
+    private let presenter: CartItemDeletionPresenter
     
     private lazy var blurEffectView: UIVisualEffectView = {
         let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
@@ -67,10 +63,8 @@ final class CartItemDeletionVC: UIViewController {
         return stack
     }()
     
-    private var cartItem: CartItem
-    
-    init(cartItem: CartItem) {
-        self.cartItem = cartItem
+    init(presenter: CartItemDeletionPresenter) {
+        self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -81,7 +75,7 @@ final class CartItemDeletionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        cardImage.image = UIImage(named: cartItem.imageName)
+        cardImage.image = presenter.getCartItemImage()
         
         addSubviews()
         configConstraints()
@@ -129,7 +123,7 @@ extension CartItemDeletionVC {
 extension CartItemDeletionVC {
     @objc private func deleteButtonPressed() {
         dismiss(animated: true)
-        delegate?.didConfirmDeletionFor(cartItem: cartItem)
+        presenter.confirmDeletion()
     }
     
     @objc private func cancelButtonPressed() {
