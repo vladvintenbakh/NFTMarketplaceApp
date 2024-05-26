@@ -116,6 +116,7 @@ final class StatisticsMainVC: UIViewController {
         let userInfoViewController = StatisticProfileVC(user: user)
         let presenter = UserInfoPresenter(view: userInfoViewController, user: user)
         userInfoViewController.presenter = presenter
+        userInfoViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(userInfoViewController, animated: true)
     }
 
