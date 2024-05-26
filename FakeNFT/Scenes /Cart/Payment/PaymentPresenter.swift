@@ -41,9 +41,15 @@ final class PaymentPresenter {
     }
     
     func processPaymentAttempt() {
-        let paymentOutcomeVC = PaymentOutcomeVC()
-        paymentOutcomeVC.modalPresentationStyle = .fullScreen
-        view?.present(paymentOutcomeVC, animated: true)
+        guard let selectedCurrency else { return }
+        
+        let validCurrencies = ["Bitcoin", "Dogecoin"]
+        
+        if validCurrencies.contains(selectedCurrency.currencyName) {
+            let paymentOutcomeVC = PaymentOutcomeVC()
+            paymentOutcomeVC.modalPresentationStyle = .fullScreen
+            view?.present(paymentOutcomeVC, animated: true)
+        }
     }
     
     func numberOfCurrencies() -> Int {
