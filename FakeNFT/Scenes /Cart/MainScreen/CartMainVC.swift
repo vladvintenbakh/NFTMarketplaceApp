@@ -181,6 +181,8 @@ extension CartMainVC {
         
         let totalPrice = presenter.cartTotalPrice()
         totalPriceLabel.text = String(format: "%.2f ETH", totalPrice)
+        
+        toggleEmptyPlaceholderTo(presenter.isCartEmpty())
     }
 }
 
@@ -198,15 +200,14 @@ extension CartMainVC: UITableViewDataSource {
         guard let cell else { return UITableViewCell() }
         let configuredCell = presenter.configCell(cell, at: indexPath)
         configuredCell.delegate = self
+        configuredCell.indexPath = indexPath
         return configuredCell
     }
 }
 
 // MARK: CartMainTableViewCellDelegate
 extension CartMainVC: CartMainTableViewCellDelegate {
-    func didPressRemoveFromCartButton() {
-        let deletionVC = CartItemDeletionVC()
-        deletionVC.modalPresentationStyle = .overFullScreen
-        present(deletionVC, animated: true)
+    func didPressRemoveFromCartButtonFor(indexPath: IndexPath) {
+        presenter.displayDeletionConfirmationFor(indexPath: indexPath)
     }
 }

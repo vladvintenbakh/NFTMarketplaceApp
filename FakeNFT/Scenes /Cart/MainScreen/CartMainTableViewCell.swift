@@ -8,13 +8,15 @@
 import UIKit
 
 protocol CartMainTableViewCellDelegate: AnyObject {
-    func didPressRemoveFromCartButton()
+    func didPressRemoveFromCartButtonFor(indexPath: IndexPath)
 }
 
 final class CartMainTableViewCell: UITableViewCell {
     static let identifier = "CartMainTableViewCell"
     
     weak var delegate: CartMainTableViewCellDelegate?
+    
+    var indexPath: IndexPath?
     
     private let cardImage = {
         let image = UIImageView()
@@ -117,7 +119,8 @@ extension CartMainTableViewCell {
 // MARK: Interaction Methods
 extension CartMainTableViewCell {
     @objc private func removeButtonPressed() {
-        delegate?.didPressRemoveFromCartButton()
+        guard let indexPath else { return }
+        delegate?.didPressRemoveFromCartButtonFor(indexPath: indexPath)
     }
     
     func configUI(cartItem: CartItem) {

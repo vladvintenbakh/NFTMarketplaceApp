@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol CartItemDeletionVCDelegate: AnyObject {
+    func didConfirmDeletionFor(cartItem: CartItem)
+}
+
 final class CartItemDeletionVC: UIViewController {
+    weak var delegate: CartItemDeletionVCDelegate?
+    
     private lazy var blurEffectView: UIVisualEffectView = {
         let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
         visualEffectView.frame = view.bounds
@@ -61,8 +67,21 @@ final class CartItemDeletionVC: UIViewController {
         return stack
     }()
     
+    private var cartItem: CartItem
+    
+    init(cartItem: CartItem) {
+        self.cartItem = cartItem
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        cardImage.image = UIImage(named: cartItem.imageName)
         
         addSubviews()
         configConstraints()
@@ -109,7 +128,8 @@ extension CartItemDeletionVC {
 // MARK: Interaction Methods
 extension CartItemDeletionVC {
     @objc private func deleteButtonPressed() {
-        
+        dismiss(animated: true)
+        delegate?.didConfirmDeletionFor(cartItem: cartItem)
     }
     
     @objc private func cancelButtonPressed() {

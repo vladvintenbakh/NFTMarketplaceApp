@@ -76,4 +76,20 @@ final class CartMainPresenter {
         cartSortingMethodStorage.savedSortingMethod = sortingMethod
         view?.updateTotals()
     }
+    
+    func displayDeletionConfirmationFor(indexPath: IndexPath) {
+        let cartItem = cartItems[indexPath.row]
+        let deletionVC = CartItemDeletionVC(cartItem: cartItem)
+        deletionVC.modalPresentationStyle = .overFullScreen
+        deletionVC.delegate = self
+        view?.present(deletionVC, animated: true)
+    }
+}
+
+// MARK: CartItemDeletionVCDelegate
+extension CartMainPresenter: CartItemDeletionVCDelegate {
+    func didConfirmDeletionFor(cartItem: CartItem) {
+        cartItems.removeAll { $0.id == cartItem.id }
+        view?.updateTotals()
+    }
 }
