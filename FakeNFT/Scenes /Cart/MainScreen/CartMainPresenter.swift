@@ -83,6 +83,14 @@ final class CartMainPresenter {
         deletionVC.modalPresentationStyle = .overFullScreen
         view?.present(deletionVC, animated: true)
     }
+    
+    func displayPaymentVC() {
+        let paymentPresenter = PaymentPresenter()
+        let paymentVC = PaymentVC(presenter: paymentPresenter)
+        let navigationVC = UINavigationController(rootViewController: paymentVC)
+        navigationVC.modalPresentationStyle = .fullScreen
+        view?.present(navigationVC, animated: true)
+    }
 }
 
 // MARK: CartItemDeletionPresenterDelegate

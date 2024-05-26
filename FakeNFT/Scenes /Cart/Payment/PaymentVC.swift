@@ -13,6 +13,8 @@ final class PaymentVC: UIViewController {
     
     private let currencyCodes = ["BTC", "DOGE", "USDT", "APE", "SOL", "ETH", "ADA", "SHIB"]
     
+    private let presenter: PaymentPresenter
+    
     private let currencyCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.allowsMultipleSelection = false
@@ -39,11 +41,13 @@ final class PaymentVC: UIViewController {
         return label
     }()
     
-    private let userAgreementLinkLabel: UILabel = {
+    private lazy var userAgreementLinkLabel: UILabel = {
         let label = UILabel()
         label.text = "Пользовательского соглашения"
         label.textColor = .yaBlue
         label.font = .caption2
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGestureRecognizer)
         return label
     }()
     
@@ -54,10 +58,24 @@ final class PaymentVC: UIViewController {
         return button
     }()
     
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                   action: #selector(userAgreementLinkPressed))
+    
+    init(presenter: PaymentPresenter) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .yaWhiteLight
+        
+        presenter.attachView(self)
         
         setUpNavigationBar()
         addSubviews()
@@ -141,6 +159,10 @@ extension PaymentVC {
         let paymentOutcomeVC = PaymentOutcomeVC()
         paymentOutcomeVC.modalPresentationStyle = .fullScreen
         present(paymentOutcomeVC, animated: true)
+    }
+    
+    @objc private func userAgreementLinkPressed() {
+        presenter.loadUserAgreement()
     }
 }
 
