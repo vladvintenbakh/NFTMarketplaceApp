@@ -44,7 +44,7 @@ final class PaymentPresenter {
         guard let selectedCurrency else { return }
         
         if ["Bitcoin", "Dogecoin"].contains(selectedCurrency.currencyName) {
-            let paymentOutcomeVC = PaymentOutcomeVC()
+            let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
             paymentOutcomeVC.modalPresentationStyle = .fullScreen
             view?.present(paymentOutcomeVC, animated: true)
         } else {

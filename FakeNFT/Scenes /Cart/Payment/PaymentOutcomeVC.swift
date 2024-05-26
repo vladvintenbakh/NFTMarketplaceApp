@@ -8,6 +8,8 @@
 import UIKit
 
 final class PaymentOutcomeVC: UIViewController {
+    private let presenter: PaymentOutcomePresenter
+    
     private let successfulPaymentImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "SuccessfulPaymentImage"))
         return image
@@ -29,10 +31,21 @@ final class PaymentOutcomeVC: UIViewController {
         return button
     }()
     
+    init(presenter: PaymentOutcomePresenter) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .yaWhiteLight
+        
+        presenter.attachView(self)
         
         addSubviews()
         configConstraints()
@@ -72,6 +85,10 @@ extension PaymentOutcomeVC {
 // MARK: Interaction Methods
 extension PaymentOutcomeVC {
     @objc private func backToCatalogButtonPressed() {
+        presenter.initiateReturnToCatalog()
+    }
+    
+    func returnToCatalog() {
         let tabBarController = view.window?.rootViewController as? TabBarController
         guard let tabBarController else { return }
         tabBarController.selectedIndex = 1
