@@ -8,7 +8,7 @@
 import UIKit
 
 final class CartItemDeletionVC: UIViewController {
-    private let presenter: CartItemDeletionPresenter
+    private let presenter: CartItemDeletionPresenterProtocol
     
     private lazy var blurEffectView: UIVisualEffectView = {
         let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
@@ -63,7 +63,7 @@ final class CartItemDeletionVC: UIViewController {
         return stack
     }()
     
-    init(presenter: CartItemDeletionPresenter) {
+    init(presenter: CartItemDeletionPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }

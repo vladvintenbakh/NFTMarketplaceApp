@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol CartItemDeletionPresenterProtocol {
+    func getCartItemImage() -> UIImage?
+    func confirmDeletion()
+}
+
 protocol CartItemDeletionPresenterDelegate: AnyObject {
     func didConfirmDeletionFor(cartItem: CartItem)
 }
@@ -20,7 +25,10 @@ final class CartItemDeletionPresenter {
         self.delegate = delegate
         self.cartItem = cartItem
     }
-    
+}
+
+// MARK: CartItemDeletionPresenterProtocol
+extension CartItemDeletionPresenter: CartItemDeletionPresenterProtocol {
     func getCartItemImage() -> UIImage? {
         return UIImage(named: cartItem.imageName)
     }
