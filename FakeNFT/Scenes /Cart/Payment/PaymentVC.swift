@@ -21,8 +21,11 @@ final class PaymentVC: UIViewController {
         collection.allowsMultipleSelection = false
         collection.allowsSelection = true
         collection.isUserInteractionEnabled = true
+        collection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         collection.register(PaymentCollectionViewCell.self,
                             forCellWithReuseIdentifier: PaymentCollectionViewCell.identifier)
+        collection.dataSource = self
+        collection.delegate = self
         return collection
     }()
     
@@ -81,10 +84,6 @@ final class PaymentVC: UIViewController {
         setUpNavigationBar()
         addSubviews()
         configConstraints()
-        
-        currencyCollection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        currencyCollection.dataSource = self
-        currencyCollection.delegate = self
     }
 }
 
