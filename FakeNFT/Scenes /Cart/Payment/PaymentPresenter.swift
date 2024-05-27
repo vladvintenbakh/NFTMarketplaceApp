@@ -8,12 +8,22 @@
 import UIKit
 import SafariServices
 
+protocol PaymentPresenterProtocol {
+    func attachView(_ view: PaymentVCProtocol)
+    func returnToCartMainScreen()
+    func processPaymentAttempt()
+    func loadUserAgreement()
+    func numberOfCurrencies() -> Int
+    func configCell(_ cell: PaymentCollectionViewCell, at indexPath: IndexPath) -> PaymentCollectionViewCell
+    func setSelectedCurrency(indexPath: IndexPath)
+}
+
 protocol PaymentPresenterDelegate: AnyObject {
     func didPurchaseItems()
 }
 
 final class PaymentPresenter {
-    weak private var view: PaymentVC?
+    weak private var view: PaymentVCProtocol?
     
     weak var delegate: PaymentPresenterDelegate?
     
@@ -31,19 +41,16 @@ final class PaymentPresenter {
     ]
     
     private let userAgreementURL = URL(string: "https://yandex.ru/legal/practicum_termsofuse/")
-    
-    func attachView(_ view: PaymentVC) {
+}
+
+// MARK: PaymentPresenterProtocol
+extension PaymentPresenter: PaymentPresenterProtocol {
+    func attachView(_ view: PaymentVCProtocol) {
         self.view = view
     }
     
-    func loadUserAgreement() {
-        guard let userAgreementURL else { return }
-        let safariVC = SFSafariViewController(url: userAgreementURL)
-        view?.present(safariVC, animated: true)
-    }
-    
     func returnToCartMainScreen() {
-        view?.dismiss(animated: true)
+        view?.dismissVC()
     }
     
     func processPaymentAttempt() {
@@ -52,12 +59,18 @@ final class PaymentPresenter {
         if ["Bitcoin", "Dogecoin"].contains(selectedCurrency.currencyName) {
             let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
             paymentOutcomeVC.modalPresentationStyle = .fullScreen
-            view?.present(paymentOutcomeVC, animated: true)
+            view?.presentVC(paymentOutcomeVC)
             delegate?.didPurchaseItems()
         } else {
             let paymentErrorAlert = AlertUtility.paymentErrorAlert { [weak self] in self?.processPaymentAttempt() }
-            view?.present(paymentErrorAlert, animated: true)
+            view?.presentVC(paymentErrorAlert)
         }
+    }
+    
+    func loadUserAgreement() {
+        guard let userAgreementURL else { return }
+        let safariVC = SFSafariViewController(url: userAgreementURL)
+        view?.presentVC(safariVC)
     }
     
     func numberOfCurrencies() -> Int {

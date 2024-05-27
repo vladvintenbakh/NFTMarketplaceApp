@@ -7,9 +7,14 @@
 
 import UIKit
 
+protocol PaymentVCProtocol: AnyObject {
+    func presentVC(_ vc: UIViewController)
+    func dismissVC()
+}
+
 final class PaymentVC: UIViewController {
     
-    private let presenter: PaymentPresenter
+    private let presenter: PaymentPresenterProtocol
     
     private let currencyCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -57,7 +62,7 @@ final class PaymentVC: UIViewController {
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                                    action: #selector(userAgreementLinkPressed))
     
-    init(presenter: PaymentPresenter) {
+    init(presenter: PaymentPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -206,5 +211,16 @@ extension PaymentVC: UICollectionViewDelegate {
         guard let cell else { return }
         
         cell.toggleSelectionTo(false)
+    }
+}
+
+// MARK: PaymentVCProtocol
+extension PaymentVC: PaymentVCProtocol {
+    func presentVC(_ vc: UIViewController) {
+        present(vc, animated: true)
+    }
+    
+    func dismissVC() {
+        dismiss(animated: true)
     }
 }
