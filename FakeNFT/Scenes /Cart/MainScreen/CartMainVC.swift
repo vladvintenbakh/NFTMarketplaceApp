@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol CartMainVCProtocol: AnyObject {
+    func toggleEmptyPlaceholderTo(_ isCartEmpty: Bool)
+    func updateTotals()
+    func presentVC(_ vc: UIViewController)
+}
+
 final class CartMainVC: UIViewController {
     private let placeholderLabel: UILabel = {
         let label = UILabel()
@@ -75,7 +81,7 @@ final class CartMainVC: UIViewController {
         return button
     }()
     
-    private let presenter: CartMainPresenter
+    private let presenter: CartMainPresenterProtocol
     
     init(presenter: CartMainPresenter) {
         self.presenter = presenter
@@ -158,26 +164,6 @@ extension CartMainVC {
         let alert = presenter.createSortAlert()
         present(alert, animated: true)
     }
-    
-    func toggleEmptyPlaceholderTo(_ isCartEmpty: Bool) {
-        placeholderLabel.isHidden = !isCartEmpty
-        cartItemTable.isHidden = isCartEmpty
-        grayBackgroundView.isHidden = isCartEmpty
-        bottomHorizontalStack.isHidden = isCartEmpty
-        navigationItem.rightBarButtonItem = isCartEmpty ? nil : UIBarButtonItem(customView: sortButton)
-    }
-    
-    func updateTotals() {
-        cartItemTable.reloadData()
-        
-        let itemCount = presenter.numberOfCartItems()
-        itemCountLabel.text = "\(itemCount) NFT"
-        
-        let totalPrice = presenter.cartTotalPrice()
-        totalPriceLabel.text = String(format: "%.2f ETH", totalPrice)
-        
-        toggleEmptyPlaceholderTo(presenter.isCartEmpty())
-    }
 }
 
 // MARK: UITableViewDataSource
@@ -203,5 +189,32 @@ extension CartMainVC: UITableViewDataSource {
 extension CartMainVC: CartMainTableViewCellDelegate {
     func didPressRemoveFromCartButtonFor(indexPath: IndexPath) {
         presenter.displayDeletionConfirmationFor(indexPath: indexPath)
+    }
+}
+
+// MARK: CartMainVCProtocol
+extension CartMainVC: CartMainVCProtocol {
+    func toggleEmptyPlaceholderTo(_ isCartEmpty: Bool) {
+        placeholderLabel.isHidden = !isCartEmpty
+        cartItemTable.isHidden = isCartEmpty
+        grayBackgroundView.isHidden = isCartEmpty
+        bottomHorizontalStack.isHidden = isCartEmpty
+        navigationItem.rightBarButtonItem = isCartEmpty ? nil : UIBarButtonItem(customView: sortButton)
+    }
+    
+    func updateTotals() {
+        cartItemTable.reloadData()
+        
+        let itemCount = presenter.numberOfCartItems()
+        itemCountLabel.text = "\(itemCount) NFT"
+        
+        let totalPrice = presenter.cartTotalPrice()
+        totalPriceLabel.text = String(format: "%.2f ETH", totalPrice)
+        
+        toggleEmptyPlaceholderTo(presenter.isCartEmpty())
+    }
+    
+    func presentVC(_ vc: UIViewController) {
+        present(vc, animated: true)
     }
 }

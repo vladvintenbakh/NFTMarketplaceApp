@@ -7,8 +7,20 @@
 
 import UIKit
 
+protocol CartMainPresenterProtocol {
+    func attachView(_ view: CartMainVCProtocol)
+    func viewWillAppear()
+    func displayPaymentVC()
+    func createSortAlert() -> UIAlertController
+    func numberOfCartItems() -> Int
+    func configCell(_ cell: CartMainTableViewCell, at indexPath: IndexPath) -> CartMainTableViewCell
+    func displayDeletionConfirmationFor(indexPath: IndexPath)
+    func cartTotalPrice() -> Double
+    func isCartEmpty() -> Bool
+}
+
 final class CartMainPresenter {
-    weak private var view: CartMainVC?
+    weak private var view: CartMainVCProtocol?
     
     private var cartItems: [CartItem] = [
         CartItem(id: "1", nftName: "April", imageName: "MockNFTCard1", rating: 1, price: 1.80),
@@ -17,48 +29,6 @@ final class CartMainPresenter {
     ]
     
     private let cartSortingMethodStorage = CartSortingMethodStorage()
-    
-    func attachView(_ view: CartMainVC) {
-        self.view = view
-    }
-    
-    func viewWillAppear() {
-        let sortingMethod = cartSortingMethodStorage.savedSortingMethod ?? .name
-        if !cartItems.isEmpty { sortBy(sortingMethod) }
-        
-        view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
-        view?.updateTotals()
-    }
-    
-    func isCartEmpty() -> Bool {
-        return cartItems.isEmpty
-    }
-    
-    func numberOfCartItems() -> Int {
-        return cartItems.count
-    }
-    
-    func cartTotalPrice() -> Double {
-        var totalPrice = 0.0
-        for cartItem in cartItems {
-            totalPrice += cartItem.price
-        }
-        return totalPrice
-    }
-    
-    func configCell(_ cell: CartMainTableViewCell, at indexPath: IndexPath) -> CartMainTableViewCell {
-        cell.configUI(cartItem: cartItems[indexPath.row])
-        return cell
-    }
-    
-    func createSortAlert() -> UIAlertController {
-        let alert = AlertUtility.cartMainScreenSortAlert(
-            priceSortCompletion: { [weak self] in self?.sortBy(.price) },
-            ratingSortCompletion: { [weak self] in self?.sortBy(.rating) },
-            nameSortCompletion: { [weak self] in self?.sortBy(.name) }
-        )
-        return alert
-    }
     
     private func sortBy(_ sortingMethod: CartSortingMethod) {
         switch sortingMethod {
@@ -71,27 +41,6 @@ final class CartMainPresenter {
         }
         cartSortingMethodStorage.savedSortingMethod = sortingMethod
         view?.updateTotals()
-    }
-    
-    func displayDeletionConfirmationFor(indexPath: IndexPath) {
-        let cartItem = cartItems[indexPath.row]
-        let deletionPresenter = CartItemDeletionPresenter(
-            delegate: self, 
-            cartItem: cartItem
-        )
-        let deletionVC = CartItemDeletionVC(presenter: deletionPresenter)
-        deletionVC.modalPresentationStyle = .overFullScreen
-        view?.present(deletionVC, animated: true)
-    }
-    
-    func displayPaymentVC() {
-        let paymentPresenter = PaymentPresenter()
-        paymentPresenter.delegate = self
-        
-        let paymentVC = PaymentVC(presenter: paymentPresenter)
-        let navigationVC = UINavigationController(rootViewController: paymentVC)
-        navigationVC.modalPresentationStyle = .fullScreen
-        view?.present(navigationVC, animated: true)
     }
 }
 
@@ -108,5 +57,71 @@ extension CartMainPresenter: PaymentPresenterDelegate {
     func didPurchaseItems() {
         cartItems = []
         view?.updateTotals()
+    }
+}
+
+// MARK: CartMainPresenterProtocol
+extension CartMainPresenter: CartMainPresenterProtocol {
+    func attachView(_ view: CartMainVCProtocol) {
+        self.view = view
+    }
+    
+    func viewWillAppear() {
+        let sortingMethod = cartSortingMethodStorage.savedSortingMethod ?? .name
+        if !cartItems.isEmpty { sortBy(sortingMethod) }
+        
+        view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
+        view?.updateTotals()
+    }
+    
+    func displayPaymentVC() {
+        let paymentPresenter = PaymentPresenter()
+        paymentPresenter.delegate = self
+        
+        let paymentVC = PaymentVC(presenter: paymentPresenter)
+        let navigationVC = UINavigationController(rootViewController: paymentVC)
+        navigationVC.modalPresentationStyle = .fullScreen
+        view?.presentVC(navigationVC)
+    }
+    
+    func createSortAlert() -> UIAlertController {
+        let alert = AlertUtility.cartMainScreenSortAlert(
+            priceSortCompletion: { [weak self] in self?.sortBy(.price) },
+            ratingSortCompletion: { [weak self] in self?.sortBy(.rating) },
+            nameSortCompletion: { [weak self] in self?.sortBy(.name) }
+        )
+        return alert
+    }
+    
+    func numberOfCartItems() -> Int {
+        return cartItems.count
+    }
+    
+    func configCell(_ cell: CartMainTableViewCell, at indexPath: IndexPath) -> CartMainTableViewCell {
+        cell.configUI(cartItem: cartItems[indexPath.row])
+        return cell
+    }
+    
+    func displayDeletionConfirmationFor(indexPath: IndexPath) {
+        let cartItem = cartItems[indexPath.row]
+        let deletionPresenter = CartItemDeletionPresenter(
+            delegate: self,
+            cartItem: cartItem
+        )
+        let deletionVC = CartItemDeletionVC(presenter: deletionPresenter)
+        deletionVC.modalPresentationStyle = .overFullScreen
+        view?.presentVC(deletionVC)
+    }
+    
+    func cartTotalPrice() -> Double {
+        var totalPrice = 0.0
+        for cartItem in cartItems {
+            totalPrice += cartItem.price
+        }
+        return totalPrice
+    }
+    
+    func isCartEmpty() -> Bool {
+        return cartItems.isEmpty
     }
 }
