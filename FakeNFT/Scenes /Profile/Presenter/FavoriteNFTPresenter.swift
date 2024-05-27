@@ -21,14 +21,16 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
     init(view: FavoriteNFTViewProtocol?) {
         self.view = view
-        mockArrayOfNFT = [mockNFT1, mockNFT2, mockNFT3]
+        self.convertData()
     }
-
-    let mockNFT1 = NFTModel(imageName: "MockNFTCard1", name: "Lilo", rating: 1, author: "John Doe", price: "1.78")
-    let mockNFT2 = NFTModel(imageName: "MockNFTCard2", name: "Spring", rating: 2, author: "John Doe", price: "4.12")
-    let mockNFT3 = NFTModel(imageName: "MockNFTCard3", name: "April", rating: 4, author: "John Doe", price: "12.99")
 
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
+    }
+
+    func convertData() {
+        let data = MockDataStorage.mockData
+        guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
+        mockArrayOfNFT = favoriteNFT
     }
 }

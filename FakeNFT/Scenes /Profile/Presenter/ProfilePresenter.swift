@@ -29,14 +29,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
 
     // MARK: - Other properties
     let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
-    let mockData = ProfileModel(
-        name: "Joaquin Phoenix",
-        avatar: "phoenix",
-        description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.",
-        website: "https://www.ivi.tv/person/hoakin_feniks",
-        nfts: ["1", "2", "3"],
-        favoriteNFT: [],
-        id: "123123123")
+    var mockData = MockDataStorage.mockData
 
     var nftCount: Int {
         mockData.nfts?.count ?? 0

@@ -13,7 +13,7 @@ struct ProfileModel: Codable {
     let avatar: String?
     let description: String?
     let website: String?
-    let nfts: [String]?
-    let favoriteNFT: [String]?
+    let nfts: [NFTModel]?
+    let favoriteNFT: [NFTModel]?
     let id: String?
 }
