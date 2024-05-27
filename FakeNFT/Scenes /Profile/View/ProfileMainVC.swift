@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProfileViewProtocol: AnyObject {
+
+}
+
 final class ProfileMainVC: UIViewController {
 
     // MARK: - UI Properties
@@ -47,22 +51,7 @@ final class ProfileMainVC: UIViewController {
     } ()
 
     // MARK: - Other Properties
-    let presenter: ProfilePresenterProtocol?
-    var delegate: ProfileViewControllerDelegate?
-
-    let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
-    var count = 0
-    var favoriteNFT = 0
-
-    // MARK: - Init
-    init(presenter: ProfilePresenterProtocol?) {
-        self.presenter = presenter
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var presenter: ProfilePresenterProtocol?
 
     // MARK: - Life cycles
     override func viewDidLoad() {
@@ -73,25 +62,19 @@ final class ProfileMainVC: UIViewController {
 
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
-        let vc = EditProfileViewController()
-        let EditVC = UINavigationController(rootViewController: vc)
-        present(EditVC, animated: true)
+        presenter?.goToEditProfileScreen()
     }
 
     // MARK: - Private methods
     private func updateUIWithMockData() {
         guard let data = presenter?.mockData,
-              let imageName = data.avatar,
-              let nftList = data.nfts,
-              let favList = data.favoriteNFT else { return }
+              let imageName = data.avatar else { return }
 
         nameLabel.text = data.name
-        let image =  UIImage(named: imageName)
+        let image = UIImage(named: imageName)
         photoImage.image = image
         aboutMeLabel.text = data.description
         webSiteLabel.text = data.website
-        count = nftList.count
-        favoriteNFT = favList.count
     }
 
     private func setupLayout() {
@@ -121,8 +104,8 @@ final class ProfileMainVC: UIViewController {
             photoAndNameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
 
             nftTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
-            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -0),
+            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
@@ -149,11 +132,12 @@ final class ProfileMainVC: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rowNames.count
+        presenter?.getRowCount() ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") else { return UITableViewCell() }
+
         configureCell(cell: cell, indexPath: indexPath)
         return cell
     }
@@ -168,40 +152,27 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func fillInCellName(cell: UITableViewCell, indexPath: IndexPath) {
-        let name = rowNames[indexPath.row]
-        
+        guard let name = presenter?.getRowName(indexPath: indexPath) else { return }
+
         switch name {
-        case "Мои NFT": cell.textLabel?.text = "\(name) (\(count))"
-        case "Избранные NFT": cell.textLabel?.text = "\(name) (\(favoriteNFT))"
+        case "Мои NFT":
+            cell.textLabel?.text = "\(name) (\(presenter?.nftCount ?? 0))"
+        case "Избранные NFT":
+            cell.textLabel?.text = "\(name) (\(presenter?.favoriteNFTCount ?? 0))"
         default: cell.textLabel?.text = "\(name)"
         }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
-        case 0: goToMyNFTScreen()
-        case 1: goToFavNFTScreen()
-        default: goToWebScreen()
+        case 0: presenter?.goToMyNFTScreen()
+        case 1: presenter?.goToFavNFTScreen()
+        default: presenter?.goToEditWebSiteScreen()
         }
     }
+}
 
-    private func goToMyNFTScreen() {
-        let presenter = MyNFTPresenter()
-        let vc = MyNFTViewController(presenter: presenter)
-        navigationController?.pushViewController(vc, animated: true)
-    }
+// MARK: - ProfileViewProtocol
+extension ProfileMainVC: ProfileViewProtocol {
 
-    private func goToFavNFTScreen() {
-        let presenter = FavoriteNFTPresenter()
-        let vc = FavoriteNFTViewController(presenter: presenter)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
-    private func goToWebScreen() {
-        let presenter = WebViewPresenter()
-        self.delegate = presenter
-        let vc = WebViewController(presenter: presenter)
-        delegate?.passWebsiteName(webSiteLabel.text)
-        navigationController?.pushViewController(vc, animated: true)
-    }
 }

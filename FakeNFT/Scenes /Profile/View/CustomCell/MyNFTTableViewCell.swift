@@ -49,6 +49,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         return button
     } ()
 
+    // MARK: - Other Properties
     private let cellHeight = CGFloat(140)
 
     // MARK: - Init

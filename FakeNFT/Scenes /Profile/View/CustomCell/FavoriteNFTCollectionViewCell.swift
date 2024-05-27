@@ -3,40 +3,40 @@
 //  Pre-Diploma
 //
 //  Created by Kirill Sklyarov on 14.05.2024.
-//
 
 import UIKit
 
 final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
 
-    // MARK: - Static Properties
+    // MARK: - Static properties
     static let identifier = "FavNFTCollectionViewCell"
 
-    // MARK: - Private Properties
-    private lazy var nftImageView: UIImageView = {
+    // MARK: - UI properties
+    lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
         return imageView
     } ()
-    private lazy var nameView: UILabel = {
+    lazy var nameView: UILabel = {
         let label = UILabel()
         label.font = UIFont.bodyBold
         return label
     } ()
-    private lazy var ratingImage: UIImageView = {
+    lazy var ratingImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .left
         return imageView
     } ()
-    private lazy var priceNumberLabel: UILabel = {
+    lazy var priceNumberLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.caption1
         return label
     } ()
 
-    private let cellHeight = CGFloat(168)
+    // MARK: - Other properties
+    let cellHeight = CGFloat(168)
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -48,7 +48,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Private Methods
+    // MARK: - Private methods
     private func setupContentView() {
         let imageContainer = setupNFTImage()
         let nameContainer = setupNameView()
@@ -112,7 +112,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         return view
     }
 
-    // MARK: - Public Methods
+    // MARK: - Public methods
     func configureCell(_ nft: NFTModel) {
         guard let imageName = nft.imageName,
               let rating = nft.rating else { print("Ooopsss"); return }

@@ -7,15 +7,6 @@
 
 import Foundation
 
-// MARK: - NGTMockData
-struct NFTModel: Codable {
-    let imageName: String?
-    let name: String?
-    let rating: Int?
-    let author: String?
-    let price: String?
-}
-
 protocol MyNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
@@ -27,17 +18,22 @@ protocol MyNFTPresenterProtocol {
 
 final class MyNFTPresenter: MyNFTPresenterProtocol {
 
-    weak var view: MyNFTViewController?
+    weak var view: MyNFTViewProtocol?
 
-    var mockArrayOfNFT: [NFTModel]
+    var mockArrayOfNFT = [NFTModel]()
 
-    init() {
-        let mockNFT1 = NFTModel(imageName: "MockNFTCard1", name: "Lilo", rating: 1, author: "John Doe", price: "1.78")
-        let mockNFT2 = NFTModel(imageName: "MockNFTCard2", name: "Spring", rating: 2, author: "John Doe", price: "4.12")
-        let mockNFT3 = NFTModel(imageName: "MockNFTCard3", name: "April", rating: 4, author: "John Doe", price: "12.99")
-
+    init(view: MyNFTViewProtocol?) {
+        self.view = view
         mockArrayOfNFT = [mockNFT1, mockNFT2, mockNFT3]
     }
+
+
+    let mockNFT1 = NFTModel(imageName: "MockNFTCard1", name: "Lilo", rating: 1, author: "John Doe", price: "1.78")
+    let mockNFT2 = NFTModel(imageName: "MockNFTCard2", name: "Spring", rating: 2, author: "John Doe", price: "4.12")
+    let mockNFT3 = NFTModel(imageName: "MockNFTCard3", name: "April", rating: 4, author: "John Doe", price: "12.99")
+
+
+
 
     func isArrayOfNFTEmpty() -> Bool {
         return mockArrayOfNFT.isEmpty

@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol MyNFTViewProtocol: AnyObject {
+
+}
+
 final class MyNFTViewController: UIViewController {
 
     // MARK: - UI properties
@@ -21,20 +25,10 @@ final class MyNFTViewController: UIViewController {
     } ()
 
     // MARK: - Other properties
-    var presenter: MyNFTPresenterProtocol
+    var presenter: MyNFTPresenterProtocol?
 
     private let cellHeight = CGFloat(140)
     private let tableConstraints = CGFloat(20)
-
-    // MARK: - Init
-    init(presenter: MyNFTPresenterProtocol) {
-        self.presenter = presenter
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     // MARK: - Life cycles
     override func viewDidLoad() {
@@ -76,7 +70,7 @@ final class MyNFTViewController: UIViewController {
     }
 
     private func showOrHidePlaceholder() {
-        let isDataEmpty = presenter.isArrayOfNFTEmpty()
+        guard let isDataEmpty = presenter?.isArrayOfNFTEmpty() else { print("Hmm"); return }
         if isDataEmpty {
             showPlaceholder()
         } else {
@@ -99,18 +93,18 @@ final class MyNFTViewController: UIViewController {
         
         let priceSorting = UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.priceSorting()
+            self.presenter?.priceSorting()
             self.myNFTTable.reloadData()
         }
         let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.ratingSorting()
+            self.presenter?.ratingSorting()
             self.myNFTTable.reloadData()
         }
 
         let nameSorting = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.nameSorting()
+            self.presenter?.nameSorting()
             self.myNFTTable.reloadData()
         }
 
@@ -126,13 +120,12 @@ final class MyNFTViewController: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.getNumberOfRows()
+        return presenter?.getNumberOfRows() ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell else { return UITableViewCell()}
-
-        let nft = presenter.getNFT(with: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell,
+              let nft = presenter?.getNFT(with: indexPath) else { print("Issue with cell"); return UITableViewCell() }
         cell.configureCell(nft)
 
         return cell
@@ -141,4 +134,9 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         cellHeight
     }
+}
+
+// MARK: - MyNFTViewProtocol
+extension MyNFTViewController: MyNFTViewProtocol {
+
 }

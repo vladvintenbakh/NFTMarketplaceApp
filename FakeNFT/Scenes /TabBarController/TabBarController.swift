@@ -31,11 +31,13 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let profilePresenter = ProfilePresenter()
-        let profileView = ProfileMainVC(presenter: profilePresenter)
-        let profileMainVC = UINavigationController(rootViewController: profileView)
-        profileMainVC.tabBarItem = profileTabBarItem
-        
+        let profileView = ProfileMainVC()
+        let profileViewNavController = UINavigationController(rootViewController: profileView)
+        let navigationService = NavigationManager(navigation: profileViewNavController, rootVC: profileView)
+        let presenter = ProfilePresenter(view: profileView, navigation: navigationService)
+        profileView.presenter = presenter
+        profileViewNavController.tabBarItem = profileTabBarItem
+
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
@@ -45,7 +47,7 @@ final class TabBarController: UITabBarController {
         let statisticsMainVC = StatisticsMainVC()
         statisticsMainVC.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticsMainVC]
+        viewControllers = [profileViewNavController, catalogMainVC, cartMainVC, statisticsMainVC]
 
         view.backgroundColor = .systemBackground
     }

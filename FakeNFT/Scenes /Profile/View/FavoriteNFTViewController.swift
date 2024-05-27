@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol FavoriteNFTViewProtocol: AnyObject {
+
+}
+
 final class FavoriteNFTViewController: UIViewController {
 
     // MARK: - UI properties
@@ -27,17 +31,7 @@ final class FavoriteNFTViewController: UIViewController {
     } ()
 
     // MARK: - Other properties
-    var presenter: FavoriteNFTPresenterProtocol
-
-    // MARK: - Init
-    init(presenter: FavoriteNFTPresenter) {
-        self.presenter = presenter
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var presenter: FavoriteNFTPresenterProtocol?
 
     // MARK: - Life cycles
     override func viewDidLoad() {
@@ -48,7 +42,7 @@ final class FavoriteNFTViewController: UIViewController {
 
     // MARK: - Private properties
     private func showOrHidePlaceholder() {
-        let favorites = presenter.mockArrayOfNFT
+        guard let favorites = presenter?.mockArrayOfNFT else { print("Oops"); return }
         if favorites.isEmpty {
             showPlaceholder()
         } else {
@@ -91,15 +85,19 @@ final class FavoriteNFTViewController: UIViewController {
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter.getNumberOfRows()
+        presenter?.getNumberOfRows() ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell else { return UICollectionViewCell()}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell,
+              let nft = presenter?.mockArrayOfNFT[indexPath.row] else { print("Issue with CollectionCell"); return UICollectionViewCell()}
 
-        let nft = presenter.mockArrayOfNFT[indexPath.row]
         cell.configureCell(nft)
 
         return cell
     }
+}
+
+extension FavoriteNFTViewController: FavoriteNFTViewProtocol {
+
 }
