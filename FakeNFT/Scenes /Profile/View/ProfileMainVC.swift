@@ -58,6 +58,8 @@ final class ProfileMainVC: UIViewController {
         super.viewDidLoad()
         setupLayout()
         updateUIWithMockData()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
     }
 
     // MARK: - IB Actions
@@ -65,11 +67,16 @@ final class ProfileMainVC: UIViewController {
         presenter?.goToEditProfileScreen()
     }
 
+    @objc private func updateUI(_ notification: Notification) {
+        presenter?.uploadDataFromStorage()
+        updateUIWithMockData()
+    }
+
     // MARK: - Private methods
     private func updateUIWithMockData() {
         guard let data = presenter?.mockData,
               let imageName = data.avatar else { return }
-
+//        print(data)
         nameLabel.text = data.name
         let image = UIImage(named: imageName)
         photoImage.image = image

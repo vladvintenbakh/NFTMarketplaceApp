@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ProfilePresenterProtocol {
-    var mockData: ProfileModel { get }
+    var mockData: ProfileMockModel? { get }
     var navigation: NavigationManager { get }
     var nftCount: Int { get }
     var favoriteNFTCount: Int { get }
@@ -19,9 +19,10 @@ protocol ProfilePresenterProtocol {
     func goToFavNFTScreen()
     func goToEditProfileScreen()
     func goToEditWebSiteScreen()
+    func uploadDataFromStorage()
 }
 
-final class ProfilePresenter: ProfilePresenterProtocol {
+final class ProfilePresenter: ProfilePresenterProtocol {    
 
     // MARK: - View
     weak var view: ProfileViewProtocol?
@@ -29,23 +30,29 @@ final class ProfilePresenter: ProfilePresenterProtocol {
 
     // MARK: - Other properties
     let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
-    var mockData = MockDataStorage.mockData
+    var mockData: ProfileMockModel?
 
     var nftCount: Int {
-        mockData.nfts?.count ?? 0
+        mockData?.nfts?.count ?? 0
     }
 
     var favoriteNFTCount: Int {
-        mockData.favoriteNFT?.count ?? 0
+        mockData?.favoriteNFT?.count ?? 0
     }
 
     // MARK: - Init
     init(view: ProfileViewProtocol?, navigation: NavigationManager) {
         self.view = view
         self.navigation = navigation
+
+        uploadDataFromStorage()
     }
 
     // MARK: - Public methods
+    func uploadDataFromStorage() {
+        mockData = MockDataStorage.mockData
+    }
+
     func getRowCount() -> Int {
         rowNames.count
     }
@@ -67,6 +74,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func goToEditWebSiteScreen() {
-        navigation.goToView(.WebScreen, webSiteName: mockData.website)
+        navigation.goToView(.WebScreen, webSiteName: mockData?.website)
     }
 }

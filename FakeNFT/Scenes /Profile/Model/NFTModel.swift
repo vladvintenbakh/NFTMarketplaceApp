@@ -9,9 +9,9 @@ import Foundation
 
 // MARK: - NFTMockDataModel
 struct NFTModel: Codable {
-    let imageName: String?
-    let name: String?
-    let rating: Int?
-    let author: String?
-    let price: String?
+    var imageName: String?
+    var name: String?
+    var rating: Int?
+    var author: String?
+    var price: String?
 }

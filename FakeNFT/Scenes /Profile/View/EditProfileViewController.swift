@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol EditProfileViewProtocol: AnyObject {
+
+}
+
 final class EditProfileViewController: UIViewController {
 
     // MARK: - UI Properties
@@ -16,12 +20,35 @@ final class EditProfileViewController: UIViewController {
         textField.leftView = paddingLeftView
         textField.leftViewMode = .always
         textField.font = UIFont.bodyRegular
-        textField.text = "Joaquin Phoenix"
         textField.backgroundColor = UIColor.yaLightGrayLight
-
         textField.layer.cornerRadius = 12
         textField.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        textField.delegate = self
         return textField
+    } ()
+    private lazy var descriptionTextView: UITextView = {
+        let textView = UITextView()
+        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
+        textView.font = UIFont.bodyRegular
+        let description = presenter?.getDescription() ?? ""
+        textView.text = description
+        textView.backgroundColor = UIColor.yaLightGrayLight
+        textView.layer.cornerRadius = 12
+        textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
+        textView.delegate = self
+        return textView
+    } ()
+    private lazy var webSiteTextField: UITextField = {
+        let siteField = UITextField()
+        siteField.backgroundColor = UIColor.yaLightGrayLight
+        siteField.layer.cornerRadius = 12
+        let webSite = presenter?.getWebSite() ?? ""
+        siteField.text = webSite
+        let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
+        siteField.leftView = paddingLeftView
+        siteField.leftViewMode = .always
+        siteField.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        return siteField
     } ()
     private lazy var loadNewPhoto: UILabel = {
         let label = UILabel()
@@ -34,6 +61,9 @@ final class EditProfileViewController: UIViewController {
         return label
     } ()
 
+    // MARK: - Presenter
+    var presenter: EditProfilePresenterProtocol?
+
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +72,8 @@ final class EditProfileViewController: UIViewController {
 
     // MARK: - IB Actions
     @objc private func closeButtonTapped(sender: UIButton) {
+        presenter?.sendDataToStorage()
+        NotificationCenter.default.post(name: Notification.Name("updateUI"), object: nil)
         dismiss(animated: true)
     }
 
@@ -101,7 +133,8 @@ final class EditProfileViewController: UIViewController {
 
     private func photoView() -> UIView {
         let photoView = UIView()
-        let photoImage = UIImageView(image: UIImage(named: "phoenix"))
+        let imageFromString = presenter?.getImageName() ?? ""
+        let photoImage = UIImageView(image: UIImage(named: imageFromString))
         photoImage.round(squareSize: 70)
         photoView.addSubViews([photoImage])
         photoImage.constraintCenters(to: photoView)
@@ -155,6 +188,8 @@ final class EditProfileViewController: UIViewController {
             return stack
         }()
 
+        let name = presenter?.getName() ?? ""
+        nameTextField.text = name
         nameTextField.rightView = clearTextStack
         nameTextField.rightViewMode = .whileEditing
 
@@ -170,16 +205,7 @@ final class EditProfileViewController: UIViewController {
         descriptionLabel.text = "Описание"
         descriptionLabel.font = UIFont.headline3
 
-        let textView = UITextView()
-        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
-        textView.font = UIFont.bodyRegular
-        textView.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT и еще больше — на моём сайте. Открыт к коллаборациям."
-        textView.backgroundColor = UIColor.yaLightGrayLight
-        textView.layer.cornerRadius = 12
-        textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
-        textView.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT и еще больше — на моём сайте. Открыт к коллаборациям."
-
-        let stack = UIStackView(arrangedSubviews: [descriptionLabel, textView])
+        let stack = UIStackView(arrangedSubviews: [descriptionLabel, descriptionTextView])
         stack.axis = .vertical
         stack.spacing = 8
 
@@ -191,18 +217,32 @@ final class EditProfileViewController: UIViewController {
         siteStack.text = "Сайт"
         siteStack.font = UIFont.headline3
 
-        let siteField = UITextField()
-        siteField.backgroundColor = UIColor.yaLightGrayLight
-        siteField.layer.cornerRadius = 12
-        siteField.text = "https://www.ivi.tv/person/hoakin_feniks"
-        let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
-        siteField.leftView = paddingLeftView
-        siteField.leftViewMode = .always
-        siteField.heightAnchor.constraint(equalToConstant: 44).isActive = true
-
-        let stack = UIStackView(arrangedSubviews: [siteStack, siteField])
+        let stack = UIStackView(arrangedSubviews: [siteStack, webSiteTextField])
         stack.axis = .vertical
         stack.spacing = 8
         return stack
     }
+}
+
+// MARK: - UITextFieldDelegate
+extension EditProfileViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        if textField == nameTextField {
+            presenter?.newName = textField.text
+        } else {
+            presenter?.newWebSite = textField.text
+        }
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension EditProfileViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        presenter?.newDescription = textView.text
+    }
+}
+
+// MARK: - EditProfileViewProtocol
+extension EditProfileViewController: EditProfileViewProtocol {
+
 }

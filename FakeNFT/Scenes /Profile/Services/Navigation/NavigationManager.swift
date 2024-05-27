@@ -42,8 +42,10 @@ final class NavigationManager {
             let vc = WebViewController(presenter: presenter)
             navigation?.pushViewController(vc, animated: true)
         case .editProfile:
-            let vc = EditProfileViewController()
-            let EditVC = UINavigationController(rootViewController: vc)
+            let view = EditProfileViewController()
+            let presenter = EditProfilePresenter(view: view)
+            view.presenter = presenter
+            let EditVC = UINavigationController(rootViewController: view)
             rootVC?.present(EditVC, animated: true)
         case .WebScreen:
             let presenter = WebViewPresenter(websiteName: webSiteName)

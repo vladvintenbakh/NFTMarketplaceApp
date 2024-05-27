@@ -8,11 +8,11 @@
 import Foundation
 
 // MARK: - ProfileMockModel
-struct ProfileModel: Codable {
-    let name: String?
+struct ProfileMockModel: Codable {
+    var name: String?
     let avatar: String?
-    let description: String?
-    let website: String?
+    var description: String?
+    var website: String?
     let nfts: [NFTModel]?
     let favoriteNFT: [NFTModel]?
     let id: String?

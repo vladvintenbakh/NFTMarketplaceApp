@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct MockDataStorage {
+final class MockDataStorage {
 
-    static let mockData = ProfileModel(
+    static var mockData = ProfileMockModel(
         name: "Joaquin Phoenix",
         avatar: "phoenix",
         description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.",
@@ -25,4 +25,10 @@ struct MockDataStorage {
             NFTModel(imageName: "MockNFTCard3", name: "April", rating: 4, author: "John Doe", price: "12.99")
         ],
         id: "123123123")
+
+    func updateDataAfterEditing(newData: EditedDataModel) {
+        MockDataStorage.mockData.name = newData.name
+        MockDataStorage.mockData.description = newData.description
+        MockDataStorage.mockData.website = newData.website
+    }
 }
