@@ -9,36 +9,40 @@ import UIKit
 
 final class UserModel {
 
+    static let shared = UserModel()
     let defaults = UserDefaults.standard
+    private let sortTypeKey = "SortType"
+    
+    init() {
+        if defaults.string(forKey: sortTypeKey) == nil {
+            defaults.set("byRating", forKey: sortTypeKey)
+        }
+    }
 
     func getUsers() -> [User] {
-        if let sortType = defaults.string(forKey: "SortType") {
-            switch sortType {
-            case "byName":
-                return sortUsersByName()
-            case "byRating":
-                return sortUsersByRating()
-            default:
-                return UserModel.mockUsersStatisticDB
-            }
+        let sortType = defaults.string(forKey: sortTypeKey) ?? "byRating"
+        switch sortType {
+        case "byName":
+            return sortUsersByName()
+        case "byRating":
+            return sortUsersByRating()
+        default:
+            return UserModel.mockUsersStatisticDB
         }
-        return UserModel.mockUsersStatisticDB
     }
 
     func sortUsersByName() -> [User] {
-        defaults.set("byName", forKey: "SortType")
-        let sortedUsersList = UserModel.mockUsersStatisticDB.sorted {
-            $0.username < $1.username
-        }
-        return sortedUsersList
+        defaults.set("byName", forKey: sortTypeKey)
+        return UserModel.mockUsersStatisticDB.sorted { $0.username < $1.username }
     }
 
     func sortUsersByRating() -> [User] {
-        defaults.set("byRating", forKey: "SortType")
-        let sortedUsersList = UserModel.mockUsersStatisticDB.sorted {
-            $0.rating < $1.rating
-        }
-        return sortedUsersList
+        defaults.set("byRating", forKey: sortTypeKey)
+        return UserModel.mockUsersStatisticDB.sorted { $0.rating < $1.rating }
+    }
+
+    func changeSortOrder(to sortOrder: String) {
+        defaults.set(sortOrder, forKey: sortTypeKey)
     }
 }
 
