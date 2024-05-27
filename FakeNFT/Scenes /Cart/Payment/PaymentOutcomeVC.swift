@@ -7,8 +7,12 @@
 
 import UIKit
 
+protocol PaymentOutcomeVCProtocol: AnyObject {
+    func returnToCatalog()
+}
+
 final class PaymentOutcomeVC: UIViewController {
-    private let presenter: PaymentOutcomePresenter
+    private let presenter: PaymentOutcomePresenterProtocol
     
     private let successfulPaymentImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "SuccessfulPaymentImage"))
@@ -31,7 +35,7 @@ final class PaymentOutcomeVC: UIViewController {
         return button
     }()
     
-    init(presenter: PaymentOutcomePresenter) {
+    init(presenter: PaymentOutcomePresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -87,7 +91,10 @@ extension PaymentOutcomeVC {
     @objc private func backToCatalogButtonPressed() {
         presenter.initiateReturnToCatalog()
     }
-    
+}
+
+// MARK: PaymentOutcomeVCProtocol
+extension PaymentOutcomeVC: PaymentOutcomeVCProtocol {
     func returnToCatalog() {
         let tabBarController = view.window?.rootViewController as? TabBarController
         guard let tabBarController else { return }
