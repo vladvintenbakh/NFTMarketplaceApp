@@ -16,7 +16,7 @@ final class PaymentVC: UIViewController {
     
     private let presenter: PaymentPresenterProtocol
     
-    private let currencyCollection: UICollectionView = {
+    private lazy var currencyCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.allowsMultipleSelection = false
         collection.allowsSelection = true
