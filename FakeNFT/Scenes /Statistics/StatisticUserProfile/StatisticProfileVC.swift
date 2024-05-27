@@ -13,7 +13,7 @@ protocol UserInfoViewProtocol: AnyObject {
 
 final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
     var presenter: UserInfoPresenterProtocol!
-
+    
     private lazy var profileNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +21,7 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         return label
     }()
-
+    
     private lazy var profileDescription: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -31,13 +31,13 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
         label.lineBreakMode = .byWordWrapping
         return label
     }()
-
+    
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private lazy var profileWebsiteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +50,7 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
         button.backgroundColor = UIColor.yaWhiteLight
         return button
     }()
-
+    
     private lazy var nftCollectionButtonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,21 +59,21 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
         label.textColor = .segmentActive
         return label
     }()
-
+    
     private lazy var nftCollectionButtonImageView: UIImageView = {
         let image = UIImage(named: "forward")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private lazy var nftCollectionButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(didTapNFTCollection), for: .touchUpInside)
         return button
     }()
-
+    
     init(user: User) {
         super.init(nibName: nil, bundle: nil)
         profileNameLabel.text = user.username
@@ -88,15 +88,16 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .yaWhiteLight
-
+        
         setupUI()
         presenter.viewDidLoad()
     }
-
+    
     @objc private func didTapNFTCollection() {
         presenter.nftCollectionButtonDidTap()
+        pushNFTCollectionViewController()
     }
-
+    
     private func setupUI() {
         setupNavBar()
         setupAvatarImageView()
@@ -105,13 +106,13 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
         setupUserWebsiteButton()
         setupNFTCollectionButton()
     }
-
+    
     func updateUserInfo(username: String, description: String, avatar: UIImage?) {
         profileNameLabel.text = username
         profileDescription.text = description
         avatarImageView.image = avatar
     }
-
+    
     private func setupUsernameLabel() {
         view.addSubview(profileNameLabel)
         NSLayoutConstraint.activate([
@@ -129,7 +130,7 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
             )
         ])
     }
-
+    
     private func setupUserDescription() {
         view.addSubview(profileDescription)
         NSLayoutConstraint.activate([
@@ -141,13 +142,13 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
             )
         ])
     }
-
+    
     private func setupNavBar() {
         let backButton = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         backButton.tintColor = UIColor.segmentActive
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
     }
-
+    
     private func setupAvatarImageView() {
         view.addSubview(avatarImageView)
         NSLayoutConstraint.activate([
@@ -160,7 +161,7 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20)
         ])
     }
-
+    
     private func setupUserWebsiteButton() {
         view.addSubview(profileWebsiteButton)
         NSLayoutConstraint.activate([
@@ -173,12 +174,12 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
             profileWebsiteButton.heightAnchor.constraint(equalToConstant: Constants.userWebsiteButtonHeight)
         ])
     }
-
+    
     private func setupNFTCollectionButton() {
         view.addSubview(nftCollectionButton)
         nftCollectionButton.addSubview(nftCollectionButtonLabel)
         nftCollectionButton.addSubview(nftCollectionButtonImageView)
-
+        
         NSLayoutConstraint.activate([
             nftCollectionButton.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor,
@@ -192,14 +193,23 @@ final class StatisticProfileVC: UIViewController, UserInfoViewProtocol {
                 equalTo: view.trailingAnchor,
                 constant: -Constants.defaultInset)
         ])
-
+        
         NSLayoutConstraint.activate([
             nftCollectionButtonLabel.leadingAnchor.constraint(equalTo: nftCollectionButton.leadingAnchor),
             nftCollectionButtonLabel.centerYAnchor.constraint(equalTo: nftCollectionButton.centerYAnchor),
-
+            
             nftCollectionButtonImageView.trailingAnchor.constraint(equalTo: nftCollectionButton.trailingAnchor),
             nftCollectionButtonImageView.centerYAnchor.constraint(equalTo: nftCollectionButton.centerYAnchor)
         ])
+    }
+    
+    private func pushNFTCollectionViewController() {
+        let nftModel = NFTModel()
+        let nftCollectionViewController = NFTCollectionViewController(presenter: nil)
+        let presenter = NFTCollectionPresenter(view: nftCollectionViewController, model: nftModel)
+        nftCollectionViewController.presenter = presenter
+        nftCollectionViewController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(nftCollectionViewController, animated: true)
     }
 }
 
