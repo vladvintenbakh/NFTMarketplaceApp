@@ -8,7 +8,9 @@
 import UIKit
 
 protocol FavoriteNFTViewProtocol: AnyObject {
-
+    func showPlaceholder()
+    func hideCollection()
+    func updateUI()
 }
 
 final class FavoriteNFTViewController: UIViewController {
@@ -37,20 +39,11 @@ final class FavoriteNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        showOrHidePlaceholder()
+        presenter?.showOrHidePlaceholder()
     }
 
-    // MARK: - Private properties
-    private func showOrHidePlaceholder() {
-        guard let favorites = presenter?.mockArrayOfNFT else { print("Oops"); return }
-        if favorites.isEmpty {
-            showPlaceholder()
-        } else {
-            favNFTCollection.isHidden = false
-        }
-    }
-
-    private func showPlaceholder() {
+    // MARK: - Public properties
+    func showPlaceholder() {
         favNFTCollection.isHidden = true
 
         let placeholder = UILabel()
@@ -59,6 +52,19 @@ final class FavoriteNFTViewController: UIViewController {
         view.centerView(placeholder)
     }
 
+    func hideCollection() {
+        favNFTCollection.isHidden = false
+    }
+
+    func updateUI() {
+        presenter?.uploadDataFromStorage()
+
+        DispatchQueue.main.async {
+            self.favNFTCollection.reloadData()
+        }
+    }
+
+    // MARK: - Private properties
     private func setupLayout() {
         setupNavigation()
 
@@ -90,7 +96,10 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell,
-              let nft = presenter?.mockArrayOfNFT[indexPath.row] else { print("Issue with CollectionCell"); return UICollectionViewCell()}
+              let arrayOfFav = presenter?.getArrayOfFav() else { 
+            print("Issue with CollectionCell"); return UICollectionViewCell()}
+
+        let nft = arrayOfFav[indexPath.row]
 
         cell.configureCell(nft)
         removeNFTFromFav(cell: cell, nft: nft)
@@ -102,15 +111,6 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
             self.presenter?.removeNFTFromFav(nft)
-            self.updateUI()
-        }
-    }
-
-    private func updateUI() {
-        presenter?.uploadDataFromStorage()
-        
-        DispatchQueue.main.async {
-            self.favNFTCollection.reloadData()
         }
     }
 }

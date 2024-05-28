@@ -8,7 +8,10 @@
 import UIKit
 
 protocol MyNFTViewProtocol: AnyObject {
-
+    func showPlaceholder()
+    func hideTableView()
+    func showAlert()
+    func updateTableView()
 }
 
 final class MyNFTViewController: UIViewController {
@@ -34,12 +37,53 @@ final class MyNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        showOrHidePlaceholder()
+        presenter?.showOrHidePlaceholder()
     }
 
     // MARK: - IB Action
     @objc private func sortButtonTapped(sender: UIButton) {
-        showAlert()
+        presenter?.sortButtonTapped()
+    }
+
+    // MARK: - Public Methods
+    func showPlaceholder() {
+        myNFTTable.isHidden = true
+
+        let placeholder = UILabel()
+        placeholder.text = "У Вас ещё нет NFT"
+        placeholder.font = UIFont.bodyBold
+        view.centerView(placeholder)
+    }
+
+    func hideTableView() {
+        myNFTTable.isHidden = false
+    }
+
+    func showAlert() {
+        let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+
+        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+
+        alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter?.priceSorting()
+        })
+
+        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter?.ratingSorting()
+        })
+
+        alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter?.nameSorting()
+        })
+
+        present(alert, animated: true)
+    }
+
+    func updateTableView() {
+        myNFTTable.reloadData()
     }
 
     // MARK: - Private Methods
@@ -68,53 +112,6 @@ final class MyNFTViewController: UIViewController {
         let image = UIImage(named: "CartSortIcon")?.withTintColor(UIColor.black, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(sortButtonTapped))
     }
-
-    private func showOrHidePlaceholder() {
-        guard let isDataEmpty = presenter?.isArrayOfNFTEmpty() else { print("Hmm"); return }
-        if isDataEmpty {
-            showPlaceholder()
-        } else {
-            myNFTTable.isHidden = false
-        }
-    }
-
-    private func showPlaceholder() {
-        myNFTTable.isHidden = true
-
-        let placeholder = UILabel()
-        placeholder.text = "У Вас ещё нет NFT"
-        placeholder.font = UIFont.bodyBold
-        view.centerView(placeholder)
-    }
-
-    private func showAlert() {
-        let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
-        let closeAction = UIAlertAction(title: "Закрыть", style: .cancel)
-        
-        let priceSorting = UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.presenter?.priceSorting()
-            self.myNFTTable.reloadData()
-        }
-        let ratingSorting = UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.presenter?.ratingSorting()
-            self.myNFTTable.reloadData()
-        }
-
-        let nameSorting = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.presenter?.nameSorting()
-            self.myNFTTable.reloadData()
-        }
-
-        alert.addAction(closeAction)
-        alert.addAction(priceSorting)
-        alert.addAction(ratingSorting)
-        alert.addAction(nameSorting)
-
-        present(alert, animated: true)
-    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -127,7 +124,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell,
               let nft = presenter?.getNFT(with: indexPath) else { print("Issue with cell"); return UITableViewCell() }
         
-        let isNFTFav = isNFTInFav(nft)
+        guard let isNFTFav = presenter?.isNFTInFav(nft) else { return UITableViewCell() }
         cell.configureCell(nft, isNFTFav: isNFTFav)
         likeOrUnlikeNFT(cell: cell, nft: nft, isNFTInFav: isNFTFav)
 
@@ -149,15 +146,6 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
             DispatchQueue.main.async {
                 self.myNFTTable.reloadData()
             }
-        }
-    }
-
-    private func isNFTInFav(_ nft: NFTModel) -> Bool {
-        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false}
-        if listOfFav.contains(where: { $0.name == nft.name }) {
-            return true
-        } else {
-            return false
         }
     }
 }

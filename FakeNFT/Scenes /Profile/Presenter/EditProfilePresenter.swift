@@ -8,16 +8,15 @@
 import Foundation
 
 protocol EditProfilePresenterProtocol: AnyObject {
-    var data: ProfileMockModel? { get }
-    var newName: String? { get set }
-    var newDescription: String? { get set }
-    var newWebSite: String? { get set }
-
     func getImageName() -> String 
     func getDescription() -> String
     func getWebSite() -> String 
     func getName() -> String
     func sendDataToStorage()
+    func closeButtonTapped()
+    func passNewDescription(_ newDesc: String)
+    func passNewName(_ newName: String)
+    func passWebSite(_ newWebSite: String) 
 }
 
 final class EditProfilePresenter: EditProfilePresenterProtocol {
@@ -48,6 +47,24 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
     }
 
     // MARK: - Public methods
+    func passNewDescription(_ newDesc: String) {
+        self.newDescription = newDesc
+    }
+
+    func passNewName(_ newName: String) {
+        self.newName = newName
+    }
+
+    func passWebSite(_ newWebSite: String) {
+        self.newWebSite = newWebSite
+    }
+
+    func closeButtonTapped() {
+        sendDataToStorage()
+        NotificationCenter.default.post(name: Notification.Name("updateUI"), object: nil)
+        view?.dismiss(animated: true, completion: nil)
+    }
+
     func sendDataToStorage() {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,

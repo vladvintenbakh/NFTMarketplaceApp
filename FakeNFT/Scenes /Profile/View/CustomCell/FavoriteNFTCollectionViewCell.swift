@@ -46,7 +46,6 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
 
     // MARK: - Other properties
     let cellHeight = CGFloat(168)
-
     var likeButtonAction: ( () -> Void )?
 
     // MARK: - IB Action

@@ -8,22 +8,38 @@
 import Foundation
 
 protocol FavoriteNFTPresenterProtocol {
-    var mockArrayOfNFT: [NFTModel] { get }
-
     func getNumberOfRows() -> Int
     func removeNFTFromFav(_ nft: NFTModel)
     func uploadDataFromStorage()
+    func showOrHidePlaceholder()
+    func getArrayOfFav() -> [NFTModel]
 }
 
 final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
+    // MARK: - ViewController
     weak var view: FavoriteNFTViewProtocol?
 
+    // MARK: - Other properties
     var mockArrayOfNFT = [NFTModel]()
 
+    // MARK: - Init
     init(view: FavoriteNFTViewProtocol?) {
         self.view = view
         self.uploadDataFromStorage()
+    }
+
+    // MARK: - Public methods
+    func getArrayOfFav() -> [NFTModel] {
+        mockArrayOfNFT
+    }
+
+    func showOrHidePlaceholder() {
+        if mockArrayOfNFT.isEmpty {
+            view?.showPlaceholder()
+        } else {
+            view?.hideCollection()
+        }
     }
 
     func getNumberOfRows() -> Int {
@@ -40,5 +56,7 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
         let storage = MockDataStorage()
         let nftToRemoveFromFav = nft
         storage.removeFromFavNFT(nftToRemoveFromFav)
+
+        view?.updateUI()
     }
 }

@@ -8,7 +8,6 @@
 import UIKit
 
 protocol ProfileViewProtocol: AnyObject {
-
 }
 
 final class ProfileMainVC: UIViewController {
@@ -58,8 +57,7 @@ final class ProfileMainVC: UIViewController {
         super.viewDidLoad()
         setupLayout()
         updateUIWithMockData()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
+        setupNotification()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -81,8 +79,12 @@ final class ProfileMainVC: UIViewController {
     }
 
     // MARK: - Private methods
+    private func setupNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
+    }
+
     private func updateUIWithMockData() {
-        guard let data = presenter?.mockData,
+        guard let data = presenter?.getMockData(),
               let imageName = data.avatar else { return }
         nameLabel.text = data.name
         let image = UIImage(named: imageName)
@@ -158,6 +160,7 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 
     private func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
         fillInCellName(cell: cell, indexPath: indexPath)
+
         cell.textLabel?.font = UIFont.bodyBold
         let disclosureImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 7, height: 12))
         disclosureImage.image = UIImage(named: "chevron")
@@ -170,9 +173,9 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 
         switch name {
         case "Мои NFT":
-            cell.textLabel?.text = "\(name) (\(presenter?.nftCount ?? 0))"
+            cell.textLabel?.text = "\(name) (\(presenter?.getNFTCount() ?? 0))"
         case "Избранные NFT":
-            cell.textLabel?.text = "\(name) (\(presenter?.favoriteNFTCount ?? 0))"
+            cell.textLabel?.text = "\(name) (\(presenter?.getFavoriteNFTCount() ?? 0))"
         default: cell.textLabel?.text = "\(name)"
         }
     }

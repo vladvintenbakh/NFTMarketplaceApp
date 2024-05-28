@@ -64,8 +64,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - IB Action
     @objc func likeButtonTapped(_ sender: UIButton) {
-//        likeButton.isSelected.toggle()
-        
         likeButtonAction?()
     }
 
@@ -138,7 +136,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         return view
     }
 
-    private func designFavNFTOrNot(_ nft: NFTModel, isNFTFav: Bool) {
+    private func designFavNFTOrNot(_ isNFTFav: Bool) {
         var heartImage = UIImage(named: "likeInactive")
         if isNFTFav {
             heartImage = heartImage?.withTintColor(.red) ?? UIImage()
@@ -152,7 +150,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
               let author = nft.author,
               let rating = nft.rating else { print("Ooopsss"); return }
 
-        designFavNFTOrNot(nft, isNFTFav: isNFTFav)
+        designFavNFTOrNot(isNFTFav)
 
         nftImageView.image = UIImage(named: imageName)
         nameView.text = nft.name

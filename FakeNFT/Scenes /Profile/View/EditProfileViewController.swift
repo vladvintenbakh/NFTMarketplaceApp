@@ -8,7 +8,7 @@
 import UIKit
 
 protocol EditProfileViewProtocol: AnyObject {
-
+    func dismiss(animated: Bool, completion: (() -> Void)?)
 }
 
 final class EditProfileViewController: UIViewController {
@@ -72,9 +72,7 @@ final class EditProfileViewController: UIViewController {
 
     // MARK: - IB Actions
     @objc private func closeButtonTapped(sender: UIButton) {
-        presenter?.sendDataToStorage()
-        NotificationCenter.default.post(name: Notification.Name("updateUI"), object: nil)
-        dismiss(animated: true)
+        presenter?.closeButtonTapped()
     }
 
     @objc private func clearTextButtonTapped(sender: UIButton) {
@@ -228,9 +226,9 @@ final class EditProfileViewController: UIViewController {
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if textField == nameTextField {
-            presenter?.newName = textField.text
+            presenter?.passNewName(textField.text ?? "")
         } else {
-            presenter?.newWebSite = textField.text
+            presenter?.passWebSite(textField.text ?? "")
         }
     }
 }
@@ -238,7 +236,7 @@ extension EditProfileViewController: UITextFieldDelegate {
 // MARK: - UITextViewDelegate
 extension EditProfileViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        presenter?.newDescription = textView.text
+        presenter?.passNewDescription(textView.text)
     }
 }
 

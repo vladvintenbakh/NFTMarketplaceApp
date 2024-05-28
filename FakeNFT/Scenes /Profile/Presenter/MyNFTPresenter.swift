@@ -16,17 +16,37 @@ protocol MyNFTPresenterProtocol {
     func nameSorting()
     func addNFTToFav(_ nft: NFTModel)
     func removeNFTFromFav(_ nft: NFTModel)
+    func showOrHidePlaceholder()
+    func isNFTInFav(_ nft: NFTModel) -> Bool
+    func sortButtonTapped()
 }
 
 final class MyNFTPresenter: MyNFTPresenterProtocol {
 
+    // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
 
+    // MARK: - Other properties
     var mockArrayOfNFT = [NFTModel]()
 
+    // MARK: - Init
     init(view: MyNFTViewProtocol?) {
         self.view = view
         self.convertData()
+    }
+
+    // MARK: - Public methods
+    func sortButtonTapped() {
+        view?.showAlert()
+    }
+
+    func showOrHidePlaceholder() {
+        let isDataEmpty = isArrayOfNFTEmpty()
+        if isDataEmpty {
+            view?.showPlaceholder()
+        } else {
+            view?.hideTableView()
+        }
     }
 
     func convertData() {
@@ -68,6 +88,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
                   let priceDouble2 = Double(priceString2) else { print("Sorting problem"); return false}
             return priceDouble1 > priceDouble2
         }
+        view?.updateTableView()
     }
 
     func ratingSorting() {
@@ -76,6 +97,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
                   let rating2 = $1.rating else { print("Sorting problem"); return false}
             return rating1 > rating2
         }
+        view?.updateTableView()
     }
 
     func nameSorting() {
@@ -83,6 +105,16 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
             guard let rating1 = $0.name,
                   let rating2 = $1.name else { print("Sorting problem"); return false}
             return rating1 > rating2
+        }
+        view?.updateTableView()
+    }
+
+    func isNFTInFav(_ nft: NFTModel) -> Bool {
+        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false }
+        if listOfFav.contains(where: { $0.name == nft.name }) {
+            return true
+        } else {
+            return false
         }
     }
 }
