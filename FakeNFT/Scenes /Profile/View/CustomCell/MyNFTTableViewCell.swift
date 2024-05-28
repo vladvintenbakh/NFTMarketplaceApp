@@ -41,8 +41,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     } ()
     private lazy var likeButton: UIButton = {
         let button = UIButton()
-        let heartImage = UIImage(named: "likeInactive")
-        button.setImage(heartImage, for: .normal)
         button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         button.heightAnchor.constraint(equalToConstant: 16).isActive = true
         button.widthAnchor.constraint(equalToConstant: 18).isActive = true
@@ -51,6 +49,8 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - Other Properties
     private let cellHeight = CGFloat(140)
+
+    var likeButtonAction: ( () -> Void )?
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -64,7 +64,9 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - IB Action
     @objc func likeButtonTapped(_ sender: UIButton) {
-        print("likeButtonTapped")
+//        likeButton.isSelected.toggle()
+        
+        likeButtonAction?()
     }
 
     // MARK: - Private Methods
@@ -136,11 +138,21 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         return view
     }
 
+    private func designFavNFTOrNot(_ nft: NFTModel, isNFTFav: Bool) {
+        var heartImage = UIImage(named: "likeInactive")
+        if isNFTFav {
+            heartImage = heartImage?.withTintColor(.red) ?? UIImage()
+        }
+        likeButton.setImage(heartImage, for: .normal)
+    }
+
     // MARK: - Public Methods
-    func configureCell(_ nft: NFTModel) {
+    func configureCell(_ nft: NFTModel, isNFTFav: Bool) {
         guard let imageName = nft.imageName,
               let author = nft.author,
               let rating = nft.rating else { print("Ooopsss"); return }
+
+        designFavNFTOrNot(nft, isNFTFav: isNFTFav)
 
         nftImageView.image = UIImage(named: imageName)
         nameView.text = nft.name

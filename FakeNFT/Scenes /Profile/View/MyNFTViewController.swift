@@ -126,13 +126,39 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell,
               let nft = presenter?.getNFT(with: indexPath) else { print("Issue with cell"); return UITableViewCell() }
-        cell.configureCell(nft)
+        
+        let isNFTFav = isNFTInFav(nft)
+        cell.configureCell(nft, isNFTFav: isNFTFav)
+        likeOrUnlikeNFT(cell: cell, nft: nft, isNFTInFav: isNFTFav)
 
         return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         cellHeight
+    }
+
+    private func likeOrUnlikeNFT(cell: MyNFTTableViewCell, nft: NFTModel, isNFTInFav: Bool) {
+        cell.likeButtonAction = { [weak self] in
+            guard let self = self else { return }
+            if isNFTInFav {
+                self.presenter?.removeNFTFromFav(nft)
+            } else {
+                self.presenter?.addNFTToFav(nft)
+            }
+            DispatchQueue.main.async {
+                self.myNFTTable.reloadData()
+            }
+        }
+    }
+
+    private func isNFTInFav(_ nft: NFTModel) -> Bool {
+        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false}
+        if listOfFav.contains(where: { $0.name == nft.name }) {
+            return true
+        } else {
+            return false
+        }
     }
 }
 

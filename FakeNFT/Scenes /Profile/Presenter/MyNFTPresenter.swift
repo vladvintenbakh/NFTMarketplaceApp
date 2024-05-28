@@ -14,6 +14,8 @@ protocol MyNFTPresenterProtocol {
     func priceSorting()
     func ratingSorting()
     func nameSorting()
+    func addNFTToFav(_ nft: NFTModel)
+    func removeNFTFromFav(_ nft: NFTModel)
 }
 
 final class MyNFTPresenter: MyNFTPresenterProtocol {
@@ -44,6 +46,18 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     func getNFT(with indexPath: IndexPath) -> NFTModel {
         let nft = mockArrayOfNFT[indexPath.row]
         return nft
+    }
+
+    func addNFTToFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToAddToFav = nft
+        storage.addFavNFT(nftToAddToFav)
+    }
+
+    func removeNFTFromFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToRemoveFromFav = nft
+        storage.removeFromFavNFT(nftToRemoveFromFav)
     }
 
     func priceSorting() {

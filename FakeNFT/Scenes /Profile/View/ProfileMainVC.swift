@@ -62,6 +62,14 @@ final class ProfileMainVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        presenter?.uploadDataFromStorage()
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.nftTable.reloadData()
+        }
+    }
+
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
         presenter?.goToEditProfileScreen()
@@ -76,7 +84,6 @@ final class ProfileMainVC: UIViewController {
     private func updateUIWithMockData() {
         guard let data = presenter?.mockData,
               let imageName = data.avatar else { return }
-//        print(data)
         nameLabel.text = data.name
         let image = UIImage(named: imageName)
         photoImage.image = image
