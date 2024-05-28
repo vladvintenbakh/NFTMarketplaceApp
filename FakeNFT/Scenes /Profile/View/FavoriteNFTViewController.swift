@@ -93,8 +93,25 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
               let nft = presenter?.mockArrayOfNFT[indexPath.row] else { print("Issue with CollectionCell"); return UICollectionViewCell()}
 
         cell.configureCell(nft)
+        removeNFTFromFav(cell: cell, nft: nft)
 
         return cell
+    }
+
+    private func removeNFTFromFav(cell: FavoriteNFTCollectionViewCell, nft: NFTModel) {
+        cell.likeButtonAction = { [weak self] in
+            guard let self = self else { return }
+            self.presenter?.removeNFTFromFav(nft)
+            self.updateUI()
+        }
+    }
+
+    private func updateUI() {
+        presenter?.uploadDataFromStorage()
+        
+        DispatchQueue.main.async {
+            self.favNFTCollection.reloadData()
+        }
     }
 }
 

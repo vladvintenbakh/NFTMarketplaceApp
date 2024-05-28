@@ -34,9 +34,25 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         label.font = UIFont.caption1
         return label
     } ()
+    private lazy var likeButton: UIButton = {
+        let button = UIButton()
+        let heartImage = UIImage(named: "likeInactive")?.withTintColor(UIColor.yaRed)
+        button.setImage(heartImage, for: .normal)
+        button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        button.heightAnchor.constraint(equalToConstant: 18).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 21).isActive = true
+        return button
+    } ()
 
     // MARK: - Other properties
     let cellHeight = CGFloat(168)
+
+    var likeButtonAction: ( () -> Void )?
+
+    // MARK: - IB Action
+    @objc func likeButtonTapped(_ sender: UIButton) {
+        likeButtonAction?()
+    }
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -70,16 +86,10 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
 
     private func setupNFTImage() -> UIView {
         let view = UIView()
-        let likeImage = UIImageView()
-        let heartImage = UIImage(named: "likeInactive")?.withTintColor(UIColor.yaRed)
-        likeImage.image = heartImage
-
-        view.addSubViews([nftImageView, likeImage])
+        view.addSubViews([nftImageView, likeButton])
         NSLayoutConstraint.activate([
-            likeImage.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 6),
-            likeImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-            likeImage.heightAnchor.constraint(equalToConstant: 18),
-            likeImage.widthAnchor.constraint(equalToConstant: 21),
+            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: 6),
+            likeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
         ])
 
         return view

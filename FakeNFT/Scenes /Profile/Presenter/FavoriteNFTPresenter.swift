@@ -11,6 +11,8 @@ protocol FavoriteNFTPresenterProtocol {
     var mockArrayOfNFT: [NFTModel] { get }
 
     func getNumberOfRows() -> Int
+    func removeNFTFromFav(_ nft: NFTModel)
+    func uploadDataFromStorage()
 }
 
 final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
@@ -21,16 +23,22 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
     init(view: FavoriteNFTViewProtocol?) {
         self.view = view
-        self.convertData()
+        self.uploadDataFromStorage()
     }
 
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
     }
 
-    func convertData() {
+    func uploadDataFromStorage() {
         let data = MockDataStorage.mockData
         guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
         mockArrayOfNFT = favoriteNFT
+    }
+
+    func removeNFTFromFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToRemoveFromFav = nft
+        storage.removeFromFavNFT(nftToRemoveFromFav)
     }
 }
