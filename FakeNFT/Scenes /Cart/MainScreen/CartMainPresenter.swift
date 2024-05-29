@@ -20,7 +20,7 @@ protocol CartMainPresenterProtocol {
 }
 
 final class CartMainPresenter {
-    weak private var view: CartMainVCProtocol?
+    private weak var view: CartMainVCProtocol?
     
     private var cartItems: [CartItem] = [
         CartItem(id: "1", nftName: "April", imageName: "MockNFTCard1", rating: 1, price: 1.80),
