@@ -8,11 +8,6 @@
 import Foundation
 
 protocol EditProfilePresenterProtocol: AnyObject {
-    func getImageName() -> String 
-    func getDescription() -> String
-    func getWebSite() -> String 
-    func getName() -> String
-    func sendDataToStorage()
     func closeButtonTapped()
     func passNewDescription(_ newDesc: String)
     func passNewName(_ newName: String)
@@ -30,11 +25,16 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
     var newName: String?
     var newDescription: String?
     var newWebSite: String?
+    var avatar: String?
 
     // MARK: - Init
     init(view: EditProfileViewProtocol?) {
         self.view = view
         getDataFromStorage()
+        setDescription()
+        setWebsite()
+        setPhoto()
+        setName() 
     }
 
     // MARK: - Private methods
@@ -44,9 +44,30 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         newName = data.name
         newDescription = data.description
         newWebSite = data.website
+        avatar = data.avatar
     }
 
     // MARK: - Public methods
+    func setName() {
+        guard let newName else { return }
+        view?.updateName(newName)
+    }
+
+    func setDescription() {
+        guard let newDescription else { return }
+        view?.updateDescription(newDescription)
+    }
+
+    func setWebsite() {
+        guard let newWebSite else { return }
+        view?.updateWebsite(newWebSite)
+    }
+
+    func setPhoto() {
+        guard let avatar else { return }
+        view?.updatePhoto(avatar)
+    }
+
     func passNewDescription(_ newDesc: String) {
         self.newDescription = newDesc
     }
@@ -65,31 +86,11 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         view?.dismiss(animated: true, completion: nil)
     }
 
-    func sendDataToStorage() {
+    private func sendDataToStorage() {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
                                       website: newWebSite)
         let storage = MockDataStorage()
         storage.updateDataAfterEditing(newData: newData)
-    }
-
-    func getName() -> String {
-        guard let name = data?.name else { return ""}
-        return name
-    }
-
-    func getImageName() -> String {
-        guard let imageName = data?.avatar else { return ""}
-        return imageName
-    }
-
-    func getDescription() -> String {
-        guard let description = data?.description else { return ""}
-        return description
-    }
-
-    func getWebSite() -> String {
-        guard let webSite = data?.website else { return ""}
-        return webSite
     }
 }

@@ -9,6 +9,10 @@ import UIKit
 
 protocol EditProfileViewProtocol: AnyObject {
     func dismiss(animated: Bool, completion: (() -> Void)?)
+    func updateDescription(_ description: String)
+    func updateWebsite(_ webSite: String)
+    func updatePhoto(_ photoName: String)
+    func updateName(_ name: String)
 }
 
 final class EditProfileViewController: UIViewController {
@@ -30,8 +34,6 @@ final class EditProfileViewController: UIViewController {
         let textView = UITextView()
         textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
         textView.font = UIFont.bodyRegular
-        let description = presenter?.getDescription() ?? ""
-        textView.text = description
         textView.backgroundColor = UIColor.yaLightGrayLight
         textView.layer.cornerRadius = 12
         textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
@@ -42,8 +44,6 @@ final class EditProfileViewController: UIViewController {
         let siteField = UITextField()
         siteField.backgroundColor = UIColor.yaLightGrayLight
         siteField.layer.cornerRadius = 12
-        let webSite = presenter?.getWebSite() ?? ""
-        siteField.text = webSite
         let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
         siteField.leftView = paddingLeftView
         siteField.leftViewMode = .always
@@ -60,6 +60,11 @@ final class EditProfileViewController: UIViewController {
         label.isHidden = true
         return label
     } ()
+    private lazy var photoImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.round(squareSize: 70)
+        return imageView
+    }()
 
     // MARK: - Presenter
     var presenter: EditProfilePresenterProtocol?
@@ -82,6 +87,23 @@ final class EditProfileViewController: UIViewController {
     @objc private func changePhotoButtonTapped(sender: UIButton) {
         print("Why don't you like Hoakin?")
         loadNewPhoto.isHidden = false
+    }
+
+    // MARK: - Public methods
+    func updateName(_ name: String) {
+        nameTextField.text = name
+    }
+
+    func updateDescription(_ description: String) {
+        descriptionTextView.text = description
+    }
+
+    func updateWebsite(_ webSite: String) {
+        webSiteTextField.text = webSite
+    }
+
+    func updatePhoto(_ photoName: String) {
+        photoImage.image = UIImage(named: photoName)
     }
 
     // MARK: - Private methods
@@ -131,9 +153,6 @@ final class EditProfileViewController: UIViewController {
 
     private func photoView() -> UIView {
         let photoView = UIView()
-        let imageFromString = presenter?.getImageName() ?? ""
-        let photoImage = UIImageView(image: UIImage(named: imageFromString))
-        photoImage.round(squareSize: 70)
         photoView.addSubViews([photoImage])
         photoImage.constraintCenters(to: photoView)
 
@@ -186,8 +205,6 @@ final class EditProfileViewController: UIViewController {
             return stack
         }()
 
-        let name = presenter?.getName() ?? ""
-        nameTextField.text = name
         nameTextField.rightView = clearTextStack
         nameTextField.rightViewMode = .whileEditing
 
