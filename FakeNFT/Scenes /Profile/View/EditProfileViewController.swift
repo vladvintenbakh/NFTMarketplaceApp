@@ -24,7 +24,7 @@ final class EditProfileViewController: UIViewController {
         textField.leftView = paddingLeftView
         textField.leftViewMode = .always
         textField.font = UIFont.bodyRegular
-        textField.backgroundColor = UIColor.yaLightGrayLight
+        textField.backgroundColor = UIColor.segmentInactive
         textField.layer.cornerRadius = 12
         textField.heightAnchor.constraint(equalToConstant: 44).isActive = true
         textField.delegate = self
@@ -34,7 +34,7 @@ final class EditProfileViewController: UIViewController {
         let textView = UITextView()
         textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
         textView.font = UIFont.bodyRegular
-        textView.backgroundColor = UIColor.yaLightGrayLight
+        textView.backgroundColor = UIColor.segmentInactive
         textView.layer.cornerRadius = 12
         textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
         textView.delegate = self
@@ -42,7 +42,7 @@ final class EditProfileViewController: UIViewController {
     } ()
     private lazy var webSiteTextField: UITextField = {
         let siteField = UITextField()
-        siteField.backgroundColor = UIColor.yaLightGrayLight
+        siteField.backgroundColor = UIColor.segmentInactive
         siteField.layer.cornerRadius = 12
         let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
         siteField.leftView = paddingLeftView
@@ -56,7 +56,6 @@ final class EditProfileViewController: UIViewController {
         label.font = UIFont.bodyRegular
         label.textAlignment = .center
         label.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        label.backgroundColor = .white
         label.isHidden = true
         return label
     } ()
@@ -119,16 +118,14 @@ final class EditProfileViewController: UIViewController {
 
     // MARK: - Private methods
     private func setupLayout() {
+        view.backgroundColor = UIColor.backgroundActive
         setupNavigation()
-
-        view.backgroundColor = UIColor.background
-
         setupContentStack()
     }
 
     private func setupNavigation() {
         let closeImage = UIImage(named: "plus")
-        let colorImage = closeImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
+        let colorImage = closeImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(closeButtonTapped))
     }
 

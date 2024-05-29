@@ -29,6 +29,7 @@ final class FavoriteNFTViewController: UIViewController {
         collection.dataSource = self
         collection.delegate = self
         collection.register(FavoriteNFTCollectionViewCell.self, forCellWithReuseIdentifier: FavoriteNFTCollectionViewCell.identifier)
+        collection.backgroundColor = .clear
         return collection
     } ()
 
@@ -76,7 +77,7 @@ final class FavoriteNFTViewController: UIViewController {
     private func setupLayout() {
         setupNavigation()
 
-        view.backgroundColor = UIColor.background
+        view.backgroundColor = UIColor.backgroundActive
 
         view.addSubViews([favNFTCollection])
 
@@ -92,7 +93,7 @@ final class FavoriteNFTViewController: UIViewController {
         title = "Избранные NFT"
         // Убираем тут Back в стрелке обратно
         navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
+        navigationController?.navigationBar.tintColor = UIColor.segmentActive
     }
 }
 
@@ -105,7 +106,7 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell  else {
             print("Issue with CollectionCell"); return UICollectionViewCell()}
-
+        cell.backgroundColor = .clear
         let nft = presenter.getFavNFT(indexPath: indexPath)
         cell.configureCell(nft)
         removeNFTFromFav(cell: cell, nft: nft)

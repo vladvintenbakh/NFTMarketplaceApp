@@ -37,13 +37,13 @@ final class WebViewController: UIViewController {
     // MARK: - Private methods
     private func setupLayout() {
         setupNavigation()
-        view.backgroundColor = UIColor.background
+        view.backgroundColor = UIColor.backgroundActive
         view.fullViewWithSafeAreas(webView)
     }
 
     private func setupNavigation() {
         navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
+        navigationController?.navigationBar.tintColor = UIColor.segmentActive
     }
 
     private func showWebSite() {

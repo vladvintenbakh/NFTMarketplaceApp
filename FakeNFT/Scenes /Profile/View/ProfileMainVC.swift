@@ -21,6 +21,7 @@ final class ProfileMainVC: UIViewController {
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         table.separatorInset = .zero
+        table.backgroundColor = .clear
         return table
     } ()
     private lazy var nameLabel: UILabel = {
@@ -104,10 +105,7 @@ final class ProfileMainVC: UIViewController {
     }
 
     private func setupLayout() {
-        view.backgroundColor = UIColor.background
-
         setupNavigation()
-
         setupContentStack()
     }
 
@@ -115,11 +113,13 @@ final class ProfileMainVC: UIViewController {
         let editImage = UIImage(systemName: "square.and.pencil")
         let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
+        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
     }
 
     private func setupContentStack() {
+        view.backgroundColor = UIColor.backgroundActive
+
         let photoAndNameStack = setupPersonalDataStack()
 
         view.addSubViews([photoAndNameStack, nftTable])
@@ -170,10 +170,11 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 
     private func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
         fillInCellName(cell: cell, indexPath: indexPath)
+        cell.backgroundColor = .clear
 
         cell.textLabel?.font = UIFont.bodyBold
         let disclosureImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 7, height: 12))
-        disclosureImage.image = UIImage(named: "chevron")
+        disclosureImage.image = UIImage(named: "chevron")?.withTintColor(UIColor.segmentActive)
         cell.accessoryView = disclosureImage
         cell.selectionStyle = .none
     }

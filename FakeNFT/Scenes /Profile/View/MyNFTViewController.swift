@@ -24,6 +24,7 @@ final class MyNFTViewController: UIViewController {
         table.register(MyNFTTableViewCell.self)
         table.separatorStyle = .none
         table.allowsSelection = false
+        table.backgroundColor = .clear
         return table
     } ()
 
@@ -98,8 +99,9 @@ final class MyNFTViewController: UIViewController {
 
     // MARK: - Private Methods
     private func setupLayout() {
+        view.backgroundColor = UIColor.backgroundActive
+
         setupNavigation()
-        view.backgroundColor = UIColor.background
 
         view.addSubViews([myNFTTable])
 
@@ -116,10 +118,10 @@ final class MyNFTViewController: UIViewController {
 
         // Убираем тут Back в стрелке обратно
         navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
+        navigationController?.navigationBar.tintColor = UIColor.segmentActive
 
         // Добавляем кнопку справа
-        let image = UIImage(named: "CartSortIcon")?.withTintColor(UIColor.black, renderingMode: .alwaysOriginal)
+        let image = UIImage(named: "CartSortIcon")?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(sortButtonTapped))
     }
 }
@@ -135,6 +137,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
 
         let nft = presenter.getNFT(with: indexPath)
         let isNFTFav = presenter.isNFTInFav(nft)
+        cell.backgroundColor = .clear
 
         cell.configureCell(nft, isNFTFav: isNFTFav)
         addOrRemoveNFTFromFav(cell: cell, nft: nft, isNFTInFav: isNFTFav)
