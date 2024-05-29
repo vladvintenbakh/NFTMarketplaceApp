@@ -7,19 +7,25 @@
 
 import UIKit
 
+protocol PaymentVCProtocol: AnyObject {
+    func presentVC(_ vc: UIViewController)
+    func dismissVC()
+}
+
 final class PaymentVC: UIViewController {
-    private let currencyNames = ["Bitcoin", "Dogecoin", "Tether", "Apecoin",
-                                 "Solana", "Ethereum", "Cardano", "Shiba Inu"]
     
-    private let currencyCodes = ["BTC", "DOGE", "USDT", "APE", "SOL", "ETH", "ADA", "SHIB"]
+    private let presenter: PaymentPresenterProtocol
     
-    private let currencyCollection: UICollectionView = {
+    private lazy var currencyCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.allowsMultipleSelection = false
         collection.allowsSelection = true
         collection.isUserInteractionEnabled = true
+        collection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         collection.register(PaymentCollectionViewCell.self,
                             forCellWithReuseIdentifier: PaymentCollectionViewCell.identifier)
+        collection.dataSource = self
+        collection.delegate = self
         return collection
     }()
     
@@ -39,11 +45,13 @@ final class PaymentVC: UIViewController {
         return label
     }()
     
-    private let userAgreementLinkLabel: UILabel = {
+    private lazy var userAgreementLinkLabel: UILabel = {
         let label = UILabel()
         label.text = "Пользовательского соглашения"
         label.textColor = .yaBlue
         label.font = .caption2
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGestureRecognizer)
         return label
     }()
     
@@ -54,18 +62,28 @@ final class PaymentVC: UIViewController {
         return button
     }()
     
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                   action: #selector(userAgreementLinkPressed))
+    
+    init(presenter: PaymentPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .yaWhiteLight
         
+        presenter.attachView(self)
+        
         setUpNavigationBar()
         addSubviews()
         configConstraints()
-        
-        currencyCollection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        currencyCollection.dataSource = self
-        currencyCollection.delegate = self
     }
 }
 
@@ -134,20 +152,22 @@ extension PaymentVC {
 // MARK: Interaction Methods
 extension PaymentVC {
     @objc private func backButtonPressed() {
-        dismiss(animated: true)
+        presenter.returnToCartMainScreen()
     }
     
     @objc private func payButtonPressed() {
-        let paymentOutcomeVC = PaymentOutcomeVC()
-        paymentOutcomeVC.modalPresentationStyle = .fullScreen
-        present(paymentOutcomeVC, animated: true)
+        presenter.processPaymentAttempt()
+    }
+    
+    @objc private func userAgreementLinkPressed() {
+        presenter.loadUserAgreement()
     }
 }
 
 // MARK: UICollectionViewDataSource
 extension PaymentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return presenter.numberOfCurrencies()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -157,27 +177,9 @@ extension PaymentVC: UICollectionViewDataSource {
         ) as? PaymentCollectionViewCell
         guard let cell else { return UICollectionViewCell() }
         
-        let currencyName = currencyNames[indexPath.row]
+        let configuredCell = presenter.configCell(cell, at: indexPath)
         
-        var imagePrefix = ""
-        switch currencyName {
-        case "Shiba Inu":
-            imagePrefix += "ShibaInu"
-        case "Apecoin":
-            imagePrefix += "ApeCoin"
-        default:
-            imagePrefix += currencyName
-        }
-        
-        let currencyCode = currencyCodes[indexPath.row]
-        
-        cell.configUI(
-            image: UIImage(named: "\(imagePrefix)PaymentIcon") ?? UIImage(),
-            currencyName: currencyName,
-            currencyCode: currencyCode
-        )
-        
-        return cell
+        return configuredCell
     }
 }
 
@@ -199,6 +201,8 @@ extension PaymentVC: UICollectionViewDelegate {
         
         payButton.isEnabled = true
         cell.toggleSelectionTo(true)
+        
+        presenter.setSelectedCurrency(indexPath: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -206,5 +210,16 @@ extension PaymentVC: UICollectionViewDelegate {
         guard let cell else { return }
         
         cell.toggleSelectionTo(false)
+    }
+}
+
+// MARK: PaymentVCProtocol
+extension PaymentVC: PaymentVCProtocol {
+    func presentVC(_ vc: UIViewController) {
+        present(vc, animated: true)
+    }
+    
+    func dismissVC() {
+        dismiss(animated: true)
     }
 }

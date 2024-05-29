@@ -88,12 +88,10 @@ extension PaymentCollectionViewCell {
 
 // MARK: Dynamic UI Configuration
 extension PaymentCollectionViewCell {
-    func configUI(image: UIImage,
-                  currencyName: String,
-                  currencyCode: String) {
-        iconImage.image = image
-        currencyNameLabel.text = currencyName
-        currencyCodeLabel.text = currencyCode
+    func configUI(currency: PaymentCurrency) {
+        iconImage.image = UIImage(named: currency.imageName)
+        currencyNameLabel.text = currency.currencyName
+        currencyCodeLabel.text = currency.currencyCode
     }
     
     func toggleSelectionTo(_ isSelected: Bool) {

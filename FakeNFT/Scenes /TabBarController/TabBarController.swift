@@ -37,7 +37,8 @@ final class TabBarController: UITabBarController {
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
-        let cartMainVC = CartMainVC()
+        let cartMainPresenter = CartMainPresenter()
+        let cartMainVC = CartMainVC(presenter: cartMainPresenter)
         let cartNavigationVC = UINavigationController(rootViewController: cartMainVC)
         cartNavigationVC.tabBarItem = cartTabBarItem
         
