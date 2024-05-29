@@ -8,7 +8,8 @@
 import UIKit
 
 protocol CartItemDeletionPresenterProtocol {
-    func getCartItemImage() -> UIImage?
+    func attachView(_ view: CartItemDeletionVCProtocol)
+    func fetchCartItemImage()
     func confirmDeletion()
 }
 
@@ -18,6 +19,8 @@ protocol CartItemDeletionPresenterDelegate: AnyObject {
 
 final class CartItemDeletionPresenter {
     weak var delegate: CartItemDeletionPresenterDelegate?
+    
+    private weak var view: CartItemDeletionVCProtocol?
     
     private let cartItem: CartItem
     
@@ -29,8 +32,12 @@ final class CartItemDeletionPresenter {
 
 // MARK: CartItemDeletionPresenterProtocol
 extension CartItemDeletionPresenter: CartItemDeletionPresenterProtocol {
-    func getCartItemImage() -> UIImage? {
-        return UIImage(named: cartItem.imageName)
+    func attachView(_ view: CartItemDeletionVCProtocol) {
+        self.view = view
+    }
+    
+    func fetchCartItemImage() {
+        view?.setCartItemImage(imageName: cartItem.imageName)
     }
     
     func confirmDeletion() {

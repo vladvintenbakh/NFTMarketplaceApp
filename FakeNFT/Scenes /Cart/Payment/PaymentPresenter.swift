@@ -23,7 +23,7 @@ protocol PaymentPresenterDelegate: AnyObject {
 }
 
 final class PaymentPresenter {
-    weak private var view: PaymentVCProtocol?
+    private weak var view: PaymentVCProtocol?
     
     weak var delegate: PaymentPresenterDelegate?
     

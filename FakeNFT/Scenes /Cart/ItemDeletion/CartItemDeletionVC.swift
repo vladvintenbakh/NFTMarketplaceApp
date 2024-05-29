@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CartItemDeletionVCProtocol: AnyObject {
+    func setCartItemImage(imageName: String)
+}
+
 final class CartItemDeletionVC: UIViewController {
     private let presenter: CartItemDeletionPresenterProtocol
     
@@ -75,8 +79,9 @@ final class CartItemDeletionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        cardImage.image = presenter.getCartItemImage()
+        presenter.attachView(self)
         
+        presenter.fetchCartItemImage()
         addSubviews()
         configConstraints()
     }
@@ -128,5 +133,12 @@ extension CartItemDeletionVC {
     
     @objc private func cancelButtonPressed() {
         dismiss(animated: true)
+    }
+}
+
+// MARK: CartItemDeletionVCProtocol
+extension CartItemDeletionVC: CartItemDeletionVCProtocol {
+    func setCartItemImage(imageName: String) {
+        cardImage.image = UIImage(named: imageName)
     }
 }
