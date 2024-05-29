@@ -27,11 +27,6 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     // MARK: - Other properties
     var mockArrayOfNFT = [NFTModel]()
 
-    // MARK: - Init
-    init(view: MyNFTViewProtocol?) {
-        self.view = view
-    }
-
     // MARK: - Public methods
     func viewDidLoad() {
         getDataFromStorage()

@@ -28,23 +28,23 @@ final class NavigationManager {
     func goToView(_ view: Views, webSiteName: String? = nil) {
         switch view {
         case .myNFT:
-            let view = MyNFTViewController()
-            let presenter = MyNFTPresenter(view: view)
-            view.presenter = presenter
+            let presenter = MyNFTPresenter()
+            let view = MyNFTViewController(presenter: presenter)
+            presenter.view = view
             navigation?.pushViewController(view, animated: true)
         case .FavNFT:
-            let view = FavoriteNFTViewController()
-            let presenter = FavoriteNFTPresenter(view: view)
-            view.presenter = presenter
+            let presenter = FavoriteNFTPresenter()
+            let view = FavoriteNFTViewController(presenter: presenter)
+            presenter.view = view
             navigation?.pushViewController(view, animated: true)
         case .aboutAuthor:
             let presenter = WebViewPresenter()
             let vc = WebViewController(presenter: presenter)
             navigation?.pushViewController(vc, animated: true)
         case .editProfile:
-            let view = EditProfileViewController()
-            let presenter = EditProfilePresenter(view: view)
-            view.presenter = presenter
+            let presenter = EditProfilePresenter()
+            let view = EditProfileViewController(presenter: presenter)
+            presenter.view = view
             let EditVC = UINavigationController(rootViewController: view)
             rootVC?.present(EditVC, animated: true)
         case .WebScreen:

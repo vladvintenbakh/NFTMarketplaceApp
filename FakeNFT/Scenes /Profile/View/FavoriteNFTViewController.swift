@@ -33,13 +33,23 @@ final class FavoriteNFTViewController: UIViewController {
     } ()
 
     // MARK: - Other properties
-    var presenter: FavoriteNFTPresenterProtocol?
+    var presenter: FavoriteNFTPresenterProtocol
 
+    // MARK: - Init
+    init(presenter: FavoriteNFTPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        presenter?.viewDidLoad()
+        presenter.viewDidLoad()
     }
 
     // MARK: - Public properties
@@ -89,14 +99,14 @@ final class FavoriteNFTViewController: UIViewController {
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter?.getNumberOfRows() ?? 0
+        presenter.getNumberOfRows()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell,
-              let nft = presenter?.getFavNFT(indexPath: indexPath) else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell  else {
             print("Issue with CollectionCell"); return UICollectionViewCell()}
 
+        let nft = presenter.getFavNFT(indexPath: indexPath)
         cell.configureCell(nft)
         removeNFTFromFav(cell: cell, nft: nft)
 
@@ -106,7 +116,7 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     private func removeNFTFromFav(cell: FavoriteNFTCollectionViewCell, nft: NFTModel) {
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
-            self.presenter?.removeNFTFromFav(nft)
+            self.presenter.removeNFTFromFav(nft)
         }
     }
 }

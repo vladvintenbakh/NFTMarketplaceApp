@@ -30,12 +30,12 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let profileView = ProfileMainVC()
+        let presenter = ProfilePresenter()
+        let profileView = ProfileMainVC(presenter: presenter)
         let profileViewNavController = UINavigationController(rootViewController: profileView)
         let navigationService = NavigationManager(navigation: profileViewNavController, rootVC: profileView)
-        let presenter = ProfilePresenter(view: profileView, navigation: navigationService)
-        profileView.presenter = presenter
+        presenter.view = profileView
+        presenter.navigation = navigationService
         profileViewNavController.tabBarItem = profileTabBarItem
 
         let catalogMainVC = CatalogMainVC()

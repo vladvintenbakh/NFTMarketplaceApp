@@ -28,19 +28,6 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
     var newWebSite: String?
     var avatar: String?
 
-    // MARK: - Init
-    init(view: EditProfileViewProtocol?) {
-        self.view = view
-    }
-
-    func viewDidLoad() {
-        getDataFromStorage()
-        setDescription()
-        setWebsite()
-        setPhoto()
-        setName()
-    }
-
     // MARK: - Private methods
     private func getDataFromStorage() {
         let data = MockDataStorage.mockData
@@ -51,7 +38,23 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         avatar = data.avatar
     }
 
+    private func sendDataToStorage() {
+        let newData = EditedDataModel(name: newName,
+                                      description: newDescription,
+                                      website: newWebSite)
+        let storage = MockDataStorage()
+        storage.updateDataAfterEditing(newData: newData)
+    }
+
     // MARK: - Public methods
+    func viewDidLoad() {
+        getDataFromStorage()
+        setDescription()
+        setWebsite()
+        setPhoto()
+        setName()
+    }
+
     func setName() {
         guard let newName else { return }
         view?.updateName(newName)
@@ -88,13 +91,5 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         sendDataToStorage()
         NotificationCenter.default.post(name: Notification.Name("updateUI"), object: nil)
         view?.dismiss(animated: true, completion: nil)
-    }
-
-    private func sendDataToStorage() {
-        let newData = EditedDataModel(name: newName,
-                                      description: newDescription,
-                                      website: newWebSite)
-        let storage = MockDataStorage()
-        storage.updateDataAfterEditing(newData: newData)
     }
 }

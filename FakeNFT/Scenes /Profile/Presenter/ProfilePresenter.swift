@@ -20,23 +20,25 @@ final class ProfilePresenter: ProfilePresenterProtocol {
 
     // MARK: - View
     weak var view: ProfileViewProtocol?
-    var navigation: NavigationManager
+    var navigation: NavigationManager?
 
     // MARK: - Other properties
     let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
     var mockData: ProfileMockModel?
 
     // MARK: - Init
-    init(view: ProfileViewProtocol?, navigation: NavigationManager) {
-        self.view = view
-        self.navigation = navigation
-    }
+//    init(view: ProfileViewProtocol?, navigation: NavigationManager) {
+//        self.view = view
+//        self.navigation = navigation
+//    }
 
+
+
+    // MARK: - Public methods
     func viewDidLoad() {
         uploadDataFromStorage()
     }
 
-    // MARK: - Public methods
     func nameCell(indexPath: IndexPath) -> String {
         let name = getRowName(indexPath: indexPath)
         var nameAndCount = ""
@@ -90,18 +92,18 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
 
     private func goToMyNFTScreen() {
-        navigation.goToView(.myNFT)
+        navigation?.goToView(.myNFT)
     }
 
     private func goToFavNFTScreen() {
-        navigation.goToView(.FavNFT)
+        navigation?.goToView(.FavNFT)
     }
 
     private func goToEditProfileScreen() {
-        navigation.goToView(.editProfile)
+        navigation?.goToView(.editProfile)
     }
 
     private func goToWebSiteScreen() {
-        navigation.goToView(.WebScreen, webSiteName: mockData?.website)
+        navigation?.goToView(.WebScreen, webSiteName: mockData?.website)
     }
 }

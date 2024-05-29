@@ -22,10 +22,6 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     // MARK: - Other properties
     var mockArrayOfNFT = [NFTModel]()
 
-    // MARK: - Init
-    init(view: FavoriteNFTViewProtocol?) {
-        self.view = view
-    }
 
     // MARK: - Public methods
     func viewDidLoad() {

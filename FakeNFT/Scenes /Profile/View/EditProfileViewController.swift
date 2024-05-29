@@ -67,18 +67,28 @@ final class EditProfileViewController: UIViewController {
     }()
 
     // MARK: - Presenter
-    var presenter: EditProfilePresenterProtocol?
+    var presenter: EditProfilePresenterProtocol
+
+    // MARK: - Init
+    init(presenter: EditProfilePresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.viewDidLoad()
+        presenter.viewDidLoad()
         setupLayout()
     }
 
     // MARK: - IB Actions
     @objc private func closeButtonTapped(sender: UIButton) {
-        presenter?.closeButtonTapped()
+        presenter.closeButtonTapped()
     }
 
     @objc private func clearTextButtonTapped(sender: UIButton) {
@@ -245,8 +255,8 @@ extension EditProfileViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {
             switch textField {
-            case nameTextField: presenter?.passNewName(text)
-            default: presenter?.passWebSite(text)
+            case nameTextField: presenter.passNewName(text)
+            default: presenter.passWebSite(text)
             }
         }
     }
@@ -255,7 +265,7 @@ extension EditProfileViewController: UITextFieldDelegate {
 // MARK: - UITextViewDelegate
 extension EditProfileViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        presenter?.passNewDescription(textView.text)
+        presenter.passNewDescription(textView.text)
     }
 }
 

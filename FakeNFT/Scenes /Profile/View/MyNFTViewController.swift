@@ -28,21 +28,31 @@ final class MyNFTViewController: UIViewController {
     } ()
 
     // MARK: - Other properties
-    var presenter: MyNFTPresenterProtocol?
+    var presenter: MyNFTPresenterProtocol
 
     private let cellHeight = CGFloat(140)
     private let tableConstraints = CGFloat(20)
 
+    // MARK: - Init
+    init(presenter: MyNFTPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        presenter?.viewDidLoad()
+        presenter.viewDidLoad()
     }
 
     // MARK: - IB Action
     @objc private func sortButtonTapped(sender: UIButton) {
-        presenter?.sortButtonTapped()
+        presenter.sortButtonTapped()
     }
 
     // MARK: - Public Methods
@@ -66,17 +76,17 @@ final class MyNFTViewController: UIViewController {
 
         alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter?.priceSorting()
+            self.presenter.priceSorting()
         })
 
         alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter?.ratingSorting()
+            self.presenter.ratingSorting()
         })
 
         alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter?.nameSorting()
+            self.presenter.nameSorting()
         })
 
         present(alert, animated: true)
@@ -117,14 +127,15 @@ final class MyNFTViewController: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.getNumberOfRows() ?? 0
+        return presenter.getNumberOfRows()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell,
-              let nft = presenter?.getNFT(with: indexPath) else { print("Issue with cell"); return UITableViewCell() }
-        
-        guard let isNFTFav = presenter?.isNFTInFav(nft) else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyNFTTableViewCell.identifier) as? MyNFTTableViewCell else { print("Issue with cell"); return UITableViewCell() }
+
+        let nft = presenter.getNFT(with: indexPath)
+        let isNFTFav = presenter.isNFTInFav(nft)
+
         cell.configureCell(nft, isNFTFav: isNFTFav)
         addOrRemoveNFTFromFav(cell: cell, nft: nft, isNFTInFav: isNFTFav)
 
@@ -138,7 +149,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
     private func addOrRemoveNFTFromFav(cell: MyNFTTableViewCell, nft: NFTModel, isNFTInFav: Bool) {
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
-            self.presenter?.addOrRemoveNFTFromFav(nft: nft, isNFTFav: isNFTInFav)
+            self.presenter.addOrRemoveNFTFromFav(nft: nft, isNFTFav: isNFTInFav)
 
             DispatchQueue.main.async {
                 self.myNFTTable.reloadData()
