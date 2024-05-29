@@ -8,6 +8,7 @@
 import UIKit
 
 protocol ProfileViewProtocol: AnyObject {
+    func updateUIWithMockData(_ data: ProfileMockModel)
 }
 
 final class ProfileMainVC: UIViewController {
@@ -56,13 +57,13 @@ final class ProfileMainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        updateUIWithMockData()
+        presenter?.viewDidLoad()
         setupNotification()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        presenter?.uploadDataFromStorage()
-        
+        presenter?.viewDidLoad()
+
         DispatchQueue.main.async { [weak self] in
             self?.nftTable.reloadData()
         }
@@ -70,27 +71,26 @@ final class ProfileMainVC: UIViewController {
 
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
-        presenter?.goToEditProfileScreen()
+        presenter?.editButtonTapped()
     }
 
     @objc private func updateUI(_ notification: Notification) {
-        presenter?.uploadDataFromStorage()
-        updateUIWithMockData()
+        presenter?.viewDidLoad()
+    }
+
+    // MARK: - Public methods
+    func updateUIWithMockData(_ data: ProfileMockModel) {
+        nameLabel.text = data.name
+        guard let imageName = data.avatar else { return }
+        let image = UIImage(named: imageName)
+        photoImage.image = image
+        aboutMeLabel.text = data.description
+        webSiteLabel.text = data.website
     }
 
     // MARK: - Private methods
     private func setupNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
-    }
-
-    private func updateUIWithMockData() {
-        guard let data = presenter?.getMockData(),
-              let imageName = data.avatar else { return }
-        nameLabel.text = data.name
-        let image = UIImage(named: imageName)
-        photoImage.image = image
-        aboutMeLabel.text = data.description
-        webSiteLabel.text = data.website
     }
 
     private func setupLayout() {
@@ -169,23 +169,12 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func fillInCellName(cell: UITableViewCell, indexPath: IndexPath) {
-        guard let name = presenter?.getRowName(indexPath: indexPath) else { return }
-
-        switch name {
-        case "Мои NFT":
-            cell.textLabel?.text = "\(name) (\(presenter?.getNFTCount() ?? 0))"
-        case "Избранные NFT":
-            cell.textLabel?.text = "\(name) (\(presenter?.getFavoriteNFTCount() ?? 0))"
-        default: cell.textLabel?.text = "\(name)"
-        }
+        let nameAndCount = presenter?.nameCell(indexPath: indexPath)
+        cell.textLabel?.text = nameAndCount
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case 0: presenter?.goToMyNFTScreen()
-        case 1: presenter?.goToFavNFTScreen()
-        default: presenter?.goToEditWebSiteScreen()
-        }
+        presenter?.selectCell(indexPath: indexPath)
     }
 }
 

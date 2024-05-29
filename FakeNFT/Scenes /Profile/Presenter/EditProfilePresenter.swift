@@ -8,6 +8,7 @@
 import Foundation
 
 protocol EditProfilePresenterProtocol: AnyObject {
+    func viewDidLoad()
     func closeButtonTapped()
     func passNewDescription(_ newDesc: String)
     func passNewName(_ newName: String)
@@ -30,11 +31,14 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
     // MARK: - Init
     init(view: EditProfileViewProtocol?) {
         self.view = view
+    }
+
+    func viewDidLoad() {
         getDataFromStorage()
         setDescription()
         setWebsite()
         setPhoto()
-        setName() 
+        setName()
     }
 
     // MARK: - Private methods

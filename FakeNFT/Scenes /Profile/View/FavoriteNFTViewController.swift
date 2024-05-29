@@ -39,7 +39,7 @@ final class FavoriteNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        presenter?.showOrHidePlaceholder()
+        presenter?.viewDidLoad()
     }
 
     // MARK: - Public properties
@@ -57,8 +57,6 @@ final class FavoriteNFTViewController: UIViewController {
     }
 
     func updateUI() {
-        presenter?.uploadDataFromStorage()
-
         DispatchQueue.main.async {
             self.favNFTCollection.reloadData()
         }
@@ -96,10 +94,8 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell,
-              let arrayOfFav = presenter?.getArrayOfFav() else { 
+              let nft = presenter?.getFavNFT(indexPath: indexPath) else {
             print("Issue with CollectionCell"); return UICollectionViewCell()}
-
-        let nft = arrayOfFav[indexPath.row]
 
         cell.configureCell(nft)
         removeNFTFromFav(cell: cell, nft: nft)

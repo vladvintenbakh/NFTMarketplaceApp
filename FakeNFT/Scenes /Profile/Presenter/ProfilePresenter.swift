@@ -8,16 +8,12 @@
 import Foundation
 
 protocol ProfilePresenterProtocol {
+    func viewDidLoad()
     func getRowCount() -> Int
-    func getNFTCount() -> Int
-    func getFavoriteNFTCount() -> Int
     func getRowName(indexPath: IndexPath) -> String
-    func goToMyNFTScreen()
-    func goToFavNFTScreen()
-    func goToEditProfileScreen()
-    func goToEditWebSiteScreen()
-    func uploadDataFromStorage()
-    func getMockData() ->  ProfileMockModel?
+    func selectCell(indexPath: IndexPath)
+    func editButtonTapped()
+    func nameCell(indexPath: IndexPath) -> String
 }
 
 final class ProfilePresenter: ProfilePresenterProtocol {    
@@ -34,17 +30,47 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     init(view: ProfileViewProtocol?, navigation: NavigationManager) {
         self.view = view
         self.navigation = navigation
+    }
 
+    func viewDidLoad() {
         uploadDataFromStorage()
     }
 
     // MARK: - Public methods
+    func nameCell(indexPath: IndexPath) -> String {
+        let name = getRowName(indexPath: indexPath)
+        var nameAndCount = ""
+
+        switch name {
+        case "Мои NFT": nameAndCount = "\(name) (\(getNFTCount()))"
+        case "Избранные NFT": nameAndCount = "\(name) (\(getFavoriteNFTCount()))"
+        default: nameAndCount = "\(name)"
+        }
+        return nameAndCount
+    }
+
+
+
+    func selectCell(indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0: goToMyNFTScreen()
+        case 1: goToFavNFTScreen()
+        default: goToWebSiteScreen()
+        }
+    }
+
+    func editButtonTapped() {
+        goToEditProfileScreen()
+    }
+
     func getMockData() ->  ProfileMockModel? {
         mockData
     }
 
     func uploadDataFromStorage() {
         mockData = MockDataStorage.mockData
+        guard let data = mockData else { return }
+        view?.updateUIWithMockData(data)
     }
 
     func getRowCount() -> Int {
@@ -63,19 +89,19 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         rowNames[indexPath.row]
     }
 
-    func goToMyNFTScreen() {
+    private func goToMyNFTScreen() {
         navigation.goToView(.myNFT)
     }
 
-    func goToFavNFTScreen() {
+    private func goToFavNFTScreen() {
         navigation.goToView(.FavNFT)
     }
 
-    func goToEditProfileScreen() {
+    private func goToEditProfileScreen() {
         navigation.goToView(.editProfile)
     }
 
-    func goToEditWebSiteScreen() {
+    private func goToWebSiteScreen() {
         navigation.goToView(.WebScreen, webSiteName: mockData?.website)
     }
 }

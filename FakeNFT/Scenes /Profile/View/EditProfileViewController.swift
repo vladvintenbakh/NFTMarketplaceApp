@@ -72,6 +72,7 @@ final class EditProfileViewController: UIViewController {
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.viewDidLoad()
         setupLayout()
     }
 
@@ -242,10 +243,11 @@ final class EditProfileViewController: UIViewController {
 // MARK: - UITextFieldDelegate
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if textField == nameTextField {
-            presenter?.passNewName(textField.text ?? "")
-        } else {
-            presenter?.passWebSite(textField.text ?? "")
+        if let text = textField.text {
+            switch textField {
+            case nameTextField: presenter?.passNewName(text)
+            default: presenter?.passWebSite(text)
+            }
         }
     }
 }

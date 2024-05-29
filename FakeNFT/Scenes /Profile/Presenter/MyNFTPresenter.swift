@@ -10,15 +10,13 @@ import Foundation
 protocol MyNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
-    func isArrayOfNFTEmpty() -> Bool 
+    func isNFTInFav(_ nft: NFTModel) -> Bool
     func priceSorting()
     func ratingSorting()
     func nameSorting()
-    func addNFTToFav(_ nft: NFTModel)
-    func removeNFTFromFav(_ nft: NFTModel)
-    func showOrHidePlaceholder()
-    func isNFTInFav(_ nft: NFTModel) -> Bool
     func sortButtonTapped()
+    func viewDidLoad()
+    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
 }
 
 final class MyNFTPresenter: MyNFTPresenterProtocol {
@@ -32,12 +30,24 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     // MARK: - Init
     init(view: MyNFTViewProtocol?) {
         self.view = view
-        self.convertData()
     }
 
     // MARK: - Public methods
+    func viewDidLoad() {
+        getDataFromStorage()
+        showOrHidePlaceholder()
+    }
+
     func sortButtonTapped() {
         view?.showAlert()
+    }
+
+    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
+        if isNFTFav {
+            removeNFTFromFav(nft)
+        } else {
+            addNFTToFav(nft)
+        }
     }
 
     func showOrHidePlaceholder() {
@@ -49,13 +59,13 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
         }
     }
 
-    func convertData() {
+    func getDataFromStorage() {
         let data = MockDataStorage.mockData
         guard let myNFT = data.nfts else { print("Ooops"); return }
         mockArrayOfNFT = myNFT
     }
 
-    func isArrayOfNFTEmpty() -> Bool {
+    private func isArrayOfNFTEmpty() -> Bool {
         return mockArrayOfNFT.isEmpty
     }
 

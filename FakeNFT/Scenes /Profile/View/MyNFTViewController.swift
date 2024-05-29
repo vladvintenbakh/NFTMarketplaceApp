@@ -37,7 +37,7 @@ final class MyNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        presenter?.showOrHidePlaceholder()
+        presenter?.viewDidLoad()
     }
 
     // MARK: - IB Action
@@ -126,7 +126,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         
         guard let isNFTFav = presenter?.isNFTInFav(nft) else { return UITableViewCell() }
         cell.configureCell(nft, isNFTFav: isNFTFav)
-        likeOrUnlikeNFT(cell: cell, nft: nft, isNFTInFav: isNFTFav)
+        addOrRemoveNFTFromFav(cell: cell, nft: nft, isNFTInFav: isNFTFav)
 
         return cell
     }
@@ -135,14 +135,11 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         cellHeight
     }
 
-    private func likeOrUnlikeNFT(cell: MyNFTTableViewCell, nft: NFTModel, isNFTInFav: Bool) {
+    private func addOrRemoveNFTFromFav(cell: MyNFTTableViewCell, nft: NFTModel, isNFTInFav: Bool) {
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
-            if isNFTInFav {
-                self.presenter?.removeNFTFromFav(nft)
-            } else {
-                self.presenter?.addNFTToFav(nft)
-            }
+            self.presenter?.addOrRemoveNFTFromFav(nft: nft, isNFTFav: isNFTInFav)
+
             DispatchQueue.main.async {
                 self.myNFTTable.reloadData()
             }

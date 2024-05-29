@@ -8,11 +8,10 @@
 import Foundation
 
 protocol FavoriteNFTPresenterProtocol {
+    func viewDidLoad()
     func getNumberOfRows() -> Int
     func removeNFTFromFav(_ nft: NFTModel)
-    func uploadDataFromStorage()
-    func showOrHidePlaceholder()
-    func getArrayOfFav() -> [NFTModel]
+    func getFavNFT(indexPath: IndexPath) -> NFTModel
 }
 
 final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
@@ -26,30 +25,21 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     // MARK: - Init
     init(view: FavoriteNFTViewProtocol?) {
         self.view = view
-        self.uploadDataFromStorage()
     }
 
     // MARK: - Public methods
-    func getArrayOfFav() -> [NFTModel] {
-        mockArrayOfNFT
+    func viewDidLoad() {
+        uploadDataFromStorage()
+        showOrHidePlaceholder()
     }
 
-    func showOrHidePlaceholder() {
-        if mockArrayOfNFT.isEmpty {
-            view?.showPlaceholder()
-        } else {
-            view?.hideCollection()
-        }
+    func getFavNFT(indexPath: IndexPath) -> NFTModel {
+        return mockArrayOfNFT[indexPath.row]
     }
+
 
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
-    }
-
-    func uploadDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
-        mockArrayOfNFT = favoriteNFT
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {
@@ -57,6 +47,23 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
         let nftToRemoveFromFav = nft
         storage.removeFromFavNFT(nftToRemoveFromFav)
 
+        uploadDataFromStorage()
+
         view?.updateUI()
+    }
+
+    // MARK: - Private methods
+    private func showOrHidePlaceholder() {
+        if mockArrayOfNFT.isEmpty {
+            view?.showPlaceholder()
+        } else {
+            view?.hideCollection()
+        }
+    }
+
+    private func uploadDataFromStorage() {
+        let data = MockDataStorage.mockData
+        guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
+        mockArrayOfNFT = favoriteNFT
     }
 }
