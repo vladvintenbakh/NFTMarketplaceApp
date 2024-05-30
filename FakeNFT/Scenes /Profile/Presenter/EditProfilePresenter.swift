@@ -15,18 +15,18 @@ protocol EditProfilePresenterProtocol: AnyObject {
     func passWebSite(_ newWebSite: String) 
 }
 
-final class EditProfilePresenter: EditProfilePresenterProtocol {
+final class EditProfilePresenter {
 
     // MARK: - ViewController
     weak var view: EditProfileViewProtocol?
- 
-    // MARK: - Other Properties
-    var data: ProfileMockModel?
+    let notification = NotificationCenter.default
 
-    var newName: String?
-    var newDescription: String?
-    var newWebSite: String?
-    var avatar: String?
+    // MARK: - Private Properties
+    private var data: ProfileMockModel?
+    private var newName: String?
+    private var newDescription: String?
+    private var newWebSite: String?
+    private var avatar: String?
 
     // MARK: - Private methods
     private func getDataFromStorage() {
@@ -46,7 +46,26 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         storage.updateDataAfterEditing(newData: newData)
     }
 
-    // MARK: - Public methods
+    private func setWebsite() {
+        guard let newWebSite else { return }
+        view?.updateWebsite(newWebSite)
+    }
+
+    private func setPhoto() {
+        guard let avatar else { return }
+        view?.updatePhoto(avatar)
+    }
+
+    private func setName() {
+        guard let newName else { return }
+        view?.updateName(newName)
+    }
+
+}
+
+// MARK: - EditProfilePresenterProtocol
+extension EditProfilePresenter: EditProfilePresenterProtocol {
+
     func viewDidLoad() {
         getDataFromStorage()
         setDescription()
@@ -55,24 +74,9 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
         setName()
     }
 
-    func setName() {
-        guard let newName else { return }
-        view?.updateName(newName)
-    }
-
     func setDescription() {
         guard let newDescription else { return }
         view?.updateDescription(newDescription)
-    }
-
-    func setWebsite() {
-        guard let newWebSite else { return }
-        view?.updateWebsite(newWebSite)
-    }
-
-    func setPhoto() {
-        guard let avatar else { return }
-        view?.updatePhoto(avatar)
     }
 
     func passNewDescription(_ newDesc: String) {
@@ -89,7 +93,7 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
 
     func closeButtonTapped() {
         sendDataToStorage()
-        NotificationCenter.default.post(name: Notification.Name("updateUI"), object: nil)
+        notification.post(name: .profileDidChange, object: nil)
         view?.dismiss(animated: true, completion: nil)
     }
 }

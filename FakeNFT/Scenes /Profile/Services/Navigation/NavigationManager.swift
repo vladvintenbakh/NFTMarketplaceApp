@@ -9,10 +9,10 @@ import UIKit
 
 enum Views {
     case myNFT
-    case FavNFT
+    case favNFT
     case aboutAuthor
+    case webScreen
     case editProfile
-    case WebScreen
 }
 
 final class NavigationManager {
@@ -32,7 +32,7 @@ final class NavigationManager {
             let view = MyNFTViewController(presenter: presenter)
             presenter.view = view
             navigation?.pushViewController(view, animated: true)
-        case .FavNFT:
+        case .favNFT:
             let presenter = FavoriteNFTPresenter()
             let view = FavoriteNFTViewController(presenter: presenter)
             presenter.view = view
@@ -47,10 +47,19 @@ final class NavigationManager {
             presenter.view = view
             let EditVC = UINavigationController(rootViewController: view)
             rootVC?.present(EditVC, animated: true)
-        case .WebScreen:
+        case .webScreen:
             let presenter = WebViewPresenter(websiteName: webSiteName)
             let vc = WebViewController(presenter: presenter)
             navigation?.pushViewController(vc, animated: true)
+        }
+    }
+
+    func goToView(indexPath: IndexPath, webSiteName: String? = nil) {
+        switch indexPath.row {
+        case 0: goToView(Views.myNFT)
+        case 1: goToView(Views.favNFT)
+        case 2: goToView(Views.webScreen, webSiteName: webSiteName)
+        default: break
         }
     }
 }

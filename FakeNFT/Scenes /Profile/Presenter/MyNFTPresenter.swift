@@ -8,26 +8,61 @@
 import Foundation
 
 protocol MyNFTPresenterProtocol {
+    func viewDidLoad()
+    func sortButtonTapped()
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
     func isNFTInFav(_ nft: NFTModel) -> Bool
     func priceSorting()
     func ratingSorting()
     func nameSorting()
-    func sortButtonTapped()
-    func viewDidLoad()
     func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
 }
 
-final class MyNFTPresenter: MyNFTPresenterProtocol {
+final class MyNFTPresenter {
 
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
 
     // MARK: - Other properties
-    var mockArrayOfNFT = [NFTModel]()
+    private var mockArrayOfNFT = [NFTModel]()
 
-    // MARK: - Public methods
+    // MARK: - Private methods
+    private func getDataFromStorage() {
+        let data = MockDataStorage.mockData
+        guard let myNFT = data.nfts else { print("Ooops"); return }
+        mockArrayOfNFT = myNFT
+    }
+
+    private func showOrHidePlaceholder() {
+        let isDataEmpty = isArrayOfNFTEmpty()
+        if isDataEmpty {
+            view?.showPlaceholder()
+        } else {
+            view?.hideTableView()
+        }
+    }
+
+    private func isArrayOfNFTEmpty() -> Bool {
+        return mockArrayOfNFT.isEmpty
+    }
+
+    private func addNFTToFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToAddToFav = nft
+        storage.addFavNFT(nftToAddToFav)
+    }
+
+    private func removeNFTFromFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToRemoveFromFav = nft
+        storage.removeFromFavNFT(nftToRemoveFromFav)
+    }
+
+}
+
+// MARK: - MyNFTPresenterProtocol
+extension  MyNFTPresenter: MyNFTPresenterProtocol {
     func viewDidLoad() {
         getDataFromStorage()
         showOrHidePlaceholder()
@@ -37,33 +72,6 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
         view?.showAlert()
     }
 
-    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
-        if isNFTFav {
-            removeNFTFromFav(nft)
-        } else {
-            addNFTToFav(nft)
-        }
-    }
-
-    func showOrHidePlaceholder() {
-        let isDataEmpty = isArrayOfNFTEmpty()
-        if isDataEmpty {
-            view?.showPlaceholder()
-        } else {
-            view?.hideTableView()
-        }
-    }
-
-    func getDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let myNFT = data.nfts else { print("Ooops"); return }
-        mockArrayOfNFT = myNFT
-    }
-
-    private func isArrayOfNFTEmpty() -> Bool {
-        return mockArrayOfNFT.isEmpty
-    }
-
     func getNumberOfRows() -> Int {
         return mockArrayOfNFT.count
     }
@@ -71,18 +79,6 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     func getNFT(with indexPath: IndexPath) -> NFTModel {
         let nft = mockArrayOfNFT[indexPath.row]
         return nft
-    }
-
-    func addNFTToFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToAddToFav = nft
-        storage.addFavNFT(nftToAddToFav)
-    }
-
-    func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
     }
 
     func priceSorting() {
@@ -120,6 +116,14 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
             return true
         } else {
             return false
+        }
+    }
+
+    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
+        if isNFTFav {
+            removeNFTFromFav(nft)
+        } else {
+            addNFTToFav(nft)
         }
     }
 }

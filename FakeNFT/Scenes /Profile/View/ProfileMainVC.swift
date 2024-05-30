@@ -53,6 +53,7 @@ final class ProfileMainVC: UIViewController {
 
     // MARK: - Other Properties
     var presenter: ProfilePresenterProtocol
+    let notification = NotificationCenter.default
 
     // MARK: - Init
     init(presenter: ProfilePresenterProtocol) {
@@ -64,12 +65,16 @@ final class ProfileMainVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+           notification.removeObserver(self)
+    }
+
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
         presenter.viewDidLoad()
-        setupNotification()
+        addObserver()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -85,10 +90,6 @@ final class ProfileMainVC: UIViewController {
         presenter.editButtonTapped()
     }
 
-    @objc private func updateUI(_ notification: Notification) {
-        presenter.viewDidLoad()
-    }
-
     // MARK: - Public methods
     func updateUIWithMockData(_ data: ProfileMockModel) {
         nameLabel.text = data.name
@@ -100,10 +101,6 @@ final class ProfileMainVC: UIViewController {
     }
 
     // MARK: - Private methods
-    private func setupNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: Notification.Name("updateUI"), object: nil)
-    }
-
     private func setupLayout() {
         setupNavigation()
         setupContentStack()
@@ -186,6 +183,15 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         presenter.selectCell(indexPath: indexPath)
+    }
+}
+
+// MARK: - Notification
+extension ProfileMainVC {
+    private func addObserver() {
+        notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
+            self?.presenter.viewDidLoad()
+        }
     }
 }
 

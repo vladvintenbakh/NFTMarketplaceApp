@@ -14,39 +14,13 @@ protocol FavoriteNFTPresenterProtocol {
     func getFavNFT(indexPath: IndexPath) -> NFTModel
 }
 
-final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
+final class FavoriteNFTPresenter {
 
     // MARK: - ViewController
     weak var view: FavoriteNFTViewProtocol?
 
-    // MARK: - Other properties
-    var mockArrayOfNFT = [NFTModel]()
-
-
-    // MARK: - Public methods
-    func viewDidLoad() {
-        uploadDataFromStorage()
-        showOrHidePlaceholder()
-    }
-
-    func getFavNFT(indexPath: IndexPath) -> NFTModel {
-        return mockArrayOfNFT[indexPath.row]
-    }
-
-
-    func getNumberOfRows() -> Int {
-        return mockArrayOfNFT.count
-    }
-
-    func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
-
-        uploadDataFromStorage()
-
-        view?.updateUI()
-    }
+    // MARK: - Private properties
+    private var mockArrayOfNFT = [NFTModel]()
 
     // MARK: - Private methods
     private func showOrHidePlaceholder() {
@@ -62,4 +36,32 @@ final class FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
         guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
         mockArrayOfNFT = favoriteNFT
     }
+}
+
+// MARK: - FavoriteNFTPresenterProtocol
+extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
+
+    func viewDidLoad() {
+        uploadDataFromStorage()
+        showOrHidePlaceholder()
+    }
+
+    func getFavNFT(indexPath: IndexPath) -> NFTModel {
+        return mockArrayOfNFT[indexPath.row]
+    }
+
+    func getNumberOfRows() -> Int {
+        return mockArrayOfNFT.count
+    }
+
+    func removeNFTFromFav(_ nft: NFTModel) {
+        let storage = MockDataStorage()
+        let nftToRemoveFromFav = nft
+        storage.removeFromFavNFT(nftToRemoveFromFav)
+
+        uploadDataFromStorage()
+
+        view?.updateUI()
+    }
+
 }
