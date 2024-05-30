@@ -7,6 +7,14 @@
 
 import UIKit
 
+protocol EditProfileViewProtocol: AnyObject {
+    func dismiss(animated: Bool, completion: (() -> Void)?)
+    func updateDescription(_ description: String)
+    func updateWebsite(_ webSite: String)
+    func updatePhoto(_ photoName: String)
+    func updateName(_ name: String)
+}
+
 final class EditProfileViewController: UIViewController {
 
     // MARK: - UI Properties
@@ -16,12 +24,32 @@ final class EditProfileViewController: UIViewController {
         textField.leftView = paddingLeftView
         textField.leftViewMode = .always
         textField.font = UIFont.bodyRegular
-        textField.text = "Joaquin Phoenix"
-        textField.backgroundColor = UIColor.yaLightGrayLight
-
+        textField.backgroundColor = UIColor.segmentInactive
         textField.layer.cornerRadius = 12
         textField.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        textField.delegate = self
         return textField
+    } ()
+    private lazy var descriptionTextView: UITextView = {
+        let textView = UITextView()
+        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
+        textView.font = UIFont.bodyRegular
+        textView.backgroundColor = UIColor.segmentInactive
+        textView.layer.cornerRadius = 12
+        textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
+        textView.delegate = self
+        return textView
+    } ()
+    private lazy var webSiteTextField: UITextField = {
+        let siteField = UITextField()
+        siteField.backgroundColor = UIColor.segmentInactive
+        siteField.layer.cornerRadius = 12
+        let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
+        siteField.leftView = paddingLeftView
+        siteField.leftViewMode = .always
+        siteField.delegate = self
+        siteField.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        return siteField
     } ()
     private lazy var loadNewPhoto: UILabel = {
         let label = UILabel()
@@ -29,20 +57,38 @@ final class EditProfileViewController: UIViewController {
         label.font = UIFont.bodyRegular
         label.textAlignment = .center
         label.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        label.backgroundColor = .white
         label.isHidden = true
         return label
     } ()
+    private lazy var photoImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.round(squareSize: 70)
+        return imageView
+    }()
+
+    // MARK: - Presenter
+    var presenter: EditProfilePresenterProtocol
+
+    // MARK: - Init
+    init(presenter: EditProfilePresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.viewDidLoad()
         setupLayout()
     }
 
     // MARK: - IB Actions
     @objc private func closeButtonTapped(sender: UIButton) {
-        dismiss(animated: true)
+        presenter.closeButtonTapped()
     }
 
     @objc private func clearTextButtonTapped(sender: UIButton) {
@@ -54,18 +100,33 @@ final class EditProfileViewController: UIViewController {
         loadNewPhoto.isHidden = false
     }
 
+    // MARK: - Public methods
+    func updateName(_ name: String) {
+        nameTextField.text = name
+    }
+
+    func updateDescription(_ description: String) {
+        descriptionTextView.text = description
+    }
+
+    func updateWebsite(_ webSite: String) {
+        webSiteTextField.text = webSite
+    }
+
+    func updatePhoto(_ photoName: String) {
+        photoImage.image = UIImage(named: photoName)
+    }
+
     // MARK: - Private methods
     private func setupLayout() {
+        view.backgroundColor = UIColor.backgroundActive
         setupNavigation()
-
-        view.backgroundColor = UIColor.background
-
         setupContentStack()
     }
 
     private func setupNavigation() {
         let closeImage = UIImage(named: "plus")
-        let colorImage = closeImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
+        let colorImage = closeImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(closeButtonTapped))
     }
 
@@ -101,8 +162,6 @@ final class EditProfileViewController: UIViewController {
 
     private func photoView() -> UIView {
         let photoView = UIView()
-        let photoImage = UIImageView(image: UIImage(named: "phoenix"))
-        photoImage.round(squareSize: 70)
         photoView.addSubViews([photoImage])
         photoImage.constraintCenters(to: photoView)
 
@@ -170,16 +229,7 @@ final class EditProfileViewController: UIViewController {
         descriptionLabel.text = "Описание"
         descriptionLabel.font = UIFont.headline3
 
-        let textView = UITextView()
-        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
-        textView.font = UIFont.bodyRegular
-        textView.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT и еще больше — на моём сайте. Открыт к коллаборациям."
-        textView.backgroundColor = UIColor.yaLightGrayLight
-        textView.layer.cornerRadius = 12
-        textView.heightAnchor.constraint(equalToConstant: 132).isActive = true
-        textView.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT и еще больше — на моём сайте. Открыт к коллаборациям."
-
-        let stack = UIStackView(arrangedSubviews: [descriptionLabel, textView])
+        let stack = UIStackView(arrangedSubviews: [descriptionLabel, descriptionTextView])
         stack.axis = .vertical
         stack.spacing = 8
 
@@ -191,18 +241,34 @@ final class EditProfileViewController: UIViewController {
         siteStack.text = "Сайт"
         siteStack.font = UIFont.headline3
 
-        let siteField = UITextField()
-        siteField.backgroundColor = UIColor.yaLightGrayLight
-        siteField.layer.cornerRadius = 12
-        siteField.text = "https://www.ivi.tv/person/hoakin_feniks"
-        let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
-        siteField.leftView = paddingLeftView
-        siteField.leftViewMode = .always
-        siteField.heightAnchor.constraint(equalToConstant: 44).isActive = true
-
-        let stack = UIStackView(arrangedSubviews: [siteStack, siteField])
+        let stack = UIStackView(arrangedSubviews: [siteStack, webSiteTextField])
         stack.axis = .vertical
         stack.spacing = 8
         return stack
     }
+}
+
+// MARK: - UITextFieldDelegate
+extension EditProfileViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        if let text = textField.text {
+            switch textField {
+            case nameTextField: presenter.passNewName(text)
+            case webSiteTextField: presenter.passWebSite(text)
+            default: print("Ooops")
+            }
+        }
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension EditProfileViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        presenter.passNewDescription(textView.text)
+    }
+}
+
+// MARK: - EditProfileViewProtocol
+extension EditProfileViewController: EditProfileViewProtocol {
+
 }

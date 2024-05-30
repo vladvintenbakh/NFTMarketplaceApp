@@ -54,6 +54,12 @@ extension UIColor {
     static let yaBlue = UIColor(hexString: "0A84FF")
     static let yaYellow = UIColor(hexString: "FEEF0D")
 
+    static let backgroundActive = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? .yaWhiteDark
+        : .background
+    }
+
     static let segmentActive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaBlackDark

@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol FavoriteNFTViewProtocol: AnyObject {
+    func showPlaceholder()
+    func hideCollection()
+    func updateUI()
+}
+
 final class FavoriteNFTViewController: UIViewController {
 
     // MARK: - UI properties
@@ -23,6 +29,7 @@ final class FavoriteNFTViewController: UIViewController {
         collection.dataSource = self
         collection.delegate = self
         collection.register(FavoriteNFTCollectionViewCell.self, forCellWithReuseIdentifier: FavoriteNFTCollectionViewCell.identifier)
+        collection.backgroundColor = .clear
         return collection
     } ()
 
@@ -30,33 +37,24 @@ final class FavoriteNFTViewController: UIViewController {
     var presenter: FavoriteNFTPresenterProtocol
 
     // MARK: - Init
-    init(presenter: FavoriteNFTPresenter) {
+    init(presenter: FavoriteNFTPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        showOrHidePlaceholder()
+        presenter.viewDidLoad()
     }
 
-    // MARK: - Private properties
-    private func showOrHidePlaceholder() {
-        let favorites = presenter.mockArrayOfNFT
-        if favorites.isEmpty {
-            showPlaceholder()
-        } else {
-            favNFTCollection.isHidden = false
-        }
-    }
-
-    private func showPlaceholder() {
+    // MARK: - Public properties
+    func showPlaceholder() {
         favNFTCollection.isHidden = true
 
         let placeholder = UILabel()
@@ -65,10 +63,21 @@ final class FavoriteNFTViewController: UIViewController {
         view.centerView(placeholder)
     }
 
+    func hideCollection() {
+        favNFTCollection.isHidden = false
+    }
+
+    func updateUI() {
+        DispatchQueue.main.async {
+            self.favNFTCollection.reloadData()
+        }
+    }
+
+    // MARK: - Private properties
     private func setupLayout() {
         setupNavigation()
 
-        view.backgroundColor = UIColor.background
+        view.backgroundColor = UIColor.backgroundActive
 
         view.addSubViews([favNFTCollection])
 
@@ -84,7 +93,7 @@ final class FavoriteNFTViewController: UIViewController {
         title = "Избранные NFT"
         // Убираем тут Back в стрелке обратно
         navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.navigationBar.tintColor = UIColor.black
+        navigationController?.navigationBar.tintColor = UIColor.segmentActive
     }
 }
 
@@ -95,11 +104,24 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell else { return UICollectionViewCell()}
-
-        let nft = presenter.mockArrayOfNFT[indexPath.row]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoriteNFTCollectionViewCell.identifier, for: indexPath) as? FavoriteNFTCollectionViewCell  else {
+            print("Issue with CollectionCell"); return UICollectionViewCell()}
+        cell.backgroundColor = .clear
+        let nft = presenter.getFavNFT(indexPath: indexPath)
         cell.configureCell(nft)
+        removeNFTFromFav(cell: cell, nft: nft)
 
         return cell
     }
+
+    private func removeNFTFromFav(cell: FavoriteNFTCollectionViewCell, nft: NFTModel) {
+        cell.likeButtonAction = { [weak self] in
+            guard let self = self else { return }
+            self.presenter.removeNFTFromFav(nft)
+        }
+    }
+}
+
+extension FavoriteNFTViewController: FavoriteNFTViewProtocol {
+
 }

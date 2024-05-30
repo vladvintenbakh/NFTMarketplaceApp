@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProfileViewProtocol: AnyObject {
+    func updateUIWithMockData(_ data: ProfileMockModel)
+}
+
 final class ProfileMainVC: UIViewController {
 
     // MARK: - UI Properties
@@ -17,6 +21,7 @@ final class ProfileMainVC: UIViewController {
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         table.separatorInset = .zero
+        table.backgroundColor = .clear
         return table
     } ()
     private lazy var nameLabel: UILabel = {
@@ -39,23 +44,21 @@ final class ProfileMainVC: UIViewController {
         label.font = UIFont.caption2
         return label
     } ()
-    private lazy var webSiteLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.caption1
-        label.textColor = UIColor.yaBlue
-        return label
+    private lazy var webButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(UIColor.yaBlue, for: .normal)
+        button.titleLabel?.font = UIFont.caption1
+        button.contentHorizontalAlignment = .left
+        button.addTarget(self, action: #selector(webSiteButtonTapped), for: .touchUpInside)
+        return button
     } ()
 
     // MARK: - Other Properties
-    let presenter: ProfilePresenterProtocol?
-    var delegate: ProfileViewControllerDelegate?
-
-    let rowNames = ["Мои NFT", "Избранные NFT", "О разработчике"]
-    var count = 0
-    var favoriteNFT = 0
+    var presenter: ProfilePresenterProtocol
+    let notification = NotificationCenter.default
 
     // MARK: - Init
-    init(presenter: ProfilePresenterProtocol?) {
+    init(presenter: ProfilePresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -64,41 +67,49 @@ final class ProfileMainVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+           notification.removeObserver(self)
+    }
+
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        updateUIWithMockData()
+        presenter.viewDidLoad()
+        addObserver()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        presenter.viewDidLoad()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.nftTable.reloadData()
+        }
     }
 
     // MARK: - IB Actions
     @objc private func editButtonTapped(sender: UIButton) {
-        let vc = EditProfileViewController()
-        let EditVC = UINavigationController(rootViewController: vc)
-        present(EditVC, animated: true)
+        presenter.editButtonTapped()
+    }
+
+    @objc private func webSiteButtonTapped(sender: UIButton) {
+        presenter.webSiteButtonTapped()
+    }
+
+
+    // MARK: - Public methods
+    func updateUIWithMockData(_ data: ProfileMockModel) {
+        nameLabel.text = data.name
+        guard let imageName = data.avatar else { return }
+        let image = UIImage(named: imageName)
+        photoImage.image = image
+        aboutMeLabel.text = data.description
+        webButton.setTitle(data.website, for: .normal)
     }
 
     // MARK: - Private methods
-    private func updateUIWithMockData() {
-        guard let data = presenter?.mockData,
-              let imageName = data.avatar,
-              let nftList = data.nfts,
-              let favList = data.favoriteNFT else { return }
-
-        nameLabel.text = data.name
-        let image =  UIImage(named: imageName)
-        photoImage.image = image
-        aboutMeLabel.text = data.description
-        webSiteLabel.text = data.website
-        count = nftList.count
-        favoriteNFT = favList.count
-    }
-
     private func setupLayout() {
-        view.backgroundColor = UIColor.background
-
         setupNavigation()
-
         setupContentStack()
     }
 
@@ -106,11 +117,13 @@ final class ProfileMainVC: UIViewController {
         let editImage = UIImage(systemName: "square.and.pencil")
         let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(UIColor.yaBlackLight, renderingMode: .alwaysOriginal)
+        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
     }
 
     private func setupContentStack() {
+        view.backgroundColor = UIColor.backgroundActive
+
         let photoAndNameStack = setupPersonalDataStack()
 
         view.addSubViews([photoAndNameStack, nftTable])
@@ -121,8 +134,8 @@ final class ProfileMainVC: UIViewController {
             photoAndNameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
 
             nftTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
-            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -0),
+            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
@@ -133,13 +146,15 @@ final class ProfileMainVC: UIViewController {
         photoStack.axis = .horizontal
         photoStack.spacing = 16
 
-        let dataStack = UIStackView(arrangedSubviews: [photoStack, aboutMeLabel, webSiteLabel])
+        let dataStack = UIStackView(arrangedSubviews: [photoStack, aboutMeLabel, webButton])
         dataStack.axis = .vertical
         dataStack.distribution = .equalCentering
 
         NSLayoutConstraint.activate([
             aboutMeLabel.topAnchor.constraint(equalTo: photoStack.bottomAnchor, constant: 20),
-            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
+            webButton.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
+
+//            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
         ])
 
         return dataStack
@@ -149,59 +164,47 @@ final class ProfileMainVC: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rowNames.count
+        presenter.getRowCount()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") else { return UITableViewCell() }
+
         configureCell(cell: cell, indexPath: indexPath)
         return cell
     }
 
     private func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
         fillInCellName(cell: cell, indexPath: indexPath)
+        cell.backgroundColor = .clear
+
         cell.textLabel?.font = UIFont.bodyBold
         let disclosureImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 7, height: 12))
-        disclosureImage.image = UIImage(named: "chevron")
+        disclosureImage.image = UIImage(named: "chevron")?.withTintColor(UIColor.segmentActive)
         cell.accessoryView = disclosureImage
         cell.selectionStyle = .none
     }
 
     private func fillInCellName(cell: UITableViewCell, indexPath: IndexPath) {
-        let name = rowNames[indexPath.row]
-        
-        switch name {
-        case "Мои NFT": cell.textLabel?.text = "\(name) (\(count))"
-        case "Избранные NFT": cell.textLabel?.text = "\(name) (\(favoriteNFT))"
-        default: cell.textLabel?.text = "\(name)"
-        }
+        let nameAndCount = presenter.nameCell(indexPath: indexPath)
+        cell.textLabel?.text = nameAndCount
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case 0: goToMyNFTScreen()
-        case 1: goToFavNFTScreen()
-        default: goToWebScreen()
+        presenter.selectCell(indexPath: indexPath)
+    }
+}
+
+// MARK: - Notification
+extension ProfileMainVC {
+    private func addObserver() {
+        notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
+            self?.presenter.viewDidLoad()
         }
     }
+}
 
-    private func goToMyNFTScreen() {
-        let presenter = MyNFTPresenter()
-        let vc = MyNFTViewController(presenter: presenter)
-        navigationController?.pushViewController(vc, animated: true)
-    }
+// MARK: - ProfileViewProtocol
+extension ProfileMainVC: ProfileViewProtocol {
 
-    private func goToFavNFTScreen() {
-        let presenter = FavoriteNFTPresenter()
-        let vc = FavoriteNFTViewController(presenter: presenter)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
-    private func goToWebScreen() {
-        let presenter = WebViewPresenter()
-        self.delegate = presenter
-        let vc = WebViewController(presenter: presenter)
-        delegate?.passWebsiteName(webSiteLabel.text)
-        navigationController?.pushViewController(vc, animated: true)
-    }
 }

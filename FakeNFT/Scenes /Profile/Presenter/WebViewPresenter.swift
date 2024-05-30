@@ -11,15 +11,20 @@ protocol WebViewPresenterProtocol {
     func configureRequest() -> URLRequest?
 }
 
-protocol ProfileViewControllerDelegate {
-    func passWebsiteName(_ website: String?)
-}
-
-final class WebViewPresenter: WebViewPresenterProtocol {
+final class WebViewPresenter {
 
     weak var view: WebViewController?
-    var websiteName: String?
+    private var websiteName: String?
 
+    init(view: WebViewController? = nil, websiteName: String? = nil) {
+        self.view = view
+        self.websiteName = websiteName
+    }
+}
+
+// MARK: - WebViewPresenterProtocol
+extension WebViewPresenter: WebViewPresenterProtocol {
+    
     func configureRequest() -> URLRequest? {
         guard let urlString = websiteName,
               let url = URL(string: urlString) else { print("Issue with URL"); return nil}
@@ -27,12 +32,3 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         return request
     }
 }
-
-// MARK: - ProfileViewControllerDelegate
-extension WebViewPresenter: ProfileViewControllerDelegate {
-
-    func passWebsiteName(_ website: String?) {
-        websiteName = website
-    }
-}
-
