@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol ProfileViewProtocol: AnyObject {
     func updateUIWithMockData(_ data: ProfileMockModel)
+    func updateUIWithNetworkData(_ data: ProfileModel)
 }
 
 final class ProfileMainVC: UIViewController {
@@ -75,7 +77,7 @@ final class ProfileMainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        presenter.viewDidLoad()
+//        presenter.viewDidLoad()
         addObserver()
     }
 
@@ -103,6 +105,15 @@ final class ProfileMainVC: UIViewController {
         guard let imageName = data.avatar else { return }
         let image = UIImage(named: imageName)
         photoImage.image = image
+        aboutMeLabel.text = data.description
+        webButton.setTitle(data.website, for: .normal)
+    }
+
+    func updateUIWithNetworkData(_ data: ProfileModel) {
+        nameLabel.text = data.name
+        guard let imageName = data.avatar else { return }
+        let image = URL(string: imageName)
+        photoImage.kf.setImage(with: image)
         aboutMeLabel.text = data.description
         webButton.setTitle(data.website, for: .normal)
     }
@@ -153,8 +164,6 @@ final class ProfileMainVC: UIViewController {
         NSLayoutConstraint.activate([
             aboutMeLabel.topAnchor.constraint(equalTo: photoStack.bottomAnchor, constant: 20),
             webButton.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
-
-//            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
         ])
 
         return dataStack

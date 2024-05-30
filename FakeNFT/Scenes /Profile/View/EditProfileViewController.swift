@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol EditProfileViewProtocol: AnyObject {
     func dismiss(animated: Bool, completion: (() -> Void)?)
     func updateDescription(_ description: String)
     func updateWebsite(_ webSite: String)
-    func updatePhoto(_ photoName: String)
+    func updatePhoto(_ photoURL: URL)
     func updateName(_ name: String)
 }
 
@@ -113,8 +114,8 @@ final class EditProfileViewController: UIViewController {
         webSiteTextField.text = webSite
     }
 
-    func updatePhoto(_ photoName: String) {
-        photoImage.image = UIImage(named: photoName)
+    func updatePhoto(_ photoURL: URL) {
+        photoImage.kf.setImage(with: photoURL)
     }
 
     // MARK: - Private methods

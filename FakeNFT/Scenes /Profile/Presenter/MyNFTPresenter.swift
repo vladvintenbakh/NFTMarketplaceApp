@@ -29,9 +29,14 @@ final class MyNFTPresenter {
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let myNFT = data.nfts else { print("Ooops"); return }
-        mockArrayOfNFT = myNFT
+        let data = ProfileStorage.profile
+        guard let myNFT = data?.nfts else { print("Ooops"); return }
+//        mockArrayOfNFT = myNFT
+
+
+//        let data = MockDataStorage.mockData
+//        guard let myNFT = data.nfts else { print("Ooops"); return }
+//        mockArrayOfNFT = myNFT
     }
 
     private func showOrHidePlaceholder() {

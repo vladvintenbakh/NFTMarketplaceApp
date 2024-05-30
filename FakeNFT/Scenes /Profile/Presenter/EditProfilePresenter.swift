@@ -19,10 +19,10 @@ final class EditProfilePresenter {
 
     // MARK: - ViewController
     weak var view: EditProfileViewProtocol?
-    let notification = NotificationCenter.default
 
     // MARK: - Private Properties
-    private var data: ProfileMockModel?
+    private let notification = NotificationCenter.default
+
     private var newName: String?
     private var newDescription: String?
     private var newWebSite: String?
@@ -30,8 +30,7 @@ final class EditProfilePresenter {
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = MockDataStorage.mockData
-        self.data = data
+        guard let data = ProfileStorage.profile else { print("Oops"); return }
         newName = data.name
         newDescription = data.description
         newWebSite = data.website
@@ -52,8 +51,9 @@ final class EditProfilePresenter {
     }
 
     private func setPhoto() {
-        guard let avatar else { return }
-        view?.updatePhoto(avatar)
+        guard let avatar,
+              let imageURL = URL(string: avatar) else { return }
+        view?.updatePhoto(imageURL)
     }
 
     private func setName() {

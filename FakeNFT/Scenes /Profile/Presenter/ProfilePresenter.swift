@@ -21,11 +21,46 @@ final class ProfilePresenter {
     // MARK: - View
     weak var view: ProfileViewProtocol?
     var navigation: NavigationManager?
+    let network = DefaultNetworkClient()
+//    let storage = ProfileStorage()
 
     // MARK: - Other properties
     private var mockData: ProfileMockModel?
+//    private var profile: ProfileModel?
+
+    // MARK: - Life cycles
+    func viewDidLoad() {
+//        uploadDataFromStorage()
+        uploadDataFromNetwork()
+    }
 
     // MARK: - Private methods
+    private func uploadDataFromNetwork() {
+        let request = ProfileRequest()
+
+        network.send(request: request, type: ApiModel.self)  { [weak self] result in
+            switch result {
+            case .success(let data):
+                self?.passDataToViewAndStorage(data)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    private func passDataToViewAndStorage(_ dataFromNetwork: ApiModel?) {
+        guard let data = dataFromNetwork else { return }
+        let newProfile = ProfileModel(from: data)
+        passProfileToStorage(newProfile)
+//        print(profile)
+        view?.updateUIWithNetworkData(newProfile)
+    }
+
+    private func passProfileToStorage(_ profile: ProfileModel) {
+        ProfileStorage.profile = profile
+//        print(ProfileStorage.profile)
+    }
+
     private func uploadDataFromStorage() {
         mockData = MockDataStorage.mockData
         guard let data = mockData else { return }
@@ -43,10 +78,6 @@ final class ProfilePresenter {
 
 // MARK: - ProfilePresenterProtocol
 extension ProfilePresenter: ProfilePresenterProtocol {
-
-    func viewDidLoad() {
-        uploadDataFromStorage()
-    }
 
     func getRowCount() -> Int {
         RowNamesEnum.allCases.count
