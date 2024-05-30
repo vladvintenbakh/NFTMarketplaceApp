@@ -47,6 +47,7 @@ final class EditProfileViewController: UIViewController {
         let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: siteField.frame.height))
         siteField.leftView = paddingLeftView
         siteField.leftViewMode = .always
+        siteField.delegate = self
         siteField.heightAnchor.constraint(equalToConstant: 44).isActive = true
         return siteField
     } ()
@@ -253,7 +254,8 @@ extension EditProfileViewController: UITextFieldDelegate {
         if let text = textField.text {
             switch textField {
             case nameTextField: presenter.passNewName(text)
-            default: presenter.passWebSite(text)
+            case webSiteTextField: presenter.passWebSite(text)
+            default: print("Ooops")
             }
         }
     }

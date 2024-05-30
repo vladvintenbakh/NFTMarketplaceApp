@@ -44,11 +44,13 @@ final class ProfileMainVC: UIViewController {
         label.font = UIFont.caption2
         return label
     } ()
-    private lazy var webSiteLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.caption1
-        label.textColor = UIColor.yaBlue
-        return label
+    private lazy var webButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(UIColor.yaBlue, for: .normal)
+        button.titleLabel?.font = UIFont.caption1
+        button.contentHorizontalAlignment = .left
+        button.addTarget(self, action: #selector(webSiteButtonTapped), for: .touchUpInside)
+        return button
     } ()
 
     // MARK: - Other Properties
@@ -90,6 +92,11 @@ final class ProfileMainVC: UIViewController {
         presenter.editButtonTapped()
     }
 
+    @objc private func webSiteButtonTapped(sender: UIButton) {
+        presenter.webSiteButtonTapped()
+    }
+
+
     // MARK: - Public methods
     func updateUIWithMockData(_ data: ProfileMockModel) {
         nameLabel.text = data.name
@@ -97,7 +104,7 @@ final class ProfileMainVC: UIViewController {
         let image = UIImage(named: imageName)
         photoImage.image = image
         aboutMeLabel.text = data.description
-        webSiteLabel.text = data.website
+        webButton.setTitle(data.website, for: .normal)
     }
 
     // MARK: - Private methods
@@ -139,13 +146,15 @@ final class ProfileMainVC: UIViewController {
         photoStack.axis = .horizontal
         photoStack.spacing = 16
 
-        let dataStack = UIStackView(arrangedSubviews: [photoStack, aboutMeLabel, webSiteLabel])
+        let dataStack = UIStackView(arrangedSubviews: [photoStack, aboutMeLabel, webButton])
         dataStack.axis = .vertical
         dataStack.distribution = .equalCentering
 
         NSLayoutConstraint.activate([
             aboutMeLabel.topAnchor.constraint(equalTo: photoStack.bottomAnchor, constant: 20),
-            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
+            webButton.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
+
+//            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
         ])
 
         return dataStack

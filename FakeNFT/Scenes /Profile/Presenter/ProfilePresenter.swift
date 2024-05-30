@@ -12,6 +12,7 @@ protocol ProfilePresenterProtocol {
     func getRowCount() -> Int
     func selectCell(indexPath: IndexPath)
     func editButtonTapped()
+    func webSiteButtonTapped()
     func nameCell(indexPath: IndexPath) -> String
 }
 
@@ -25,10 +26,6 @@ final class ProfilePresenter {
     private var mockData: ProfileMockModel?
 
     // MARK: - Private methods
-    private func goToEditProfileScreen() {
-        navigation?.goToView(.editProfile)
-    }
-
     private func uploadDataFromStorage() {
         mockData = MockDataStorage.mockData
         guard let data = mockData else { return }
@@ -60,7 +57,11 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func editButtonTapped() {
-        goToEditProfileScreen()
+        navigation?.goToView(.editProfile)
+    }
+
+    func webSiteButtonTapped() {
+        navigation?.goToView(.webScreen, webSiteName: mockData?.website)
     }
 
     func nameCell(indexPath: IndexPath) -> String {
