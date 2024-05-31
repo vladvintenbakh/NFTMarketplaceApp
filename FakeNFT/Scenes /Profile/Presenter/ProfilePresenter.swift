@@ -22,15 +22,12 @@ final class ProfilePresenter {
     weak var view: ProfileViewProtocol?
     var navigation: NavigationManager?
     let network = DefaultNetworkClient()
-//    let storage = ProfileStorage()
 
     // MARK: - Other properties
-    private var mockData: ProfileMockModel?
-//    private var profile: ProfileModel?
+    private var profile: ProfileModel?
 
     // MARK: - Life cycles
     func viewDidLoad() {
-//        uploadDataFromStorage()
         uploadDataFromNetwork()
     }
 
@@ -52,27 +49,30 @@ final class ProfilePresenter {
         guard let data = dataFromNetwork else { return }
         let newProfile = ProfileModel(from: data)
         passProfileToStorage(newProfile)
-//        print(profile)
+        updateDataHere()
         view?.updateUIWithNetworkData(newProfile)
     }
 
     private func passProfileToStorage(_ profile: ProfileModel) {
         ProfileStorage.profile = profile
-//        print(ProfileStorage.profile)
     }
 
-    private func uploadDataFromStorage() {
-        mockData = MockDataStorage.mockData
-        guard let data = mockData else { return }
-        view?.updateUIWithMockData(data)
+    private func updateDataHere() {
+        profile = ProfileStorage.profile
     }
+
+//    private func uploadDataFromStorage() {
+//        mockData = MockDataStorage.mockData
+//        guard let data = mockData else { return }
+//        view?.updateUIWithMockData(data)
+//    }
 
     private func getNFTCount() -> Int {
-        mockData?.nfts?.count ?? 0
+        profile?.nfts?.count ?? 0
     }
 
     private func getFavoriteNFTCount() -> Int {
-        mockData?.favoriteNFT?.count ?? 0
+        profile?.favoriteNFT?.count ?? 0
     }
 }
 
@@ -84,7 +84,7 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func selectCell(indexPath: IndexPath) {
-        navigation?.goToView(indexPath: indexPath, webSiteName: mockData?.website)
+        navigation?.goToView(indexPath: indexPath, webSiteName: profile?.website)
     }
 
     func editButtonTapped() {
@@ -92,7 +92,7 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func webSiteButtonTapped() {
-        navigation?.goToView(.webScreen, webSiteName: mockData?.website)
+        navigation?.goToView(.webScreen, webSiteName: profile?.website)
     }
 
     func nameCell(indexPath: IndexPath) -> String {

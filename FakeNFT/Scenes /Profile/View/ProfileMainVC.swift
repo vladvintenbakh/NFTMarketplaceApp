@@ -116,6 +116,10 @@ final class ProfileMainVC: UIViewController {
         photoImage.kf.setImage(with: image)
         aboutMeLabel.text = data.description
         webButton.setTitle(data.website, for: .normal)
+
+        DispatchQueue.main.async { [weak self] in
+            self?.nftTable.reloadData()
+        }
     }
 
     // MARK: - Private methods

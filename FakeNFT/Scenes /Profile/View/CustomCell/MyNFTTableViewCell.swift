@@ -146,7 +146,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - Public Methods
     func configureCell(_ nft: NFTModel, isNFTFav: Bool) {
-        guard let imageName = nft.imageName,
+        guard let imageName = nft.images?.first,
               let author = nft.author,
               let rating = nft.rating else { print("Ooopsss"); return }
 
@@ -160,6 +160,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         ratingImage.image = ratingStars
 
         authorLabel.text = "от "+"\(author)"
-        priceNumberLabel.text = nft.price
+        priceNumberLabel.text = "\(nft.price)"
     }
 }

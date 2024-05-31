@@ -42,7 +42,7 @@ final class EditProfilePresenter {
                                       description: newDescription,
                                       website: newWebSite)
         let storage = MockDataStorage()
-        storage.updateDataAfterEditing(newData: newData)
+//        storage.updateDataAfterEditing(newData: newData)
     }
 
     private func setWebsite() {

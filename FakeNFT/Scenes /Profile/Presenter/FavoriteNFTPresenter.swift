@@ -20,46 +20,72 @@ final class FavoriteNFTPresenter {
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
-    private var mockArrayOfNFT = [NFTModel]()
+    private var arrayOfFavNFT = [NFTModel]()
+    private var listOfFavNFT = [String]()
+    private let network = DefaultNetworkClient()
+
+    // MARK: - Life cycle
+    func viewDidLoad() {
+        getArrayOfFavFromStorage()
+
+        uploadFavNFTFromNetwork()
+
+    }
 
     // MARK: - Private methods
+    private func getArrayOfFavFromStorage() {
+        guard let profile = ProfileStorage.profile,
+              let favoriteNFT = profile.favoriteNFT else { return }
+        listOfFavNFT = favoriteNFT
+    }
+
+    private func uploadFavNFTFromNetwork() {
+        guard let id = listOfFavNFT.first else { return }
+        let request = NFTRequest(id: id)
+
+        network.send(request: request, type: NFTModel.self)  { [weak self] result in
+            switch result {
+            case .success(let data):
+                print("✅ Favorite NFT uploaded successfully")
+                self?.passDataToViewAndStorage(data)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    private func passDataToViewAndStorage(_ dataFromNetwork: NFTModel) {
+        arrayOfFavNFT.append(dataFromNetwork)
+        view?.updateUI()
+        showOrHidePlaceholder()
+    }
+
     private func showOrHidePlaceholder() {
-        if mockArrayOfNFT.isEmpty {
+        if listOfFavNFT.isEmpty {
             view?.showPlaceholder()
         } else {
             view?.hideCollection()
         }
-    }
-
-    private func uploadDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
-        mockArrayOfNFT = favoriteNFT
     }
 }
 
 // MARK: - FavoriteNFTPresenterProtocol
 extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
-    func viewDidLoad() {
-        uploadDataFromStorage()
-        showOrHidePlaceholder()
-    }
-
     func getFavNFT(indexPath: IndexPath) -> NFTModel {
-        return mockArrayOfNFT[indexPath.row]
+        return arrayOfFavNFT[indexPath.row]
     }
 
     func getNumberOfRows() -> Int {
-        return mockArrayOfNFT.count
+        return arrayOfFavNFT.count
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {
         let storage = MockDataStorage()
         let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
+//        storage.removeFromFavNFT(nftToRemoveFromFav)
 
-        uploadDataFromStorage()
+//        uploadDataFromStorage()
 
         view?.updateUI()
     }

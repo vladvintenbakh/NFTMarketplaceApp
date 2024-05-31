@@ -2,10 +2,10 @@ import Foundation
 
 struct NFTRequest: NetworkRequest {
 
-    let id: String?
+    let id: String
 
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/nft/\(id)")
     }
 }
 
@@ -13,7 +13,5 @@ struct ProfileRequest: NetworkRequest {
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
     }
-
-//    var dto: ApiModel?
 }
 

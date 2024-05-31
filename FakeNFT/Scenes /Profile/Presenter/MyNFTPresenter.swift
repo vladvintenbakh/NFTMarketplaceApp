@@ -55,19 +55,20 @@ final class MyNFTPresenter {
     private func addNFTToFav(_ nft: NFTModel) {
         let storage = MockDataStorage()
         let nftToAddToFav = nft
-        storage.addFavNFT(nftToAddToFav)
+//        storage.addFavNFT(nftToAddToFav)
     }
 
     private func removeNFTFromFav(_ nft: NFTModel) {
         let storage = MockDataStorage()
         let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
+//        storage.removeFromFavNFT(nftToRemoveFromFav)
     }
 
 }
 
 // MARK: - MyNFTPresenterProtocol
 extension  MyNFTPresenter: MyNFTPresenterProtocol {
+    
     func viewDidLoad() {
         getDataFromStorage()
         showOrHidePlaceholder()
@@ -88,11 +89,11 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
 
     func priceSorting() {
         mockArrayOfNFT.sort {
-            guard let priceString1 = $0.price,
-                  let priceString2 = $1.price,
-                  let priceDouble1 = Double(priceString1),
-                  let priceDouble2 = Double(priceString2) else { print("Sorting problem"); return false}
-            return priceDouble1 > priceDouble2
+            guard let price1 = $0.price,
+                  let price2 = $1.price else { print("Sorting problem"); return false }
+            //                  let priceDouble1 = Double(priceString1),
+            //                  let priceDouble2 = Double(priceString2) ;
+            return price1 > price2
         }
         view?.updateTableView()
     }
@@ -116,19 +117,19 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func isNFTInFav(_ nft: NFTModel) -> Bool {
-        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false }
-        if listOfFav.contains(where: { $0.name == nft.name }) {
-            return true
-        } else {
-            return false
-        }
-    }
+        //        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false }
+        //        if listOfFav.contains(where: { $0.name == nft.name }) {
+        //            return true
+        //        } else {
+                    return false
+        //        }
+            }
 
-    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
-        if isNFTFav {
-            removeNFTFromFav(nft)
-        } else {
-            addNFTToFav(nft)
+        func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
+            if isNFTFav {
+                removeNFTFromFav(nft)
+            } else {
+                addNFTToFav(nft)
+            }
         }
     }
-}
