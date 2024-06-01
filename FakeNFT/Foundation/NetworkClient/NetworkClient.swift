@@ -109,7 +109,7 @@ struct DefaultNetworkClient: NetworkClient {
 
     // MARK: - Private
 
-    private func create(request: NetworkRequest) -> URLRequest? {
+    func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
             return nil
@@ -119,6 +119,8 @@ struct DefaultNetworkClient: NetworkClient {
         urlRequest.httpMethod = request.httpMethod.rawValue
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         urlRequest.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
 
         if let dto = request.dto,
            let dtoEncoded = try? encoder.encode(dto) {
@@ -136,4 +138,14 @@ struct DefaultNetworkClient: NetworkClient {
             onResponse(.failure(NetworkClientError.parsingError))
         }
     }
+
+    func sendNew<T: Decodable>(request: NFTRequest, type: T.Type) async throws -> T? {
+        guard let url = create(request: request) else {
+            print("We've some problems"); return nil }
+        let (data, _) = try await URLSession.shared.data(for: url)
+        let decodedData = try JSONDecoder().decode(T.self, from: data)
+        return decodedData
+    }
+
+    
 }

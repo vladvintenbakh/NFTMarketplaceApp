@@ -21,8 +21,9 @@ final class FavoriteNFTViewController: UIViewController {
             let flow = UICollectionViewFlowLayout()
             flow.scrollDirection = .vertical
             flow.minimumLineSpacing = 20
-            flow.minimumInteritemSpacing = 7
-            flow.itemSize = CGSize(width: 168, height: 80)
+            flow.minimumInteritemSpacing = 5
+            let width = (view.bounds.width - 32 - 5) / 2
+            flow.itemSize = CGSize(width: width, height: 80)
             return flow
         } ()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -55,21 +56,25 @@ final class FavoriteNFTViewController: UIViewController {
 
     // MARK: - Public properties
     func showPlaceholder() {
-        favNFTCollection.isHidden = true
+        DispatchQueue.main.async { [weak self] in
+            self?.favNFTCollection.isHidden = true
 
-        let placeholder = UILabel()
-        placeholder.text = "У Вас ещё нет избранных NFT"
-        placeholder.font = UIFont.bodyBold
-        view.centerView(placeholder)
+            let placeholder = UILabel()
+            placeholder.text = "У Вас ещё нет избранных NFT"
+            placeholder.font = UIFont.bodyBold
+            self?.view.centerView(placeholder)
+        }
     }
 
     func hideCollection() {
-        favNFTCollection.isHidden = false
+        DispatchQueue.main.async { [weak self] in
+            self?.favNFTCollection.isHidden = false
+        }
     }
 
     func updateUI() {
-        DispatchQueue.main.async {
-            self.favNFTCollection.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.favNFTCollection.reloadData()
         }
     }
 
@@ -83,8 +88,8 @@ final class FavoriteNFTViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             favNFTCollection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            favNFTCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            favNFTCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            favNFTCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            favNFTCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             favNFTCollection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }

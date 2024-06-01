@@ -14,16 +14,5 @@ struct NFTModel: Codable {
     var rating: Int?
     var author: String?
     var price: Double?
+    var id: String?
 }
-
-
-//struct Welcome: Codable {
-//    let createdAt, name: String?
-//    let images: [String]?
-//    let rating: Int?
-//    let description: String?
-//    
-//    let price: Double?
-//    let author: String?
-//    let id: String?
-//}

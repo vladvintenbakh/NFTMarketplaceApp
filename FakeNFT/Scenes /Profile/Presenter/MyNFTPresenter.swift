@@ -17,29 +17,46 @@ protocol MyNFTPresenterProtocol {
     func ratingSorting()
     func nameSorting()
     func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
+    func showOrHidePlaceholder()
 }
 
 final class MyNFTPresenter {
 
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
+    private let network = DefaultNetworkClient()
 
     // MARK: - Other properties
-    private var mockArrayOfNFT = [NFTModel]()
+    private var arrayOfNFT = [NFTModel]()
+    private var listOfNFT = [String]()
 
     // MARK: - Private methods
     private func getDataFromStorage() {
         let data = ProfileStorage.profile
         guard let myNFT = data?.nfts else { print("Ooops"); return }
-//        mockArrayOfNFT = myNFT
-
-
-//        let data = MockDataStorage.mockData
-//        guard let myNFT = data.nfts else { print("Ooops"); return }
-//        mockArrayOfNFT = myNFT
+        listOfNFT = myNFT
     }
 
-    private func showOrHidePlaceholder() {
+    private func uploadNFTFromNetwork() {
+        Task {
+            for nftID in listOfNFT {
+                let request = NFTRequest(id: nftID)
+
+                do {
+                    let data = try await network.sendNew(request: request, type: NFTModel.self)
+                    // print("✅ Favorite NFT uploaded successfully")
+                    guard let data else { return }
+                    arrayOfNFT.append(data)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            print("arrayOfNFT \(arrayOfNFT)")
+            view?.updateTableView()
+        }
+    }
+
+    func showOrHidePlaceholder() {
         let isDataEmpty = isArrayOfNFTEmpty()
         if isDataEmpty {
             view?.showPlaceholder()
@@ -49,7 +66,7 @@ final class MyNFTPresenter {
     }
 
     private func isArrayOfNFTEmpty() -> Bool {
-        return mockArrayOfNFT.isEmpty
+        return arrayOfNFT.isEmpty
     }
 
     private func addNFTToFav(_ nft: NFTModel) {
@@ -71,7 +88,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     
     func viewDidLoad() {
         getDataFromStorage()
-        showOrHidePlaceholder()
+        uploadNFTFromNetwork()
     }
 
     func sortButtonTapped() {
@@ -79,16 +96,16 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func getNumberOfRows() -> Int {
-        return mockArrayOfNFT.count
+        return arrayOfNFT.count
     }
 
     func getNFT(with indexPath: IndexPath) -> NFTModel {
-        let nft = mockArrayOfNFT[indexPath.row]
+        let nft = arrayOfNFT[indexPath.row]
         return nft
     }
 
     func priceSorting() {
-        mockArrayOfNFT.sort {
+        arrayOfNFT.sort {
             guard let price1 = $0.price,
                   let price2 = $1.price else { print("Sorting problem"); return false }
             //                  let priceDouble1 = Double(priceString1),
@@ -99,7 +116,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func ratingSorting() {
-        mockArrayOfNFT.sort {
+        arrayOfNFT.sort {
             guard let rating1 = $0.rating,
                   let rating2 = $1.rating else { print("Sorting problem"); return false}
             return rating1 > rating2
@@ -108,7 +125,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func nameSorting() {
-        mockArrayOfNFT.sort {
+        arrayOfNFT.sort {
             guard let rating1 = $0.name,
                   let rating2 = $1.name else { print("Sorting problem"); return false}
             return rating1 > rating2

@@ -29,7 +29,6 @@ final class FavoriteNFTPresenter {
         getArrayOfFavFromStorage()
 
         uploadFavNFTFromNetwork()
-
     }
 
     // MARK: - Private methods
@@ -40,22 +39,26 @@ final class FavoriteNFTPresenter {
     }
 
     private func uploadFavNFTFromNetwork() {
-        guard let id = listOfFavNFT.first else { return }
-        let request = NFTRequest(id: id)
+        Task {
+            for nftID in listOfFavNFT {
+                let request = NFTRequest(id: nftID)
 
-        network.send(request: request, type: NFTModel.self)  { [weak self] result in
-            switch result {
-            case .success(let data):
-                print("✅ Favorite NFT uploaded successfully")
-                self?.passDataToViewAndStorage(data)
-            case .failure(let error):
-                print(error)
+                do {
+                    let data = try await network.sendNew(request: request, type: NFTModel.self)
+                    // print("✅ Favorite NFT uploaded successfully")
+                    guard let data else { return }
+                    arrayOfFavNFT.append(data)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
+//            print("listOfFavNFT \(listOfFavNFT)")
+            // print("arrayOfFavNFT \(arrayOfFavNFT)")
+            updateView()
         }
     }
 
-    private func passDataToViewAndStorage(_ dataFromNetwork: NFTModel) {
-        arrayOfFavNFT.append(dataFromNetwork)
+    private func updateView() {
         view?.updateUI()
         showOrHidePlaceholder()
     }
@@ -81,13 +84,63 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-//        storage.removeFromFavNFT(nftToRemoveFromFav)
+        listOfFavNFT.removeAll { $0 == nft.id }
+        arrayOfFavNFT.removeAll { $0.name == nft.name }
+//        print("listOfFavNFT \(listOfFavNFT)")
+        putLikes(listOfLikes: listOfFavNFT)
 
-//        uploadDataFromStorage()
+        }
 
-        view?.updateUI()
+    func putLikes (listOfLikes: [String]) {
+        var favInString = listOfLikes.isEmpty ? "null" : listOfLikes.joined(separator: ",")
+
+        guard let urlRequest = createURLRequestPutLikes(paramName: "likes",
+                                          paramValue: favInString)
+        else { print("WrongRequest"); return }
+
+        Task {
+            do {
+                let data = try await putLikes(url: urlRequest, type: ApiModel.self)
+                updateView()
+            } catch {
+                print(error)
+            }
+        }
+    }
+
+    func putLikes<T: Decodable>(url: URLRequest, type: T.Type) async throws -> T? {
+        
+        let (data, response) = try await URLSession.shared.data(for: url)
+        guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else { throw NetworkClientError.urlSessionError }
+       
+        do {
+            let decodedData = try JSONDecoder().decode(T.self, from: data)
+            return decodedData
+        } catch {
+            throw NetworkClientError.parsingError
+        }
+
+    }
+
+    func createURLRequestPutLikes(paramName: String, paramValue: String) -> URLRequest? {
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
+        urlComponents.path = "/api/v1/profile/1"
+
+        let query = URLQueryItem(name: paramName, value: paramValue)
+        urlComponents.queryItems = [query]
+
+        guard let url = urlComponents.url else { print("Hmmm"); return nil}
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+
+        return request
+
     }
 
 }

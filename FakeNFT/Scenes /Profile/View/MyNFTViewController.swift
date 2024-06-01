@@ -94,7 +94,10 @@ final class MyNFTViewController: UIViewController {
     }
 
     func updateTableView() {
-        myNFTTable.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.myNFTTable.reloadData()
+            self?.presenter.showOrHidePlaceholder()
+        }
     }
 
     // MARK: - Private Methods

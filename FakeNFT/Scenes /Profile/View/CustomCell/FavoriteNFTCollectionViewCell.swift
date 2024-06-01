@@ -106,7 +106,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
 
         let priceCurrencyStack = UIStackView(arrangedSubviews: [priceNumberLabel, currencyLabel, UIView()])
         priceCurrencyStack.axis = .horizontal
-        priceCurrencyStack.spacing = 5
+        priceCurrencyStack.spacing = 3
 
         let nameStack = UIStackView(arrangedSubviews: [nameView, ratingImage, priceCurrencyStack])
         nameStack.axis = .vertical
