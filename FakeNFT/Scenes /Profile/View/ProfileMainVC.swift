@@ -9,14 +9,13 @@ import UIKit
 import Kingfisher
 
 protocol ProfileViewProtocol: AnyObject {
-    func updateUIWithMockData(_ data: ProfileMockModel)
-    func updateUIWithNetworkData(_ data: ProfileModel)
+    func updateUIWithNetworkData()
 }
 
 final class ProfileMainVC: UIViewController {
 
     // MARK: - UI Properties
-    private lazy var nftTable: UITableView = {
+    private lazy var screenTable: UITableView = {
         let table = UITableView()
         table.separatorStyle = .none
         table.dataSource = self
@@ -77,16 +76,15 @@ final class ProfileMainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-//        presenter.viewDidLoad()
+
+        presenter.viewDidLoad()
+
         addObserver()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         presenter.viewDidLoad()
-
-        DispatchQueue.main.async { [weak self] in
-            self?.nftTable.reloadData()
-        }
+        updateScreenTable()
     }
 
     // MARK: - IB Actions
@@ -98,31 +96,29 @@ final class ProfileMainVC: UIViewController {
         presenter.webSiteButtonTapped()
     }
 
-
     // MARK: - Public methods
-    func updateUIWithMockData(_ data: ProfileMockModel) {
-        nameLabel.text = data.name
-        guard let imageName = data.avatar else { return }
-        let image = UIImage(named: imageName)
-        photoImage.image = image
-        aboutMeLabel.text = data.description
-        webButton.setTitle(data.website, for: .normal)
-    }
-
-    func updateUIWithNetworkData(_ data: ProfileModel) {
-        nameLabel.text = data.name
-        guard let imageName = data.avatar else { return }
-        let image = URL(string: imageName)
-        photoImage.kf.setImage(with: image)
-        aboutMeLabel.text = data.description
-        webButton.setTitle(data.website, for: .normal)
-
-        DispatchQueue.main.async { [weak self] in
-            self?.nftTable.reloadData()
-        }
+    func updateUIWithNetworkData() {
+        updateProfileUI()
+        updateScreenTable()
     }
 
     // MARK: - Private methods
+    private func updateScreenTable() {
+        DispatchQueue.main.async { [weak self] in
+            self?.screenTable.reloadData()
+        }
+    }
+
+    private func updateProfileUI() {
+        guard let profile = ProfileStorage.profile else { print("123"); return }
+        nameLabel.text = profile.name
+        guard let imageName = profile.avatar else { return }
+        let image = URL(string: imageName)
+        photoImage.kf.setImage(with: image)
+        aboutMeLabel.text = profile.description
+        webButton.setTitle(profile.website, for: .normal)
+    }
+
     private func setupLayout() {
         setupNavigation()
         setupContentStack()
@@ -141,17 +137,17 @@ final class ProfileMainVC: UIViewController {
 
         let photoAndNameStack = setupPersonalDataStack()
 
-        view.addSubViews([photoAndNameStack, nftTable])
+        view.addSubViews([photoAndNameStack, screenTable])
 
         NSLayoutConstraint.activate([
             photoAndNameStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             photoAndNameStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             photoAndNameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
 
-            nftTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
-            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nftTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            screenTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
+            screenTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            screenTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            screenTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 
@@ -212,7 +208,7 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 extension ProfileMainVC {
     private func addObserver() {
         notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
-            self?.presenter.viewDidLoad()
+            self?.updateProfileUI()
         }
     }
 }

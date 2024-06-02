@@ -21,7 +21,7 @@ struct HTTPHeader {
     }
 }
 
-struct ProfilePUTRequest {
+struct FavoritesPUTRequest {
     var scheme = "https"
     var host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
     var path = "/api/v1/profile/1"
@@ -29,6 +29,18 @@ struct ProfilePUTRequest {
     var httpMethod: HttpMethod = .put
 
     var paramName: URLRequestParamNames = .likes
+}
+
+struct PersonalDataPUTRequest {
+    var scheme = "https"
+    var host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
+    var path = "/api/v1/profile/1"
+
+    var httpMethod: HttpMethod = .put
+
+    var nameParam: URLRequestParamNames = .name
+    var descriptionParam: URLRequestParamNames = .description
+    var website: URLRequestParamNames = .website
 }
 
 struct ProfileRequest: NetworkRequest {
@@ -40,6 +52,9 @@ struct ProfileRequest: NetworkRequest {
 
 enum URLRequestParamNames: String {
     case likes = "likes"
+    case name = "name"
+    case description = "description"
+    case website = "website"
 }
 
 enum RequestTypes {

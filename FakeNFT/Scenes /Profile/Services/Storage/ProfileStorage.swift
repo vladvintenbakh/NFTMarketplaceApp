@@ -11,12 +11,26 @@ final class ProfileStorage {
 
     static var profile: ProfileModel?
 
+    let network = ProfileNetworkService()
 
-//    func updateDataAfterEditing(newData: EditedDataModel) {
-//        MockDataStorage.mockData.name = newData.name
-//        MockDataStorage.mockData.description = newData.description
-//        MockDataStorage.mockData.website = newData.website
-//    }
+    func updateDataAfterEditing(newData: EditedDataModel) {
+        ProfileStorage.profile?.name = newData.name
+        ProfileStorage.profile?.description = newData.description
+        ProfileStorage.profile?.website = newData.website
+
+        Task {
+            do {
+                try await network.putPersonalData(newPersonalData: newData)
+                print("✅ Personal data updated successfully")
+            } catch {
+                print(error)
+            }
+        }
+    }
+}
+
+
+
 //
 //    func addFavNFT(_ nftToAddToStorage: NFTModel) {
 //        MockDataStorage.mockData.favoriteNFT?.append(nftToAddToStorage)
@@ -27,4 +41,4 @@ final class ProfileStorage {
 //        MockDataStorage.mockData.favoriteNFT?.removeAll { $0.name == nftToRemoveFromStorage.name }
 //        print("NFT removed successfully")
 //    }
-}
+//}

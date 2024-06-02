@@ -51,7 +51,7 @@ final class ProfilePresenter {
         let newProfile = ProfileModel(from: data)
         passProfileToStorage(newProfile)
         updateDataHere()
-        view?.updateUIWithNetworkData(newProfile)
+        view?.updateUIWithNetworkData()
     }
 
     private func passProfileToStorage(_ profile: ProfileModel) {
@@ -61,12 +61,6 @@ final class ProfilePresenter {
     private func updateDataHere() {
         profile = ProfileStorage.profile
     }
-
-//    private func uploadDataFromStorage() {
-//        mockData = MockDataStorage.mockData
-//        guard let data = mockData else { return }
-//        view?.updateUIWithMockData(data)
-//    }
 
     private func getNFTCount() -> Int {
         profile?.nfts?.count ?? 0

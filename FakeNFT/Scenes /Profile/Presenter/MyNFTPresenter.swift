@@ -96,6 +96,7 @@ final class MyNFTPresenter {
         guard let listOfFavs = favoriteNFT else { return }
         do {
             try await profileNetwork.putLikes(listOfLikes: listOfFavs)
+            print("✅ listOfFav updated successfully")
             view?.updateTableView()
         } catch {
             print(error)

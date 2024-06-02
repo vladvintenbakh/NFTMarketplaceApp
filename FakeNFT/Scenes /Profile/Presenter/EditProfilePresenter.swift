@@ -41,8 +41,8 @@ final class EditProfilePresenter {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
                                       website: newWebSite)
-        let storage = MockDataStorage()
-//        storage.updateDataAfterEditing(newData: newData)
+        let storage = ProfileStorage()
+        storage.updateDataAfterEditing(newData: newData)
     }
 
     private func setWebsite() {
