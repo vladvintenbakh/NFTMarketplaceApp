@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol CartMainTableViewCellDelegate: AnyObject {
     func didPressRemoveFromCartButtonFor(indexPath: IndexPath)
@@ -21,6 +22,7 @@ final class CartMainTableViewCell: UITableViewCell {
     private let cardImage = {
         let image = UIImageView()
         image.layer.cornerRadius = 12
+        image.clipsToBounds = true
         return image
     }()
     
@@ -125,10 +127,15 @@ extension CartMainTableViewCell {
     
     func configUI(cartItem: CartItem) {
         nftNameLabel.text = cartItem.name
-        cardImage.image = UIImage(named: cartItem.images[0])
         priceValueLabel.text = String(format: "%.2f ETH", cartItem.price)
         
         setRatingTo(cartItem.rating)
+        
+        guard let cardImageURLString = cartItem.images.first else { return }
+        guard let cardImageURL = URL(string: cardImageURLString) else { return }
+        
+        cardImage.kf.indicatorType = .activity
+        cardImage.kf.setImage(with: cardImageURL)
     }
     
     private func setRatingTo(_ rating: Int) {
