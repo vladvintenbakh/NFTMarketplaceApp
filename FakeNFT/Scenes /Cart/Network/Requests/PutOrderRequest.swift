@@ -9,14 +9,14 @@ import Foundation
 
 struct PutOrderRequest: NetworkRequest {
     var endpoint: URL? {
-        URL(string: RequestConstants.baseURL + "/orders/1")
+        URL(string: RequestConstants.baseURL + "/orders/1" + paramsString)
     }
     
     var httpMethod: HttpMethod { .put }
     
-    var dto: Encodable?
+    let paramsString: String
     
-    init(dto: Encodable) {
-        self.dto = dto
+    init(paramsString: String) {
+        self.paramsString = paramsString
     }
 }

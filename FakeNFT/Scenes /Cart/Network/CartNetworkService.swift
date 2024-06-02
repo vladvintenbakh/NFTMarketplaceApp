@@ -74,7 +74,9 @@ extension CartNetworkService: CartNetworkServiceProtocol {
         getOrder { [weak self] result in
             switch result {
             case .success(let cartItemIDs):
-                self?.getNFTObjectsFromIDs(cartItemIDs, completion: completion)
+                self?.getNFTObjectsFromIDs(cartItemIDs) { [weak self] result in
+                    self?.fulfillCompletionFor(result: result, completion: completion)
+                }
             case .failure(let error):
                 self?.fulfillCompletionFor(result: .failure(error), completion: completion)
             }
@@ -82,7 +84,19 @@ extension CartNetworkService: CartNetworkServiceProtocol {
     }
     
     func syncCartItems(cartOrder: CartOrder, completion: @escaping (Error?) -> ()) {
-        let putOrderRequest = PutOrderRequest(dto: cartOrder)
+        var paramsString = ""
+        if !cartOrder.nfts.isEmpty {
+            for nft in cartOrder.nfts {
+                if nft == cartOrder.nfts.first {
+                    paramsString += "?nfts=\(nft)"
+                } else {
+                    paramsString += "&nfts=\(nft)"
+                }
+            }
+        }
+        
+        let putOrderRequest = PutOrderRequest(paramsString: paramsString)
+        
         client.send(request: putOrderRequest) { result in
             switch result {
             case .success:

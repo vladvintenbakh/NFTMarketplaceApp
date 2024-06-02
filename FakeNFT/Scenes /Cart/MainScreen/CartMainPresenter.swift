@@ -61,6 +61,7 @@ final class CartMainPresenter {
 extension CartMainPresenter: CartItemDeletionPresenterDelegate {
     func didConfirmDeletionFor(cartItem: CartItem) {
         cartItems.removeAll { $0.id == cartItem.id }
+        syncCartItems()
         view?.updateTotals()
     }
 }
