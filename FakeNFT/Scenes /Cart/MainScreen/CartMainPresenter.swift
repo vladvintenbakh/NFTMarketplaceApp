@@ -22,13 +22,25 @@ protocol CartMainPresenterProtocol {
 final class CartMainPresenter {
     private weak var view: CartMainVCProtocol?
     
-    private var cartItems: [CartItem] = [
-        CartItem(id: "1", nftName: "April", imageName: "MockNFTCard1", rating: 1, price: 1.80),
-        CartItem(id: "3", nftName: "Chloe", imageName: "MockNFTCard3", rating: 3, price: 1.50),
-        CartItem(id: "2", nftName: "Betty", imageName: "MockNFTCard2", rating: 5, price: 1.79),
-    ]
+    private lazy var cartItems: [CartItem] = []
     
+    private let cartNetworkService: CartNetworkServiceProtocol
     private let cartSortingMethodStorage = CartSortingMethodStorage()
+    
+    init(cartNetworkService: CartNetworkServiceProtocol) {
+        self.cartNetworkService = cartNetworkService
+    }
+    
+    private func syncCartItems() {
+        let cartItemIDs = cartItems.map { $0.id }
+        let updatedCartOrder = CartOrder(nfts: cartItemIDs)
+        
+        cartNetworkService.syncCartItems(cartOrder: updatedCartOrder) { error in
+            if let error {
+                print("Error syncing the items")
+            }
+        }
+    }
     
     private func sortBy(_ sortingMethod: CartSortingMethod) {
         switch sortingMethod {
@@ -37,7 +49,7 @@ final class CartMainPresenter {
         case .rating:
             cartItems.sort { $0.rating < $1.rating }
         case .name:
-            cartItems.sort { $0.nftName < $1.nftName }
+            cartItems.sort { $0.name < $1.name }
         }
         cartSortingMethodStorage.savedSortingMethod = sortingMethod
         view?.updateTotals()
@@ -67,11 +79,22 @@ extension CartMainPresenter: CartMainPresenterProtocol {
     }
     
     func viewWillAppear() {
-        let sortingMethod = cartSortingMethodStorage.savedSortingMethod ?? .name
-        if !cartItems.isEmpty { sortBy(sortingMethod) }
-        
-        view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
-        view?.updateTotals()
+        cartNetworkService.getAllCartItems { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let cartItems):
+                print("Loaded successfully")
+                self.cartItems = cartItems
+                
+                let sortingMethod = self.cartSortingMethodStorage.savedSortingMethod ?? .name
+                if !cartItems.isEmpty { self.sortBy(sortingMethod) }
+                
+                self.view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
+                self.view?.updateTotals()
+            case .failure:
+                print("Network error")
+            }
+        }
     }
     
     func displayPaymentVC() {

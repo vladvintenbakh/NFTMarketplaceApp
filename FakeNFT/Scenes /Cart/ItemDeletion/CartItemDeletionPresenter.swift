@@ -37,7 +37,7 @@ extension CartItemDeletionPresenter: CartItemDeletionPresenterProtocol {
     }
     
     func fetchCartItemImage() {
-        view?.setCartItemImage(imageName: cartItem.imageName)
+        view?.setCartItemImage(imageName: cartItem.images[0])
     }
     
     func confirmDeletion() {

@@ -124,8 +124,8 @@ extension CartMainTableViewCell {
     }
     
     func configUI(cartItem: CartItem) {
-        nftNameLabel.text = cartItem.nftName
-        cardImage.image = UIImage(named: cartItem.imageName)
+        nftNameLabel.text = cartItem.name
+        cardImage.image = UIImage(named: cartItem.images[0])
         priceValueLabel.text = String(format: "%.2f ETH", cartItem.price)
         
         setRatingTo(cartItem.rating)
