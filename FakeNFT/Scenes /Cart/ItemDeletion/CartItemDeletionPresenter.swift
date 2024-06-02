@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol CartItemDeletionPresenterProtocol {
     func attachView(_ view: CartItemDeletionVCProtocol)
@@ -37,7 +38,18 @@ extension CartItemDeletionPresenter: CartItemDeletionPresenterProtocol {
     }
     
     func fetchCartItemImage() {
-        view?.setCartItemImage(imageName: cartItem.images[0])
+        guard let cardImageURLString = cartItem.images.first else { return }
+        guard let cardImageURL = URL(string: cardImageURLString) else { return }
+        
+        KingfisherManager.shared.retrieveImage(with: cardImageURL) { [weak self] result in
+            switch result {
+            case .success(let data):
+                let image = data.image
+                self?.view?.setCartItemImage(image: image)
+            case .failure(let error):
+                print("Error: \(error)")
+            }
+        }
     }
     
     func confirmDeletion() {

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CartItemDeletionVCProtocol: AnyObject {
-    func setCartItemImage(imageName: String)
+    func setCartItemImage(image: UIImage)
 }
 
 final class CartItemDeletionVC: UIViewController {
@@ -22,7 +22,8 @@ final class CartItemDeletionVC: UIViewController {
     
     private let cardImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "MockNFTCard1")
+        image.layer.cornerRadius = 12
+        image.clipsToBounds = true
         return image
     }()
     
@@ -138,7 +139,7 @@ extension CartItemDeletionVC {
 
 // MARK: CartItemDeletionVCProtocol
 extension CartItemDeletionVC: CartItemDeletionVCProtocol {
-    func setCartItemImage(imageName: String) {
-        cardImage.image = UIImage(named: imageName)
+    func setCartItemImage(image: UIImage) {
+        cardImage.image = image
     }
 }
