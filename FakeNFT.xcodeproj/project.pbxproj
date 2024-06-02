@@ -56,6 +56,7 @@
 		604418DE2BFC6E870046664E /* PaymentOutcomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604418DD2BFC6E870046664E /* PaymentOutcomePresenter.swift */; };
 		607B65F32C02F9A6009328EF /* CartItemDeletionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607B65F22C02F9A6009328EF /* CartItemDeletionPresenter.swift */; };
 		607FE7222BFF50B5000AE150 /* AlertUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FE7212BFF50B5000AE150 /* AlertUtility.swift */; };
+		60995B782C0C6A430024E96A /* CartProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60995B772C0C6A430024E96A /* CartProgressHUD.swift */; };
 		60E73B1E2C01850F00E74E6A /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E73B1D2C01850F00E74E6A /* CartItem.swift */; };
 		60E73B202C01869F00E74E6A /* PaymentCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E73B1F2C01869F00E74E6A /* PaymentCurrency.swift */; };
 		60E73B222C01F1BE00E74E6A /* CartSortingMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E73B212C01F1BE00E74E6A /* CartSortingMethod.swift */; };
@@ -138,6 +139,7 @@
 		604418DD2BFC6E870046664E /* PaymentOutcomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentOutcomePresenter.swift; sourceTree = "<group>"; };
 		607B65F22C02F9A6009328EF /* CartItemDeletionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemDeletionPresenter.swift; sourceTree = "<group>"; };
 		607FE7212BFF50B5000AE150 /* AlertUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUtility.swift; sourceTree = "<group>"; };
+		60995B772C0C6A430024E96A /* CartProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartProgressHUD.swift; sourceTree = "<group>"; };
 		60E73B1D2C01850F00E74E6A /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		60E73B1F2C01869F00E74E6A /* PaymentCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCurrency.swift; sourceTree = "<group>"; };
 		60E73B212C01F1BE00E74E6A /* CartSortingMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartSortingMethod.swift; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 				607FE7212BFF50B5000AE150 /* AlertUtility.swift */,
 				60E73B212C01F1BE00E74E6A /* CartSortingMethod.swift */,
 				60E73B252C01F50D00E74E6A /* CartSortingMethodStorage.swift */,
+				60995B772C0C6A430024E96A /* CartProgressHUD.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -705,6 +708,7 @@
 				60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
+				60995B782C0C6A430024E96A /* CartProgressHUD.swift in Sources */,
 				60F7C1F12BF9D82900DEC56C /* CartMainVC.swift in Sources */,
 				607FE7222BFF50B5000AE150 /* AlertUtility.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,

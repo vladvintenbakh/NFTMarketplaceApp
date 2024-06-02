@@ -11,6 +11,7 @@ protocol CartMainVCProtocol: AnyObject {
     func toggleEmptyPlaceholderTo(_ isCartEmpty: Bool)
     func updateTotals()
     func presentVC(_ vc: UIViewController)
+    func toggleProgressHUDTo(_ isShown: Bool)
 }
 
 final class CartMainVC: UIViewController {
@@ -44,6 +45,7 @@ final class CartMainVC: UIViewController {
         let label = UILabel()
         label.textColor = .yaBlackLight
         label.font = .caption1
+        label.text = "0 NFT"
         return label
     }()
     
@@ -51,6 +53,7 @@ final class CartMainVC: UIViewController {
         let label = UILabel()
         label.textColor = .yaGreen
         label.font = .bodyBold
+        label.text = "0.00 ETH"
         return label
     }()
     
@@ -216,5 +219,13 @@ extension CartMainVC: CartMainVCProtocol {
     
     func presentVC(_ vc: UIViewController) {
         present(vc, animated: true)
+    }
+    
+    func toggleProgressHUDTo(_ isShown: Bool) {
+        if isShown {
+            CartProgressHUD.show()
+        } else {
+            CartProgressHUD.dismiss()
+        }
     }
 }

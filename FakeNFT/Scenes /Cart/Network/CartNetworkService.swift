@@ -74,10 +74,8 @@ extension CartNetworkService: CartNetworkServiceProtocol {
         getOrder { [weak self] result in
             switch result {
             case .success(let cartItemIDs):
-                print("Order success")
                 self?.getNFTObjectsFromIDs(cartItemIDs, completion: completion)
             case .failure(let error):
-                print("Order failure")
                 self?.fulfillCompletionFor(result: .failure(error), completion: completion)
             }
         }

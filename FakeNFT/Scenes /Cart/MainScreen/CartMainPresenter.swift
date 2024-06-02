@@ -37,6 +37,7 @@ final class CartMainPresenter {
         
         cartNetworkService.syncCartItems(cartOrder: updatedCartOrder) { error in
             if let error {
+                // TODO: Add an error alert
                 print("Error syncing the items")
             }
         }
@@ -79,11 +80,12 @@ extension CartMainPresenter: CartMainPresenterProtocol {
     }
     
     func viewWillAppear() {
+        view?.toggleProgressHUDTo(true)
         cartNetworkService.getAllCartItems { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let cartItems):
-                print("Loaded successfully")
+                view?.toggleProgressHUDTo(false)
                 self.cartItems = cartItems
                 
                 let sortingMethod = self.cartSortingMethodStorage.savedSortingMethod ?? .name
@@ -92,6 +94,8 @@ extension CartMainPresenter: CartMainPresenterProtocol {
                 self.view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
                 self.view?.updateTotals()
             case .failure:
+                // TODO: Add an error alert
+                view?.toggleProgressHUDTo(false)
                 print("Network error")
             }
         }
