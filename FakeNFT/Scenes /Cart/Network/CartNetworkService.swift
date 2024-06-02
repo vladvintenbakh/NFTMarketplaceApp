@@ -10,6 +10,7 @@ import Foundation
 protocol CartNetworkServiceProtocol {
     func getAllCartItems(completion: @escaping (Result<[CartItem], Error>) -> ())
     func syncCartItems(cartOrder: CartOrder, completion: @escaping (Error?) -> ())
+    func getCurrencies(completion: @escaping (Result<[PaymentCurrency], Error>) -> ())
 }
 
 final class CartNetworkService {
@@ -108,6 +109,13 @@ extension CartNetworkService: CartNetworkServiceProtocol {
                     completion(error)
                 }
             }
+        }
+    }
+    
+    func getCurrencies(completion: @escaping (Result<[PaymentCurrency], Error>) -> ()) {
+        let getCurrenciesRequest = GetCurrenciesRequest()
+        client.send(request: getCurrenciesRequest, type: [PaymentCurrency].self) { [weak self] result in
+            self?.fulfillCompletionFor(result: result, completion: completion)
         }
     }
 }

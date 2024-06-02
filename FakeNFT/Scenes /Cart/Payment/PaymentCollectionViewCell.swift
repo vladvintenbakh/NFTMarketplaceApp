@@ -21,6 +21,7 @@ final class PaymentCollectionViewCell: UICollectionViewCell {
     private let iconImage: UIImageView = {
         let image = UIImageView()
         image.layer.cornerRadius = 6
+        image.clipsToBounds = true
         return image
     }()
     
@@ -89,9 +90,13 @@ extension PaymentCollectionViewCell {
 // MARK: Dynamic UI Configuration
 extension PaymentCollectionViewCell {
     func configUI(currency: PaymentCurrency) {
-        iconImage.image = UIImage(named: currency.imageName)
-        currencyNameLabel.text = currency.currencyName
-        currencyCodeLabel.text = currency.currencyCode
+        currencyNameLabel.text = currency.title
+        currencyCodeLabel.text = currency.name
+        
+        guard let iconImageURL = URL(string: currency.image) else { return }
+        
+        iconImage.kf.indicatorType = .activity
+        iconImage.kf.setImage(with: iconImageURL)
     }
     
     func toggleSelectionTo(_ isSelected: Bool) {

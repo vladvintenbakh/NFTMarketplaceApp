@@ -10,6 +10,8 @@ import UIKit
 protocol PaymentVCProtocol: AnyObject {
     func presentVC(_ vc: UIViewController)
     func dismissVC()
+    func toggleProgressHUDTo(_ isShown: Bool)
+    func reloadCurrencyCollection()
 }
 
 final class PaymentVC: UIViewController {
@@ -80,6 +82,7 @@ final class PaymentVC: UIViewController {
         view.backgroundColor = .yaWhiteLight
         
         presenter.attachView(self)
+        presenter.loadCurrencies()
         
         setUpNavigationBar()
         addSubviews()
@@ -221,5 +224,17 @@ extension PaymentVC: PaymentVCProtocol {
     
     func dismissVC() {
         dismiss(animated: true)
+    }
+    
+    func toggleProgressHUDTo(_ isShown: Bool) {
+        if isShown {
+            CartProgressHUD.show()
+        } else {
+            CartProgressHUD.dismiss()
+        }
+    }
+    
+    func reloadCurrencyCollection() {
+        currencyCollection.reloadData()
     }
 }

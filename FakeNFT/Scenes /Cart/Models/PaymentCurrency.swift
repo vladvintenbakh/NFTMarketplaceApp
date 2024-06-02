@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct PaymentCurrency {
+struct PaymentCurrency: Codable {
+    let title: String
+    let name: String
+    let image: String
     let id: String
-    let imageName: String
-    let currencyName: String
-    let currencyCode: String
 }

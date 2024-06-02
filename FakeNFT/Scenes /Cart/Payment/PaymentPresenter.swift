@@ -10,6 +10,7 @@ import SafariServices
 
 protocol PaymentPresenterProtocol {
     func attachView(_ view: PaymentVCProtocol)
+    func loadCurrencies()
     func returnToCartMainScreen()
     func processPaymentAttempt()
     func loadUserAgreement()
@@ -29,24 +30,37 @@ final class PaymentPresenter {
     
     private var selectedCurrency: PaymentCurrency?
     
-    private let currencies = [
-        PaymentCurrency(id: "1", imageName: "BitcoinPaymentIcon", currencyName: "Bitcoin", currencyCode: "BTC"),
-        PaymentCurrency(id: "2", imageName: "DogecoinPaymentIcon", currencyName: "Dogecoin", currencyCode: "DOGE"),
-        PaymentCurrency(id: "3", imageName: "TetherPaymentIcon", currencyName: "Tether", currencyCode: "USDT"),
-        PaymentCurrency(id: "4", imageName: "ApeCoinPaymentIcon", currencyName: "Apecoin", currencyCode: "APE"),
-        PaymentCurrency(id: "5", imageName: "SolanaPaymentIcon", currencyName: "Solana", currencyCode: "SOL"),
-        PaymentCurrency(id: "6", imageName: "EthereumPaymentIcon", currencyName: "Ethereum", currencyCode: "ETH"),
-        PaymentCurrency(id: "7", imageName: "CardanoPaymentIcon", currencyName: "Cardano", currencyCode: "ADA"),
-        PaymentCurrency(id: "8", imageName: "ShibaInuPaymentIcon", currencyName: "Shiba Inu", currencyCode: "SHIB"),
-    ]
+    private lazy var currencies: [PaymentCurrency] = []
     
     private let userAgreementURL = URL(string: "https://yandex.ru/legal/practicum_termsofuse/")
+    
+    private let cartNetworkService: CartNetworkService
+    
+    init(cartNetworkService: CartNetworkService) {
+        self.cartNetworkService = cartNetworkService
+    }
 }
 
 // MARK: PaymentPresenterProtocol
 extension PaymentPresenter: PaymentPresenterProtocol {
     func attachView(_ view: PaymentVCProtocol) {
         self.view = view
+    }
+    
+    func loadCurrencies() {
+        view?.toggleProgressHUDTo(true)
+        cartNetworkService.getCurrencies { [weak self] result in
+            switch result {
+            case .success(let currencies):
+                self?.view?.toggleProgressHUDTo(false)
+                self?.currencies = currencies
+                self?.view?.reloadCurrencyCollection()
+            case .failure(let error):
+                self?.view?.toggleProgressHUDTo(false)
+                // TODO: Add a network error alert
+                print("Error: \(error)")
+            }
+        }
     }
     
     func returnToCartMainScreen() {
@@ -56,7 +70,7 @@ extension PaymentPresenter: PaymentPresenterProtocol {
     func processPaymentAttempt() {
         guard let selectedCurrency else { return }
         
-        if ["Bitcoin", "Dogecoin"].contains(selectedCurrency.currencyName) {
+        if ["Cardano"].contains(selectedCurrency.title) {
             let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
             paymentOutcomeVC.modalPresentationStyle = .fullScreen
             view?.presentVC(paymentOutcomeVC)

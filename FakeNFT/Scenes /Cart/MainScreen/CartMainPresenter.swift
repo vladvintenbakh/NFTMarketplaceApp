@@ -103,7 +103,8 @@ extension CartMainPresenter: CartMainPresenterProtocol {
     }
     
     func displayPaymentVC() {
-        let paymentPresenter = PaymentPresenter()
+        let cartNetworkService = CartNetworkService(client: DefaultNetworkClient())
+        let paymentPresenter = PaymentPresenter(cartNetworkService: cartNetworkService)
         paymentPresenter.delegate = self
         
         let paymentVC = PaymentVC(presenter: paymentPresenter)
