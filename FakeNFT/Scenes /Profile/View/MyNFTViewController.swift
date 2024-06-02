@@ -143,6 +143,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundColor = .clear
 
         cell.configureCell(nft, isNFTFav: isNFTFav)
+
         addOrRemoveNFTFromFav(cell: cell, nft: nft, isNFTInFav: isNFTFav)
 
         return cell
@@ -157,9 +158,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
             guard let self = self else { return }
             self.presenter.addOrRemoveNFTFromFav(nft: nft, isNFTFav: isNFTInFav)
 
-            DispatchQueue.main.async {
-                self.myNFTTable.reloadData()
-            }
+            updateTableView()
         }
     }
 }

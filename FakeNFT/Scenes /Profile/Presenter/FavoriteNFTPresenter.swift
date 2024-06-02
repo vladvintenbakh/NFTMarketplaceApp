@@ -22,7 +22,8 @@ final class FavoriteNFTPresenter {
     // MARK: - Private properties
     private var arrayOfFavNFT = [NFTModel]()
     private var listOfFavNFT = [String]()
-    private let network = DefaultNetworkClient()
+    private let network = ProfileNetworkService()
+    private let profileNetwork = ProfileNetworkService()
 
     // MARK: - Life cycle
     func viewDidLoad() {
@@ -40,6 +41,7 @@ final class FavoriteNFTPresenter {
 
     private func uploadFavNFTFromNetwork() {
         Task {
+            ProgressIndicator.show()
             for nftID in listOfFavNFT {
                 let request = NFTRequest(id: nftID)
 
@@ -52,8 +54,7 @@ final class FavoriteNFTPresenter {
                     print(error.localizedDescription)
                 }
             }
-//            print("listOfFavNFT \(listOfFavNFT)")
-            // print("arrayOfFavNFT \(arrayOfFavNFT)")
+            ProgressIndicator.succeed()
             updateView()
         }
     }
@@ -86,61 +87,14 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     func removeNFTFromFav(_ nft: NFTModel) {
         listOfFavNFT.removeAll { $0 == nft.id }
         arrayOfFavNFT.removeAll { $0.name == nft.name }
-//        print("listOfFavNFT \(listOfFavNFT)")
-        putLikes(listOfLikes: listOfFavNFT)
-
-        }
-
-    func putLikes (listOfLikes: [String]) {
-        var favInString = listOfLikes.isEmpty ? "null" : listOfLikes.joined(separator: ",")
-
-        guard let urlRequest = createURLRequestPutLikes(paramName: "likes",
-                                          paramValue: favInString)
-        else { print("WrongRequest"); return }
 
         Task {
             do {
-                let data = try await putLikes(url: urlRequest, type: ApiModel.self)
+                try await profileNetwork.putLikes(listOfLikes: listOfFavNFT)
                 updateView()
             } catch {
                 print(error)
             }
         }
     }
-
-    func putLikes<T: Decodable>(url: URLRequest, type: T.Type) async throws -> T? {
-        
-        let (data, response) = try await URLSession.shared.data(for: url)
-        guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else { throw NetworkClientError.urlSessionError }
-       
-        do {
-            let decodedData = try JSONDecoder().decode(T.self, from: data)
-            return decodedData
-        } catch {
-            throw NetworkClientError.parsingError
-        }
-
-    }
-
-    func createURLRequestPutLikes(paramName: String, paramValue: String) -> URLRequest? {
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
-        urlComponents.path = "/api/v1/profile/1"
-
-        let query = URLQueryItem(name: paramName, value: paramValue)
-        urlComponents.queryItems = [query]
-
-        guard let url = urlComponents.url else { print("Hmmm"); return nil}
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
-
-        return request
-
-    }
-
 }

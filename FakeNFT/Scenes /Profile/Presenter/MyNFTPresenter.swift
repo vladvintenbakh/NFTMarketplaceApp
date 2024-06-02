@@ -24,7 +24,8 @@ final class MyNFTPresenter {
 
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
-    private let network = DefaultNetworkClient()
+    private let network = ProfileNetworkService()
+    private let profileNetwork = ProfileNetworkService()
 
     // MARK: - Other properties
     private var arrayOfNFT = [NFTModel]()
@@ -39,6 +40,7 @@ final class MyNFTPresenter {
 
     private func uploadNFTFromNetwork() {
         Task {
+            ProgressIndicator.show()
             for nftID in listOfNFT {
                 let request = NFTRequest(id: nftID)
 
@@ -51,7 +53,7 @@ final class MyNFTPresenter {
                     print(error.localizedDescription)
                 }
             }
-            print("arrayOfNFT \(arrayOfNFT)")
+            ProgressIndicator.succeed()
             view?.updateTableView()
         }
     }
@@ -70,18 +72,37 @@ final class MyNFTPresenter {
     }
 
     private func addNFTToFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToAddToFav = nft
-//        storage.addFavNFT(nftToAddToFav)
+        guard let nftToAppend = nft.id else { return }
+
+        ProfileStorage.profile?.favoriteNFT?.append(nftToAppend)
+
+        Task {
+            await makeLikes()
+        }
     }
 
     private func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-//        storage.removeFromFavNFT(nftToRemoveFromFav)
+        guard let nftToRemove = nft.id else { return }
+
+        ProfileStorage.profile?.favoriteNFT?.removeAll { $0 == nftToRemove }
+
+        Task {
+            await makeLikes()
+        }
     }
 
+    private func makeLikes() async {
+        let favoriteNFT = ProfileStorage.profile?.favoriteNFT
+        guard let listOfFavs = favoriteNFT else { return }
+        do {
+            try await profileNetwork.putLikes(listOfLikes: listOfFavs)
+            view?.updateTableView()
+        } catch {
+            print(error)
+        }
+    }
 }
+
 
 // MARK: - MyNFTPresenterProtocol
 extension  MyNFTPresenter: MyNFTPresenterProtocol {
@@ -108,8 +129,6 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
         arrayOfNFT.sort {
             guard let price1 = $0.price,
                   let price2 = $1.price else { print("Sorting problem"); return false }
-            //                  let priceDouble1 = Double(priceString1),
-            //                  let priceDouble2 = Double(priceString2) ;
             return price1 > price2
         }
         view?.updateTableView()
@@ -134,19 +153,19 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func isNFTInFav(_ nft: NFTModel) -> Bool {
-        //        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false }
-        //        if listOfFav.contains(where: { $0.name == nft.name }) {
-        //            return true
-        //        } else {
-                    return false
-        //        }
-            }
-
-        func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
-            if isNFTFav {
-                removeNFTFromFav(nft)
-            } else {
-                addNFTToFav(nft)
-            }
+        guard let listOfFav = ProfileStorage.profile?.favoriteNFT else { return false }
+        if listOfFav.contains(where: { $0 == nft.id }) {
+            return true
+        } else {
+            return false
         }
     }
+
+    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
+        if isNFTFav {
+            removeNFTFromFav(nft)
+        } else {
+            addNFTToFav(nft)
+        }
+    }
+}

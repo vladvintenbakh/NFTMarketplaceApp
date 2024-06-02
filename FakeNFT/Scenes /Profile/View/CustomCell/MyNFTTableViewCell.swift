@@ -17,10 +17,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-//        let width = (contentView.bounds.width - 32) / 3
-//        print("width \(width)")
-//        imageView.setSquareSize(width)
-
         imageView.setSquareSize(108)
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true

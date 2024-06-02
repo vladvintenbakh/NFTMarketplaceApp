@@ -34,11 +34,12 @@ final class ProfilePresenter {
     // MARK: - Private methods
     private func uploadDataFromNetwork() {
         let request = ProfileRequest()
-
+        ProgressIndicator.show()
         network.send(request: request, type: ApiModel.self)  { [weak self] result in
             switch result {
             case .success(let data):
                 self?.passDataToViewAndStorage(data)
+                ProgressIndicator.dismiss()
             case .failure(let error):
                 print(error)
             }

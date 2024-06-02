@@ -8,22 +8,3 @@ struct NFTRequest: NetworkRequest {
         URL(string: "\(RequestConstants.baseURL)/api/v1/nft/\(id)")
     }
 }
-
-struct ProfileRequest: NetworkRequest {
-    var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
-    }
-}
-
-
-struct ProfilePUTRequest: NetworkRequest {
-    var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
-    }
-
-    var httpMethod: HttpMethod = .put
-}
-
-struct UpdateLikes: Encodable {
-    let likes: [String]
-}
