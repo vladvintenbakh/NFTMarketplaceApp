@@ -18,13 +18,13 @@ protocol ProfilePresenterProtocol {
 
 final class ProfilePresenter {
 
-    // MARK: - View
+    // MARK: - Properties
     weak var view: ProfileViewProtocol?
     var navigation: NavigationManager?
-    let network = DefaultNetworkClient()
+    private let network = DefaultNetworkClient()
+    private let storage = ProfileStorage.shared
+    private let profileNetwork = ProfileNetworkService()
 
-    // MARK: - Other properties
-    private var profile: ProfileModel?
 
     // MARK: - Life cycles
     func viewDidLoad() {
@@ -34,40 +34,34 @@ final class ProfilePresenter {
     // MARK: - Private methods
     private func uploadDataFromNetwork() {
         let request = ProfileRequest()
-        ProgressIndicator.show()
+        view?.showLoadingIndicator()
         network.send(request: request, type: ApiModel.self)  { [weak self] result in
             switch result {
             case .success(let data):
                 self?.passDataToViewAndStorage(data)
-                ProgressIndicator.dismiss()
+                self?.uploadFavNFTFromNetwork()
+                self?.view?.hideLoadingIndicator()
             case .failure(let error):
                 print(error)
             }
         }
     }
 
+    private func uploadFavNFTFromNetwork() {
+        profileNetwork.uploadFavNFTFromNetwork()
+    }
+
+
+
     private func passDataToViewAndStorage(_ dataFromNetwork: ApiModel?) {
         guard let data = dataFromNetwork else { return }
         let newProfile = ProfileModel(from: data)
         passProfileToStorage(newProfile)
-        updateDataHere()
         view?.updateUIWithNetworkData()
     }
 
     private func passProfileToStorage(_ profile: ProfileModel) {
-        ProfileStorage.profile = profile
-    }
-
-    private func updateDataHere() {
-        profile = ProfileStorage.profile
-    }
-
-    private func getNFTCount() -> Int {
-        profile?.nfts?.count ?? 0
-    }
-
-    private func getFavoriteNFTCount() -> Int {
-        profile?.favoriteNFT?.count ?? 0
+        storage.profile = profile
     }
 }
 
@@ -79,7 +73,7 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func selectCell(indexPath: IndexPath) {
-        navigation?.goToView(indexPath: indexPath, webSiteName: profile?.website)
+        navigation?.goToView(indexPath: indexPath, webSiteName: storage.profile?.website)
     }
 
     func editButtonTapped() {
@@ -87,12 +81,12 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func webSiteButtonTapped() {
-        navigation?.goToView(.webScreen, webSiteName: profile?.website)
+        navigation?.goToView(.webScreen, webSiteName: storage.profile?.website)
     }
 
     func nameCell(indexPath: IndexPath) -> String {
-        let nftCount = getNFTCount()
-        let favCount = getFavoriteNFTCount()
+        guard let nftCount = storage.profile?.nfts?.count,
+              let favCount = storage.profile?.favoriteNFT?.count else { return ""}
         let name = RowNamesEnum.getRowName(indexPath: indexPath, nftCount: nftCount, favNFT: favCount)
         return name
     }

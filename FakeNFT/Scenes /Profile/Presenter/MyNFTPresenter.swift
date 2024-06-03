@@ -26,6 +26,7 @@ final class MyNFTPresenter {
     weak var view: MyNFTViewProtocol?
     private let network = ProfileNetworkService()
     private let profileNetwork = ProfileNetworkService()
+    private let storage = ProfileStorage.shared
 
     // MARK: - Other properties
     private var arrayOfNFT = [NFTModel]()
@@ -33,7 +34,7 @@ final class MyNFTPresenter {
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = ProfileStorage.profile
+        let data = storage.profile
         guard let myNFT = data?.nfts else { print("Ooops"); return }
         listOfNFT = myNFT
     }
@@ -72,32 +73,28 @@ final class MyNFTPresenter {
     }
 
     private func addNFTToFav(_ nft: NFTModel) {
-        guard let nftToAppend = nft.id else { return }
-
-        ProfileStorage.profile?.favoriteNFT?.append(nftToAppend)
-
-        Task {
-            await makeLikes()
-        }
+        storage.addFavNFTToStorage(nft)
+        sendFavsToServer()
     }
 
     private func removeNFTFromFav(_ nft: NFTModel) {
-        guard let nftToRemove = nft.id else { return }
+        storage.removeFavNFTFromStorage(nft)
+        sendFavsToServer()
+    }
 
-        ProfileStorage.profile?.favoriteNFT?.removeAll { $0 == nftToRemove }
-
+    private func sendFavsToServer() {
         Task {
             await makeLikes()
+            view?.updateTableView()
         }
     }
 
     private func makeLikes() async {
-        let favoriteNFT = ProfileStorage.profile?.favoriteNFT
+        let favoriteNFT = storage.profile?.favoriteNFT
         guard let listOfFavs = favoriteNFT else { return }
         do {
             try await profileNetwork.putLikes(listOfLikes: listOfFavs)
-            print("✅ listOfFav updated successfully")
-            view?.updateTableView()
+            print("✅ listOfFav successfully updated")
         } catch {
             print(error)
         }
@@ -154,7 +151,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func isNFTInFav(_ nft: NFTModel) -> Bool {
-        guard let listOfFav = ProfileStorage.profile?.favoriteNFT else { return false }
+        guard let listOfFav = storage.profile?.favoriteNFT else { return false }
         if listOfFav.contains(where: { $0 == nft.id }) {
             return true
         } else {

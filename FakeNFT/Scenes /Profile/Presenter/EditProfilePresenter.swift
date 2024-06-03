@@ -22,6 +22,7 @@ final class EditProfilePresenter {
 
     // MARK: - Private Properties
     private let notification = NotificationCenter.default
+    private let storage = ProfileStorage.shared
 
     private var newName: String?
     private var newDescription: String?
@@ -30,7 +31,7 @@ final class EditProfilePresenter {
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        guard let data = ProfileStorage.profile else { print("Oops"); return }
+        guard let data = storage.profile else { print("Oops"); return }
         newName = data.name
         newDescription = data.description
         newWebSite = data.website
@@ -41,7 +42,7 @@ final class EditProfilePresenter {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
                                       website: newWebSite)
-        let storage = ProfileStorage()
+        let storage = ProfileStorage.shared
         storage.updateDataAfterEditing(newData: newData)
     }
 

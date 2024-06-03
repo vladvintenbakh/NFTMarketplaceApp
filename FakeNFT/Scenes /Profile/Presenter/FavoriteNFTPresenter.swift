@@ -21,42 +21,18 @@ final class FavoriteNFTPresenter {
 
     // MARK: - Private properties
     private var arrayOfFavNFT = [NFTModel]()
-    private var listOfFavNFT = [String]()
-    private let network = ProfileNetworkService()
     private let profileNetwork = ProfileNetworkService()
+    private let storage = ProfileStorage.shared
 
     // MARK: - Life cycle
     func viewDidLoad() {
         getArrayOfFavFromStorage()
-
-        uploadFavNFTFromNetwork()
     }
 
     // MARK: - Private methods
     private func getArrayOfFavFromStorage() {
-        guard let profile = ProfileStorage.profile,
-              let favoriteNFT = profile.favoriteNFT else { return }
-        listOfFavNFT = favoriteNFT
-    }
-
-    private func uploadFavNFTFromNetwork() {
-        Task {
-            ProgressIndicator.show()
-            for nftID in listOfFavNFT {
-                let request = NFTRequest(id: nftID)
-
-                do {
-                    let data = try await network.sendNew(request: request, type: NFTModel.self)
-                    // print("✅ Favorite NFT uploaded successfully")
-                    guard let data else { return }
-                    arrayOfFavNFT.append(data)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-            ProgressIndicator.succeed()
-            updateView()
-        }
+        guard let arrayOfFavNFTFromStorage = storage.favNFT else { return }
+        arrayOfFavNFT = arrayOfFavNFTFromStorage
     }
 
     private func updateView() {
@@ -65,7 +41,7 @@ final class FavoriteNFTPresenter {
     }
 
     private func showOrHidePlaceholder() {
-        if listOfFavNFT.isEmpty {
+        if arrayOfFavNFT.isEmpty {
             view?.showPlaceholder()
         } else {
             view?.hideCollection()
@@ -85,16 +61,25 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {
-        listOfFavNFT.removeAll { $0 == nft.id }
-        arrayOfFavNFT.removeAll { $0.name == nft.name }
+        storage.removeFavNFTFromStorage(nft)
+        getArrayOfFavFromStorage()
+        sendFavsToServer()
+    }
 
+    private func sendFavsToServer() {
         Task {
-            do {
-                try await profileNetwork.putLikes(listOfLikes: listOfFavNFT)
-                updateView()
-            } catch {
-                print(error)
-            }
+            await makeLikes()
+            updateView()
+        }
+    }
+
+    private func makeLikes() async {
+        guard let favoriteNFT = storage.profile?.favoriteNFT else { return }
+        do {
+            try await profileNetwork.putLikes(listOfLikes: favoriteNFT)
+            print("✅ listOfFav successfully updated")
+        } catch {
+            print(error)
         }
     }
 }

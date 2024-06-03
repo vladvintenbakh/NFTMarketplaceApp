@@ -10,6 +10,8 @@ import Kingfisher
 
 protocol ProfileViewProtocol: AnyObject {
     func updateUIWithNetworkData()
+    func showLoadingIndicator()
+    func hideLoadingIndicator()
 }
 
 final class ProfileMainVC: UIViewController {
@@ -57,6 +59,7 @@ final class ProfileMainVC: UIViewController {
     // MARK: - Other Properties
     var presenter: ProfilePresenterProtocol
     let notification = NotificationCenter.default
+    let storage = ProfileStorage.shared
 
     // MARK: - Init
     init(presenter: ProfilePresenterProtocol) {
@@ -83,7 +86,6 @@ final class ProfileMainVC: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        presenter.viewDidLoad()
         updateScreenTable()
     }
 
@@ -102,6 +104,16 @@ final class ProfileMainVC: UIViewController {
         updateScreenTable()
     }
 
+    func showLoadingIndicator() {
+        ProgressIndicator.show()
+        screenTable.isUserInteractionEnabled = false
+    }
+
+    func hideLoadingIndicator() {
+        ProgressIndicator.succeed()
+        screenTable.isUserInteractionEnabled = true
+    }
+
     // MARK: - Private methods
     private func updateScreenTable() {
         DispatchQueue.main.async { [weak self] in
@@ -110,7 +122,7 @@ final class ProfileMainVC: UIViewController {
     }
 
     private func updateProfileUI() {
-        guard let profile = ProfileStorage.profile else { print("123"); return }
+        guard let profile = storage.profile else { print("123"); return }
         nameLabel.text = profile.name
         guard let imageName = profile.avatar else { return }
         let image = URL(string: imageName)

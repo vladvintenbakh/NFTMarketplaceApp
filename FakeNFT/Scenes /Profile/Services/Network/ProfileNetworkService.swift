@@ -24,6 +24,34 @@ final class ProfileNetworkService {
         try await sendRequest(url: urlRequest)
     }
 
+    func uploadFavNFTFromNetwork() {
+        guard let listOfFav = ProfileStorage.shared.profile?.favoriteNFT else { return }
+
+        Task {
+            var favNFT = [NFTModel]()
+            //            ProgressIndicator.show()
+            for nftID in listOfFav {
+                let request = NFTRequest(id: nftID)
+
+                do {
+                    let data = try await sendNew(request: request, type: NFTModel.self)
+                    guard let data else { return }
+                    favNFT.append(data)
+                } catch {
+                    print(error)
+                }
+            }
+            ProfileStorage.shared.favNFT = favNFT
+            print("✅ Favorite NFT successfully saved to storage")
+            print("ProfileStorage.shared.favNFT \(ProfileStorage.shared.favNFT)")
+            //            ProgressIndicator.succeed()
+            //            updateView()
+        }
+    }
+
+
+
+
     private func createURLRequestPersonal(newPersonalData: EditedDataModel) -> URLRequest? {
         let constants = PersonalDataPUTRequest()
         var urlComponents = URLComponents()
