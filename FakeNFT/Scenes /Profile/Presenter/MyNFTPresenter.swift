@@ -25,51 +25,23 @@ final class MyNFTPresenter {
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
     private let network = ProfileNetworkService()
-    private let profileNetwork = ProfileNetworkService()
     private let storage = ProfileStorage.shared
 
     // MARK: - Other properties
-    private var arrayOfNFT = [NFTModel]()
-    private var listOfNFT = [String]()
+    private var arrayOfMyNFT = [NFTModel]()
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = storage.profile
-        guard let myNFT = data?.nfts else { print("Ooops"); return }
-        listOfNFT = myNFT
-    }
-
-    private func uploadNFTFromNetwork() {
-        Task {
-            ProgressIndicator.show()
-            for nftID in listOfNFT {
-                let request = NFTRequest(id: nftID)
-
-                do {
-                    let data = try await network.sendNew(request: request, type: NFTModel.self)
-                    // print("✅ Favorite NFT uploaded successfully")
-                    guard let data else { return }
-                    arrayOfNFT.append(data)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-            ProgressIndicator.succeed()
-            view?.updateTableView()
-        }
+        guard let myNFT = storage.myNFT else { print("Ooops"); return }
+        arrayOfMyNFT = myNFT
     }
 
     func showOrHidePlaceholder() {
-        let isDataEmpty = isArrayOfNFTEmpty()
-        if isDataEmpty {
+        if arrayOfMyNFT.isEmpty {
             view?.showPlaceholder()
         } else {
             view?.hideTableView()
         }
-    }
-
-    private func isArrayOfNFTEmpty() -> Bool {
-        return arrayOfNFT.isEmpty
     }
 
     private func addNFTToFav(_ nft: NFTModel) {
@@ -93,7 +65,7 @@ final class MyNFTPresenter {
         let favoriteNFT = storage.profile?.favoriteNFT
         guard let listOfFavs = favoriteNFT else { return }
         do {
-            try await profileNetwork.putLikes(listOfLikes: listOfFavs)
+            try await network.putLikes(listOfLikes: listOfFavs)
             print("✅ listOfFav successfully updated")
         } catch {
             print(error)
@@ -107,7 +79,6 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     
     func viewDidLoad() {
         getDataFromStorage()
-        uploadNFTFromNetwork()
     }
 
     func sortButtonTapped() {
@@ -115,16 +86,15 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func getNumberOfRows() -> Int {
-        return arrayOfNFT.count
+        return arrayOfMyNFT.count
     }
 
     func getNFT(with indexPath: IndexPath) -> NFTModel {
-        let nft = arrayOfNFT[indexPath.row]
-        return nft
+        return arrayOfMyNFT[indexPath.row]
     }
 
     func priceSorting() {
-        arrayOfNFT.sort {
+        arrayOfMyNFT.sort {
             guard let price1 = $0.price,
                   let price2 = $1.price else { print("Sorting problem"); return false }
             return price1 > price2
@@ -133,7 +103,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func ratingSorting() {
-        arrayOfNFT.sort {
+        arrayOfMyNFT.sort {
             guard let rating1 = $0.rating,
                   let rating2 = $1.rating else { print("Sorting problem"); return false}
             return rating1 > rating2
@@ -142,7 +112,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func nameSorting() {
-        arrayOfNFT.sort {
+        arrayOfMyNFT.sort {
             guard let rating1 = $0.name,
                   let rating2 = $1.name else { print("Sorting problem"); return false}
             return rating1 > rating2

@@ -17,6 +17,8 @@ final class ProfileStorage {
 
     var favNFT: [NFTModel]?
 
+    var myNFT: [NFTModel]?
+
     let network = ProfileNetworkService()
 
     func updateDataAfterEditing(newData: EditedDataModel) {

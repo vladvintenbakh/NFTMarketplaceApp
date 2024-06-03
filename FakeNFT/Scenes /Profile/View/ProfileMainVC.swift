@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 protocol ProfileViewProtocol: AnyObject {
-    func updateUIWithNetworkData()
+    func updateUIWithNetworkData(_ profile: ProfileModel)
     func showLoadingIndicator()
     func hideLoadingIndicator()
 }
@@ -59,7 +59,6 @@ final class ProfileMainVC: UIViewController {
     // MARK: - Other Properties
     var presenter: ProfilePresenterProtocol
     let notification = NotificationCenter.default
-    let storage = ProfileStorage.shared
 
     // MARK: - Init
     init(presenter: ProfilePresenterProtocol) {
@@ -99,9 +98,11 @@ final class ProfileMainVC: UIViewController {
     }
 
     // MARK: - Public methods
-    func updateUIWithNetworkData() {
-        updateProfileUI()
-        updateScreenTable()
+    func updateUIWithNetworkData(_ profile: ProfileModel) {
+        DispatchQueue.main.async { [weak self] in
+            self?.updateProfileUI(profile)
+            self?.updateScreenTable()
+        }
     }
 
     func showLoadingIndicator() {
@@ -110,8 +111,10 @@ final class ProfileMainVC: UIViewController {
     }
 
     func hideLoadingIndicator() {
-        ProgressIndicator.succeed()
-        screenTable.isUserInteractionEnabled = true
+        DispatchQueue.main.async { [weak self] in
+            ProgressIndicator.succeed()
+            self?.screenTable.isUserInteractionEnabled = true
+        }
     }
 
     // MARK: - Private methods
@@ -121,8 +124,7 @@ final class ProfileMainVC: UIViewController {
         }
     }
 
-    private func updateProfileUI() {
-        guard let profile = storage.profile else { print("123"); return }
+    private func updateProfileUI(_ profile: ProfileModel) {
         nameLabel.text = profile.name
         guard let imageName = profile.avatar else { return }
         let image = URL(string: imageName)
@@ -220,7 +222,10 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 extension ProfileMainVC {
     private func addObserver() {
         notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
-            self?.updateProfileUI()
+            self?.presenter.viewHasGotNotification()
+
+
+//            self?.updateProfileUI()
         }
     }
 }

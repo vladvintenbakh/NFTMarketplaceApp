@@ -21,6 +21,8 @@ struct HTTPHeader {
     }
 }
 
+
+
 struct FavoritesPUTRequest {
     var scheme = "https"
     var host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
@@ -29,6 +31,18 @@ struct FavoritesPUTRequest {
     var httpMethod: HttpMethod = .put
 
     var paramName: URLRequestParamNames = .likes
+}
+
+struct nftGETRequestWithID {
+    var id: String
+    var scheme = "https"
+    var host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"
+    
+    var path: String {
+        "/api/v1/nft/\(id)"
+    }
+
+    var httpMethod: HttpMethod = .get
 }
 
 struct PersonalDataPUTRequest {

@@ -14,6 +14,7 @@ protocol ProfilePresenterProtocol {
     func editButtonTapped()
     func webSiteButtonTapped()
     func nameCell(indexPath: IndexPath) -> String
+    func viewHasGotNotification()
 }
 
 final class ProfilePresenter {
@@ -21,10 +22,8 @@ final class ProfilePresenter {
     // MARK: - Properties
     weak var view: ProfileViewProtocol?
     var navigation: NavigationManager?
-    private let network = DefaultNetworkClient()
     private let storage = ProfileStorage.shared
     private let profileNetwork = ProfileNetworkService()
-
 
     // MARK: - Life cycles
     func viewDidLoad() {
@@ -33,36 +32,51 @@ final class ProfilePresenter {
 
     // MARK: - Private methods
     private func uploadDataFromNetwork() {
-        let request = ProfileRequest()
         view?.showLoadingIndicator()
-        network.send(request: request, type: ApiModel.self)  { [weak self] result in
-            switch result {
-            case .success(let data):
-                self?.passDataToViewAndStorage(data)
-                self?.uploadFavNFTFromNetwork()
-                self?.view?.hideLoadingIndicator()
-            case .failure(let error):
+        Task {
+            do {
+                let profile = try await profileNetwork.getProfile()
+                self.passDataToViewAndStorage(profile)
+                self.uploadNFTAndFavNFTFromNetwork()
+            } catch {
                 print(error)
             }
         }
     }
 
-    private func uploadFavNFTFromNetwork() {
-        profileNetwork.uploadFavNFTFromNetwork()
+    private func uploadNFTAndFavNFTFromNetwork() {
+        Task { [weak self] in
+            await self?.uploadMyNFTFromNetwork()
+            await self?.uploadFavNFTFromNetwork()
+            self?.view?.hideLoadingIndicator()
+        }
     }
 
+    private func uploadMyNFTFromNetwork() async {
+        await profileNetwork.getMyNFTFromNetwork()
+    }
 
+    private func uploadFavNFTFromNetwork() async {
+        await profileNetwork.getFavNFTFromNetwork()
+    }
 
     private func passDataToViewAndStorage(_ dataFromNetwork: ApiModel?) {
         guard let data = dataFromNetwork else { return }
         let newProfile = ProfileModel(from: data)
         passProfileToStorage(newProfile)
-        view?.updateUIWithNetworkData()
+        view?.updateUIWithNetworkData(newProfile)
     }
 
     private func passProfileToStorage(_ profile: ProfileModel) {
         storage.profile = profile
     }
+
+    func viewHasGotNotification() {
+        guard let profile = storage.profile else { return }
+        view?.updateUIWithNetworkData(profile)
+    }
+
+
 }
 
 // MARK: - ProfilePresenterProtocol
