@@ -14,15 +14,13 @@ protocol FavoriteNFTPresenterProtocol {
     func getFavNFT(indexPath: IndexPath) -> NFTModel
 }
 
-final class FavoriteNFTPresenter {
+final class FavoriteNFTPresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
     private var arrayOfFavNFT = [NFTModel]()
-    private let profileNetwork = ProfileNetworkService()
-    private let storage = ProfileStorage.shared
 
     // MARK: - Life cycle
     func viewDidLoad() {
@@ -76,7 +74,7 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     private func makeLikes() async {
         guard let favoriteNFT = storage.profile?.favoriteNFT else { return }
         do {
-            try await profileNetwork.putLikes(listOfLikes: favoriteNFT)
+            try await network.putLikes(listOfLikes: favoriteNFT)
             print("✅ listOfFav successfully updated")
         } catch {
             print(error)

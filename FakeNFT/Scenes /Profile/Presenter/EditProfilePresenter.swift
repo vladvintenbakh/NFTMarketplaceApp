@@ -15,14 +15,13 @@ protocol EditProfilePresenterProtocol: AnyObject {
     func passWebSite(_ newWebSite: String) 
 }
 
-final class EditProfilePresenter {
+final class EditProfilePresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: EditProfileViewProtocol?
 
     // MARK: - Private Properties
     private let notification = NotificationCenter.default
-    private let storage = ProfileStorage.shared
 
     private var newName: String?
     private var newDescription: String?
@@ -42,7 +41,6 @@ final class EditProfilePresenter {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
                                       website: newWebSite)
-        let storage = ProfileStorage.shared
         storage.updateDataAfterEditing(newData: newData)
     }
 
@@ -61,7 +59,6 @@ final class EditProfilePresenter {
         guard let newName else { return }
         view?.updateName(newName)
     }
-
 }
 
 // MARK: - EditProfilePresenterProtocol

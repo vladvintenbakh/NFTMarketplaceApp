@@ -12,7 +12,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             networkClient: DefaultNetworkClient(),
             nftStorage: NftStorageImpl()
         )
-        
+
         let tabBarController = TabBarController()
         tabBarController.servicesAssembly = servicesAssembly
         

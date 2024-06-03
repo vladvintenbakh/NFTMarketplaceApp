@@ -20,19 +20,17 @@ protocol MyNFTPresenterProtocol {
     func showOrHidePlaceholder()
 }
 
-final class MyNFTPresenter {
+final class MyNFTPresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
-    private let network = ProfileNetworkService()
-    private let storage = ProfileStorage.shared
 
     // MARK: - Other properties
     private var arrayOfMyNFT = [NFTModel]()
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        guard let myNFT = storage.myNFT else { print("Ooops"); return }
+        guard let myNFT = storage.myNFT else { print("Ooops1"); return }
         arrayOfMyNFT = myNFT
     }
 

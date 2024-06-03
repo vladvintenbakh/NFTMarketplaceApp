@@ -15,6 +15,16 @@ enum Views {
     case editProfile
 }
 
+class ProfilePresenters {
+    let storage: Storage
+    let network: ProfileNetworkService
+
+    init(storage: Storage = ProfileStorage.shared, network: ProfileNetworkService = ProfileNetworkService()) {
+        self.storage = storage
+        self.network = network
+    }
+}
+
 final class NavigationManager {
 
     var navigation: UINavigationController?

@@ -9,6 +9,8 @@ import Foundation
 
 final class ProfileNetworkService {
 
+    private let storage = ProfileStorage.shared
+
     // MARK: - Public methods
     func getProfile() async throws -> ApiModel? {
         guard let profile = try await completeGETProfileRequest(type: ApiModel.self) else { print("123"); return nil}
@@ -16,7 +18,7 @@ final class ProfileNetworkService {
     }
 
     func getFavNFTFromNetwork() async {
-        guard let listOfFav = ProfileStorage.shared.profile?.favoriteNFT else { return }
+        guard let listOfFav = storage.profile?.favoriteNFT else { return }
         var favNFT = [NFTModel]()
 
         for nftID in listOfFav {
@@ -30,12 +32,12 @@ final class ProfileNetworkService {
                 print(error)
             }
         }
-        ProfileStorage.shared.favNFT = favNFT
+        storage.favNFT = favNFT
         print("✅ Favorite NFT successfully saved to storage")
     }
 
     func getMyNFTFromNetwork() async {
-        guard let listOfMyNFT = ProfileStorage.shared.profile?.nfts else { return }
+        guard let listOfMyNFT = storage.profile?.nfts else { return }
         var myNFT = [NFTModel]()
 
         for nftID in listOfMyNFT {
@@ -49,7 +51,7 @@ final class ProfileNetworkService {
                 print(error)
             }
         }
-        ProfileStorage.shared.myNFT = myNFT
+        storage.myNFT = myNFT
         print("✅ My NFT successfully saved to storage")
     }
 
@@ -109,13 +111,13 @@ final class ProfileNetworkService {
     }
 
     private func sendPUTRequest(url: URLRequest?) async throws {
-    guard let urlRequest = url else { print("WrongRequest"); return }
+        guard let urlRequest = url else { print("WrongRequest"); return }
 
-    let (_, response) = try await URLSession.shared.data(for: urlRequest)
-    if let httpResponse = response as? HTTPURLResponse,
-        200..<300 ~= httpResponse.statusCode {
-    } else { throw NetworkClientError.urlSessionError }
-}
+        let (_, response) = try await URLSession.shared.data(for: urlRequest)
+        if let httpResponse = response as? HTTPURLResponse,
+           200..<300 ~= httpResponse.statusCode {
+        } else { throw NetworkClientError.urlSessionError }
+    }
 
     private func createURLRequestForNFT(_ request: nftGETRequestWithID) -> URLRequest? {
         let constants = request
@@ -128,7 +130,6 @@ final class ProfileNetworkService {
 
         var request = URLRequest(url: url)
         request.httpMethod = constants.httpMethod.rawValue
-//        request.addValue(HTTPHeader.Value.json, forHTTPHeaderField: HTTPHeader.Field.accept)
         request.addValue(HTTPHeader.Value.formURLEncoded, forHTTPHeaderField:  HTTPHeader.Field.contentType)
         request.addValue(HTTPHeader.Value.token, forHTTPHeaderField: HTTPHeader.Field.tokenHeader)
 

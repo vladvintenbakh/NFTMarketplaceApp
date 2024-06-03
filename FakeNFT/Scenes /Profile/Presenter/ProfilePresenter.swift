@@ -17,13 +17,11 @@ protocol ProfilePresenterProtocol {
     func viewHasGotNotification()
 }
 
-final class ProfilePresenter {
+final class ProfilePresenter: ProfilePresenters {
 
     // MARK: - Properties
     weak var view: ProfileViewProtocol?
     var navigation: NavigationManager?
-    private let storage = ProfileStorage.shared
-    private let profileNetwork = ProfileNetworkService()
 
     // MARK: - Life cycles
     func viewDidLoad() {
@@ -35,7 +33,7 @@ final class ProfilePresenter {
         view?.showLoadingIndicator()
         Task {
             do {
-                let profile = try await profileNetwork.getProfile()
+                let profile = try await network.getProfile()
                 self.passDataToViewAndStorage(profile)
                 self.uploadNFTAndFavNFTFromNetwork()
             } catch {
@@ -53,11 +51,11 @@ final class ProfilePresenter {
     }
 
     private func uploadMyNFTFromNetwork() async {
-        await profileNetwork.getMyNFTFromNetwork()
+        await network.getMyNFTFromNetwork()
     }
 
     private func uploadFavNFTFromNetwork() async {
-        await profileNetwork.getFavNFTFromNetwork()
+        await network.getFavNFTFromNetwork()
     }
 
     private func passDataToViewAndStorage(_ dataFromNetwork: ApiModel?) {
@@ -75,8 +73,6 @@ final class ProfilePresenter {
         guard let profile = storage.profile else { return }
         view?.updateUIWithNetworkData(profile)
     }
-
-
 }
 
 // MARK: - ProfilePresenterProtocol

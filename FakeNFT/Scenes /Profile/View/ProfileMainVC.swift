@@ -106,8 +106,10 @@ final class ProfileMainVC: UIViewController {
     }
 
     func showLoadingIndicator() {
-        ProgressIndicator.show()
-        screenTable.isUserInteractionEnabled = false
+        DispatchQueue.main.async { [weak self] in
+            ProgressIndicator.show()
+            self?.screenTable.isUserInteractionEnabled = false
+        }
     }
 
     func hideLoadingIndicator() {

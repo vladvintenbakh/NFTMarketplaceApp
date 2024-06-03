@@ -7,7 +7,17 @@
 
 import Foundation
 
-final class ProfileStorage {
+protocol Storage: AnyObject {
+    var profile: ProfileModel? { get set }
+    var favNFT: [NFTModel]? { get set }
+    var myNFT: [NFTModel]? { get set }
+
+    func addFavNFTToStorage(_ nftToAddToStorage: NFTModel)
+    func removeFavNFTFromStorage(_ nftToRemoveFromStorage: NFTModel)
+    func updateDataAfterEditing(newData: EditedDataModel)
+}
+
+final class ProfileStorage: Storage {
 
     static let shared = ProfileStorage()
 
@@ -19,7 +29,7 @@ final class ProfileStorage {
 
     var myNFT: [NFTModel]?
 
-    let network = ProfileNetworkService()
+    lazy var network = ProfileNetworkService()
 
     func updateDataAfterEditing(newData: EditedDataModel) {
         profile?.name = newData.name
