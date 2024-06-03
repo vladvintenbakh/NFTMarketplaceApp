@@ -68,10 +68,11 @@ extension PaymentPresenter: PaymentPresenterProtocol {
     
     func processPaymentAttempt() {
         guard let selectedCurrency else { return }
-        
+        view?.toggleProgressHUDTo(true)
         cartNetworkService.payUsingCurrencyWithID(selectedCurrency.id) { [weak self] result in
             switch result {
             case .success(let paymentResponse):
+                self?.view?.toggleProgressHUDTo(false)
                 if paymentResponse.success {
                     let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
                     paymentOutcomeVC.modalPresentationStyle = .fullScreen
@@ -84,6 +85,7 @@ extension PaymentPresenter: PaymentPresenterProtocol {
                     self?.view?.presentVC(paymentErrorAlert)
                 }
             case .failure(let error):
+                self?.view?.toggleProgressHUDTo(false)
                 print("Error: \(error)")
             }
         }
