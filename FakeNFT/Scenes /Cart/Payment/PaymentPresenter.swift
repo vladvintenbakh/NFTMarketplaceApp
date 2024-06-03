@@ -57,7 +57,6 @@ extension PaymentPresenter: PaymentPresenterProtocol {
                 self?.view?.reloadCurrencyCollection()
             case .failure(let error):
                 self?.view?.toggleProgressHUDTo(false)
-                // TODO: Add a network error alert
                 print("Error: \(error)")
             }
         }
@@ -70,14 +69,23 @@ extension PaymentPresenter: PaymentPresenterProtocol {
     func processPaymentAttempt() {
         guard let selectedCurrency else { return }
         
-        if ["Cardano"].contains(selectedCurrency.title) {
-            let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
-            paymentOutcomeVC.modalPresentationStyle = .fullScreen
-            view?.presentVC(paymentOutcomeVC)
-            delegate?.didPurchaseItems()
-        } else {
-            let paymentErrorAlert = AlertUtility.paymentErrorAlert { [weak self] in self?.processPaymentAttempt() }
-            view?.presentVC(paymentErrorAlert)
+        cartNetworkService.payUsingCurrencyWithID(selectedCurrency.id) { [weak self] result in
+            switch result {
+            case .success(let paymentResponse):
+                if paymentResponse.success {
+                    let paymentOutcomeVC = PaymentOutcomeVC(presenter: PaymentOutcomePresenter())
+                    paymentOutcomeVC.modalPresentationStyle = .fullScreen
+                    self?.view?.presentVC(paymentOutcomeVC)
+                    self?.delegate?.didPurchaseItems()
+                } else {
+                    let paymentErrorAlert = AlertUtility.paymentErrorAlert { [weak self] in
+                        self?.processPaymentAttempt()
+                    }
+                    self?.view?.presentVC(paymentErrorAlert)
+                }
+            case .failure(let error):
+                print("Error: \(error)")
+            }
         }
     }
     

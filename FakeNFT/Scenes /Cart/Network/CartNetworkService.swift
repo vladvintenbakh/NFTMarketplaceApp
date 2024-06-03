@@ -11,6 +11,7 @@ protocol CartNetworkServiceProtocol {
     func getAllCartItems(completion: @escaping (Result<[CartItem], Error>) -> ())
     func syncCartItems(cartOrder: CartOrder, completion: @escaping (Error?) -> ())
     func getCurrencies(completion: @escaping (Result<[PaymentCurrency], Error>) -> ())
+    func payUsingCurrencyWithID(_ id: String, completion: @escaping (Result<PaymentResponse, Error>) -> ())
 }
 
 final class CartNetworkService {
@@ -115,6 +116,14 @@ extension CartNetworkService: CartNetworkServiceProtocol {
     func getCurrencies(completion: @escaping (Result<[PaymentCurrency], Error>) -> ()) {
         let getCurrenciesRequest = GetCurrenciesRequest()
         client.send(request: getCurrenciesRequest, type: [PaymentCurrency].self) { [weak self] result in
+            self?.fulfillCompletionFor(result: result, completion: completion)
+        }
+    }
+    
+    func payUsingCurrencyWithID(_ id: String, completion: @escaping (Result<PaymentResponse, Error>) -> ()) {
+        let setCurrencyBeforePaymentRequest = SetCurrencyBeforePaymentRequest(currencyID: id)
+        client.send(request: setCurrencyBeforePaymentRequest, 
+                    type: PaymentResponse.self) { [weak self] result in
             self?.fulfillCompletionFor(result: result, completion: completion)
         }
     }

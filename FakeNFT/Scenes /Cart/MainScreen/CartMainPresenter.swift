@@ -37,8 +37,7 @@ final class CartMainPresenter {
         
         cartNetworkService.syncCartItems(cartOrder: updatedCartOrder) { error in
             if let error {
-                // TODO: Add an error alert
-                print("Error syncing the items")
+                print("Error: \(error)")
             }
         }
     }
@@ -70,6 +69,7 @@ extension CartMainPresenter: CartItemDeletionPresenterDelegate {
 extension CartMainPresenter: PaymentPresenterDelegate {
     func didPurchaseItems() {
         cartItems = []
+        syncCartItems()
         view?.updateTotals()
     }
 }
@@ -94,10 +94,9 @@ extension CartMainPresenter: CartMainPresenterProtocol {
                 
                 self.view?.toggleEmptyPlaceholderTo(cartItems.isEmpty)
                 self.view?.updateTotals()
-            case .failure:
-                // TODO: Add an error alert
+            case .failure(let error):
                 view?.toggleProgressHUDTo(false)
-                print("Network error")
+                print("Error: \(error)")
             }
         }
     }
