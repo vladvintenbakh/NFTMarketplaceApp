@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import StoreKit
 
 protocol ProfileViewProtocol: AnyObject {
     func updateUIWithNetworkData(_ profile: ProfileModel)
@@ -82,6 +83,8 @@ final class ProfileMainVC: UIViewController {
         presenter.viewDidLoad()
 
         addObserver()
+
+        showAppReview()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -225,9 +228,6 @@ extension ProfileMainVC {
     private func addObserver() {
         notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
             self?.presenter.viewHasGotNotification()
-
-
-//            self?.updateProfileUI()
         }
     }
 }
@@ -235,4 +235,23 @@ extension ProfileMainVC {
 // MARK: - ProfileViewProtocol
 extension ProfileMainVC: ProfileViewProtocol {
 
+}
+
+// MARK: - AppRatingAlert
+extension ProfileMainVC {
+
+    private func showAppReview() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.setupReview()
+        }
+    }
+
+    private func setupReview() {
+        guard let scene = view.window?.windowScene else { return }
+        if #available(iOS 14.0, *) {
+            SKStoreReviewController.requestReview(in: scene)
+        } else {
+            SKStoreReviewController.requestReview()
+        }
+    }
 }
