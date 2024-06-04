@@ -53,7 +53,8 @@ final class MyNFTPresenter: ProfilePresenters {
     }
 
     private func sendFavsToServer() {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await makeLikes()
             view?.updateTableView()
         }

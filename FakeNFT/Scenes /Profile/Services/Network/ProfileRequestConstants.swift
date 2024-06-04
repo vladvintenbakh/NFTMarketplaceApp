@@ -21,8 +21,6 @@ struct HTTPHeader {
     }
 }
 
-
-
 struct FavoritesPUTRequest {
     var scheme = "https"
     var host = "d5dn3j2ouj72b0ejucbl.apigw.yandexcloud.net"

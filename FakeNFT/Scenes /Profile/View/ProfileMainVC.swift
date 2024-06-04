@@ -103,29 +103,33 @@ final class ProfileMainVC: UIViewController {
     // MARK: - Public methods
     func updateUIWithNetworkData(_ profile: ProfileModel) {
         DispatchQueue.main.async { [weak self] in
-            self?.updateProfileUI(profile)
-            self?.updateScreenTable()
+            guard let self else { return }
+            self.updateProfileUI(profile)
+            self.updateScreenTable()
         }
     }
 
     func showLoadingIndicator() {
         DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             ProgressIndicator.show()
-            self?.screenTable.isUserInteractionEnabled = false
+            self.screenTable.isUserInteractionEnabled = false
         }
     }
 
     func hideLoadingIndicator() {
         DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             ProgressIndicator.succeed()
-            self?.screenTable.isUserInteractionEnabled = true
+            self.screenTable.isUserInteractionEnabled = true
         }
     }
 
     // MARK: - Private methods
     private func updateScreenTable() {
         DispatchQueue.main.async { [weak self] in
-            self?.screenTable.reloadData()
+            guard let self else { return }
+            self.screenTable.reloadData()
         }
     }
 
@@ -227,7 +231,8 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 extension ProfileMainVC {
     private func addObserver() {
         notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
-            self?.presenter.viewHasGotNotification()
+            guard let self else { return }
+            self.presenter.viewHasGotNotification()
         }
     }
 }

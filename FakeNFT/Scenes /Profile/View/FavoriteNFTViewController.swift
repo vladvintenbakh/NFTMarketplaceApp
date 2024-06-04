@@ -57,24 +57,27 @@ final class FavoriteNFTViewController: UIViewController {
     // MARK: - Public properties
     func showPlaceholder() {
         DispatchQueue.main.async { [weak self] in
-            self?.favNFTCollection.isHidden = true
+            guard let self else { return }
+            self.favNFTCollection.isHidden = true
 
             let placeholder = UILabel()
             placeholder.text = "У Вас ещё нет избранных NFT"
             placeholder.font = UIFont.bodyBold
-            self?.view.centerView(placeholder)
+            self.view.centerView(placeholder)
         }
     }
 
     func hideCollection() {
         DispatchQueue.main.async { [weak self] in
-            self?.favNFTCollection.isHidden = false
+            guard let self else { return }
+            self.favNFTCollection.isHidden = false
         }
     }
 
     func updateUI() {
         DispatchQueue.main.async { [weak self] in
-            self?.favNFTCollection.reloadData()
+            guard let self else { return }
+            self.favNFTCollection.reloadData()
         }
     }
 

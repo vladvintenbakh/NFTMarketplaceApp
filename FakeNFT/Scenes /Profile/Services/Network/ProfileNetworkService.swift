@@ -78,18 +78,25 @@ final class ProfileNetworkService {
         urlComponents.host = constants.host
         urlComponents.path = constants.path
 
-        let nameQuery = URLQueryItem(name: constants.nameParam.rawValue, value: newPersonalData.name)
-        let descriptionQuery = URLQueryItem(name: constants.descriptionParam.rawValue, value: newPersonalData.description)
-        let webSiteQuery = URLQueryItem(name: constants.website.rawValue, value: newPersonalData.website)
-        urlComponents.queryItems = [nameQuery, descriptionQuery, webSiteQuery]
+        urlComponents.queryItems = [
+            URLQueryItem(name: constants.nameParam.rawValue, value: newPersonalData.name),
+            URLQueryItem(name: constants.descriptionParam.rawValue, value: newPersonalData.description),
+            URLQueryItem(name: constants.website.rawValue, value: newPersonalData.website)
+        ]
 
-        guard let url = urlComponents.url else { print("Hmmm"); return nil}
+        guard let url = urlComponents.url else {
+            print("Failed to create URL"); return nil }
 
         var request = URLRequest(url: url)
         request.httpMethod = constants.httpMethod.rawValue
-        request.addValue(HTTPHeader.Value.json, forHTTPHeaderField: HTTPHeader.Field.accept)
-        request.addValue(HTTPHeader.Value.formURLEncoded, forHTTPHeaderField:  HTTPHeader.Field.contentType)
-        request.addValue(HTTPHeader.Value.token, forHTTPHeaderField: HTTPHeader.Field.tokenHeader)
+        
+        let headers: [String: String] = [
+            HTTPHeader.Value.json: HTTPHeader.Field.accept,
+            HTTPHeader.Value.formURLEncoded: HTTPHeader.Field.contentType,
+            HTTPHeader.Value.token: HTTPHeader.Field.tokenHeader
+        ]
+
+        headers.forEach { request.addValue($0.key, forHTTPHeaderField: $0.value) }
 
         return request
     }

@@ -31,7 +31,8 @@ final class ProfilePresenter: ProfilePresenters {
     // MARK: - Private methods
     private func uploadDataFromNetwork() {
         view?.showLoadingIndicator()
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let profile = try await network.getProfile()
                 self.passDataToViewAndStorage(profile)
@@ -44,9 +45,10 @@ final class ProfilePresenter: ProfilePresenters {
 
     private func uploadNFTAndFavNFTFromNetwork() {
         Task { [weak self] in
-            await self?.uploadMyNFTFromNetwork()
-            await self?.uploadFavNFTFromNetwork()
-            self?.view?.hideLoadingIndicator()
+            guard let self else { return }
+            await self.uploadMyNFTFromNetwork()
+            await self.uploadFavNFTFromNetwork()
+            self.view?.hideLoadingIndicator()
         }
     }
 

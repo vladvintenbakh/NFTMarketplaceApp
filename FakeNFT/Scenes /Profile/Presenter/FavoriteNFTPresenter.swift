@@ -65,7 +65,8 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
     }
 
     private func sendFavsToServer() {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await makeLikes()
             updateView()
         }

@@ -36,7 +36,8 @@ final class ProfileStorage: Storage {
         profile?.description = newData.description
         profile?.website = newData.website
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 try await network.putPersonalData(newPersonalData: newData)
                 print("✅ Personal data successfully updated")
