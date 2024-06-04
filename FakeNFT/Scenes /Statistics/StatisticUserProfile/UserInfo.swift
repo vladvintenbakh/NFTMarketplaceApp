@@ -8,25 +8,32 @@
 import Foundation
 
 protocol UserInfoPresenterProtocol: AnyObject {
-    func viewDidLoad()
+    var onNFTCollectionButtonTap: (() -> Void)? { get set }
+    var onUserWebsiteButtonTap: (() -> Void)? { get set }
+    var currentUser: User { get }
+    var servicesAssembly: ServicesAssembly { get }
     func nftCollectionButtonDidTap()
+    func userWebsiteButtonDidTap()
 }
 
 final class UserInfoPresenter: UserInfoPresenterProtocol {
     var onNFTCollectionButtonTap: (() -> Void)?
-    private weak var view: UserInfoViewProtocol?
-    private let user: User
-    
-    init(view: UserInfoViewProtocol, user: User) {
-        self.view = view
-        self.user = user
+    var onUserWebsiteButtonTap: (() -> Void)?
+
+    private(set) var currentUser: User
+
+    var servicesAssembly: ServicesAssembly
+
+    init(for currentUser: User, servicesAssemly: ServicesAssembly) {
+        self.currentUser = currentUser
+        self.servicesAssembly = servicesAssemly
     }
-    
-    func viewDidLoad() {
-        view?.updateUserInfo(username: user.username, description: user.description, avatar: user.avatar)
-    }
-    
+
     func nftCollectionButtonDidTap() {
         onNFTCollectionButtonTap?()
+    }
+
+    func userWebsiteButtonDidTap() {
+        onUserWebsiteButtonTap?()
     }
 }

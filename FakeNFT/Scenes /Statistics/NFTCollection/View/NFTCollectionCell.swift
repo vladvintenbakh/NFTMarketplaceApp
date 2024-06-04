@@ -6,8 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
+
+protocol NFTCellProtocol: AnyObject {
+    func likeButtonDidTap(nftId: String, isLiked: Bool)
+    func basketButtonDidTap(nftId: String, isOrdered: Bool)
+}
 
 final class NFTCollectionCell: UICollectionViewCell {
+    weak var delegate: NFTCellProtocol?
+
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -19,7 +27,7 @@ final class NFTCollectionCell: UICollectionViewCell {
     private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .bodyBold
+        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         label.textColor = .segmentActive
         return label
     }()
@@ -33,7 +41,7 @@ final class NFTCollectionCell: UICollectionViewCell {
         stackView.spacing = Constants.ratingStarsSpacing
         return stackView
     }()
-    
+
     private lazy var nftPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -45,40 +53,60 @@ final class NFTCollectionCell: UICollectionViewCell {
     private lazy var likeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "whiteLike"), for: .normal)
+        button.setImage(UIImage(named: "noLike"), for: .normal)
+        button.setImage(UIImage(named: "like"), for: .selected)
+        button.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         return button
     }()
-    
+
     private lazy var basketButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "basket"), for: .normal)
+        button.addTarget(self, action: #selector(didTapBasketButton), for: .touchUpInside)
         return button
     }()
-    
+
     private var nftRating = 0 {
         didSet {
             updateRatingStarViews()
         }
     }
-    
+
+    private var isLiked = false {
+        didSet {
+            updateLikeButtonImage()
+        }
+    }
+
+    private var nftId: String = ""
+
+    private var inBasket = false {
+        didSet {
+            updateBasketButtonImage()
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         setupUI()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func setupCell(using nft: NFT) {
-        nftRating = nft.raiting
-        nftImageView.image = nft.nftImg
-        nftPriceLabel.text = nft.price
+        nftRating = nft.rating
+        nftImageView.kf.setImage(with: nft.image.first)
+        nftPriceLabel.text = nft.price + " ETH"
         nftNameLabel.text = nft.name
+        isLiked = nft.isLiked
+        nftId = nft.id
+        inBasket = nft.isOrdered
     }
-    
+
     private func setupUI() {
         setupNFTImageView()
         setupLikeButton()
@@ -87,17 +115,17 @@ final class NFTCollectionCell: UICollectionViewCell {
         setupNFTPriceLabel()
         setupBasketButton()
     }
-    
+
     private func setupNFTImageView() {
         contentView.addSubview(nftImageView)
         NSLayoutConstraint.activate([
             nftImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             nftImageView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.imageHeight),
             nftImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            nftImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constants.imageWeight)
+            nftImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
-    
+
     private func setupLikeButton() {
         contentView.addSubview(likeButton)
         NSLayoutConstraint.activate([
@@ -111,7 +139,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             )
         ])
     }
-    
+
     private func setupNFTRatingStackView() {
         contentView.addSubview(nftRatingView)
         updateRatingStarViews()
@@ -123,7 +151,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             )
         ])
     }
-    
+
     private func setupNFTNameLabel() {
         contentView.addSubview(nftNameLabel)
         NSLayoutConstraint.activate([
@@ -134,7 +162,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             )
         ])
     }
-    
+
     private func setupNFTPriceLabel() {
         contentView.addSubview(nftPriceLabel)
         NSLayoutConstraint.activate([
@@ -145,7 +173,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             nftPriceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
         ])
     }
-    
+
     private func setupBasketButton() {
         contentView.addSubview(basketButton)
         NSLayoutConstraint.activate([
@@ -158,7 +186,7 @@ final class NFTCollectionCell: UICollectionViewCell {
             basketButton.widthAnchor.constraint(equalToConstant: Constants.basketWidth)
         ])
     }
-    
+
     private func updateRatingStarViews() {
         if !nftRatingView.arrangedSubviews.isEmpty {
             nftRatingView.arrangedSubviews.forEach { subView in
@@ -166,20 +194,39 @@ final class NFTCollectionCell: UICollectionViewCell {
                 subView.removeFromSuperview()
             }
         }
-        
+
         for i in 1...5 {
-            let raitingStar = UIImageView()
-            raitingStar.image = i <= nftRating ? UIImage(named: "star") : UIImage(named: "whiteStar")
-            raitingStar.contentMode = .scaleAspectFit
-            nftRatingView.addArrangedSubview(raitingStar)
+            let starImageView = UIImageView()
+            starImageView.image = i <= nftRating ? UIImage(named: "yellowStar") : UIImage(named: "whiteStar")
+            starImageView.contentMode = .scaleAspectFit
+            nftRatingView.addArrangedSubview(starImageView)
         }
+    }
+
+    private func updateBasketButtonImage() {
+        let image = inBasket ? UIImage(named: "basketX") : UIImage(named: "basket")
+        basketButton.setImage(image, for: .normal)
+    }
+
+    private func updateLikeButtonImage() {
+        let image = isLiked ? UIImage(named: "like") : UIImage(named: "noLike")
+        likeButton.setImage(image, for: .normal)
+    }
+
+    @objc private func didTapLikeButton() {
+        isLiked.toggle()
+        delegate?.likeButtonDidTap(nftId: nftId, isLiked: isLiked)
+    }
+
+    @objc private func didTapBasketButton() {
+        inBasket.toggle()
+        delegate?.basketButtonDidTap(nftId: nftId, isOrdered: inBasket)
     }
 }
 
 private enum Constants {
-    static let likeImageViewInset: CGFloat = 6
-    static let imageHeight: CGFloat = 110
-    static let imageWeight: CGFloat = 8
+    static let likeImageViewInset: CGFloat = 12
+    static let imageHeight: CGFloat = 108
     static let contentBottomInset: CGFloat = 21
     static let ratingStarsSpacing: CGFloat = 2
     static let ratingStackTopInset: CGFloat = 8

@@ -126,12 +126,12 @@ final class RatingCell: UITableViewCell {
     }
 
     func setupCell(
-        userData: User
+        user: User
     ) {
-        ratingLabel.text = userData.rating
-        avatarView.image = userData.avatar
-        usernameLabel.text = userData.username
-        nftNumLabel.text = userData.nftNum
+        ratingLabel.text = String(user.rating)
+        avatarView.kf.setImage(with: user.avatar, placeholder: UIImage(named: "noAvatar"))
+        usernameLabel.text = user.username
+        nftNumLabel.text = String(user.nfts.count)
     }
 }
 
