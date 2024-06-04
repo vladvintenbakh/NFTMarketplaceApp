@@ -8,18 +8,26 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        let servicesAssembly = ServicesAssembly(
-            networkClient: DefaultNetworkClient(),
-            nftStorage: NftStorageImpl()
-        )
 
-        let tabBarController = TabBarController()
-        tabBarController.servicesAssembly = servicesAssembly
-        
         window = UIWindow()
-        window?.rootViewController = tabBarController
+        isNeedToShowOnboarding()
         window?.makeKeyAndVisible()
-        
+
         return true
+    }
+
+    func isNeedToShowOnboarding() {
+        if UserDefaults.standard.object(forKey: "onboardingButtonTapped") == nil {
+            window?.rootViewController = OnboardingVC()
+        } else {
+            let servicesAssembly = ServicesAssembly(
+                networkClient: DefaultNetworkClient(),
+                nftStorage: NftStorageImpl()
+            )
+
+            let tabBarController = TabBarController()
+            tabBarController.servicesAssembly = servicesAssembly
+            window?.rootViewController = tabBarController
+        }
     }
 }
