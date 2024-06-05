@@ -26,6 +26,7 @@ final class ProfileMainVC: UIViewController {
         table.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         table.separatorInset = .zero
         table.backgroundColor = .clear
+        table.isScrollEnabled = false
         return table
     } ()
     private lazy var nameLabel: UILabel = {

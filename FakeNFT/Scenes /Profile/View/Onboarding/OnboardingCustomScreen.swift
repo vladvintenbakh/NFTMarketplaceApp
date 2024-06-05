@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class OnboardingCustomVC: UIViewController {
+final class OnboardingCustomScreen: UIViewController {
 
     // MARK: - UI Properties
     private lazy var image = UIImageView()
@@ -46,7 +46,8 @@ final class OnboardingCustomVC: UIViewController {
     } ()
 
     // MARK: - Other Properties
-    let userDefaults = UserDefaults.standard
+    private let userDefaults = UserDefaults.standard
+    private let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
     // MARK: - Init
     init(image: String, titleText: String, subTitleText: String,  isButtonHidden: Bool) {
@@ -75,19 +76,17 @@ final class OnboardingCustomVC: UIViewController {
     // MARK: - IB Actions
     @objc private func onboardingButtonTapped2(_ sender: UIButton) {
         userDefaults.set(true, forKey: "onboardingButtonTapped")
+        showTabBarController()
+    }
 
-        let servicesAssembly = ServicesAssembly(
-            networkClient: DefaultNetworkClient(),
-            nftStorage: NftStorageImpl()
-        )
-
-        let tabBarController = TabBarController()
-        tabBarController.servicesAssembly = servicesAssembly
+    // MARK: - Private methods
+    private func showTabBarController() {
+        guard let appDelegate else { print("Hmmm"); return }
+        let tabBarController = appDelegate.setupTabBar()
         tabBarController.modalPresentationStyle = .fullScreen
         present(tabBarController, animated: true)
     }
 
-    // MARK: - Private methods
     private func setupUI() {
 
         view.addSubViews([image, closeButton, titleLabel, subTitleLabel, doneButton])

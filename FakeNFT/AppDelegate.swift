@@ -20,14 +20,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         if UserDefaults.standard.object(forKey: "onboardingButtonTapped") == nil {
             window?.rootViewController = OnboardingVC()
         } else {
-            let servicesAssembly = ServicesAssembly(
-                networkClient: DefaultNetworkClient(),
-                nftStorage: NftStorageImpl()
-            )
-
-            let tabBarController = TabBarController()
-            tabBarController.servicesAssembly = servicesAssembly
+            let tabBarController = setupTabBar()
             window?.rootViewController = tabBarController
         }
+    }
+
+    func setupTabBar() -> UITabBarController {
+        let servicesAssembly = ServicesAssembly(
+            networkClient: DefaultNetworkClient(),
+            nftStorage: NftStorageImpl()
+        )
+
+        let tabBarController = TabBarController()
+        tabBarController.servicesAssembly = servicesAssembly
+        return tabBarController
     }
 }

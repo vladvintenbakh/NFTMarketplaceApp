@@ -41,9 +41,9 @@ final class OnboardingVC: UIPageViewController {
 
         pageController.addTarget(self, action: #selector(pageControllerTapped), for: .valueChanged)
 
-        let firstScreen = OnboardingCustomVC(image: "image1", titleText: "Исследуйте", subTitleText: "Присоединяйтесь и откройте новый мир уникальных NFT для коллекционеров", isButtonHidden: true)
-        let secondScreen = OnboardingCustomVC(image: "image2", titleText: "Коллекционируйте", subTitleText: "Пополняйте свою коллекцию эксклюзивными картинками, созданными нейросетью!", isButtonHidden: true)
-        let thirdScreen = OnboardingCustomVC(image: "image3", titleText: "Состязайтесь", subTitleText: "Смотрите статистику других и покажите всем, что у вас самая ценная коллекция", isButtonHidden: false)
+        let firstScreen = OnboardingCustomScreen(image: "image1", titleText: "Исследуйте", subTitleText: "Присоединяйтесь и откройте новый мир уникальных NFT для коллекционеров", isButtonHidden: true)
+        let secondScreen = OnboardingCustomScreen(image: "image2", titleText: "Коллекционируйте", subTitleText: "Пополняйте свою коллекцию эксклюзивными картинками, созданными нейросетью!", isButtonHidden: true)
+        let thirdScreen = OnboardingCustomScreen(image: "image3", titleText: "Состязайтесь", subTitleText: "Смотрите статистику других и покажите всем, что у вас самая ценная коллекция", isButtonHidden: false)
 
         pages.append(firstScreen)
         pages.append(secondScreen)
