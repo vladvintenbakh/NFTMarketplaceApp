@@ -14,7 +14,7 @@ final class StatisticProfileVC: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = .headline3
         return label
     }()
 
@@ -22,7 +22,7 @@ final class StatisticProfileVC: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.font = .caption2
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -44,7 +44,7 @@ final class StatisticProfileVC: UIViewController {
         button.layer.cornerRadius = 16
         button.setTitle("Перейти на сайт пользователя", for: .normal)
         button.setTitleColor(UIColor.segmentActive, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.titleLabel?.font = .caption1
         button.backgroundColor = UIColor.yaLightGrayLight
         button.addTarget(
             self,
@@ -57,7 +57,7 @@ final class StatisticProfileVC: UIViewController {
     private lazy var nftCollectionButtonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.font = .bodyBold
         label.textColor = .segmentActive
         return label
     }()

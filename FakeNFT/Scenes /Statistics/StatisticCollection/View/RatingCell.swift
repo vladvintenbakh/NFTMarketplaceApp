@@ -22,7 +22,7 @@ final class RatingCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Alex"
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = .headline3
         return label
     }()
 
@@ -30,7 +30,7 @@ final class RatingCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "112"
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = .headline3
         label.textAlignment = .right
         return label
     }()

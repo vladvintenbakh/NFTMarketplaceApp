@@ -27,7 +27,7 @@ final class NFTCollectionCell: UICollectionViewCell {
     private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.font = .bodyBold
         label.textColor = .segmentActive
         return label
     }()
