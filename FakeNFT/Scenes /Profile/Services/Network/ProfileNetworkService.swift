@@ -81,7 +81,8 @@ final class ProfileNetworkService {
         urlComponents.queryItems = [
             URLQueryItem(name: constants.nameParam.rawValue, value: newPersonalData.name),
             URLQueryItem(name: constants.descriptionParam.rawValue, value: newPersonalData.description),
-            URLQueryItem(name: constants.website.rawValue, value: newPersonalData.website)
+            URLQueryItem(name: constants.website.rawValue, value: newPersonalData.website),
+            URLQueryItem(name: constants.avatar.rawValue, value: newPersonalData.avatar)
         ]
 
         guard let url = urlComponents.url else {

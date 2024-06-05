@@ -53,6 +53,7 @@ struct PersonalDataPUTRequest {
     var nameParam: URLRequestParamNames = .name
     var descriptionParam: URLRequestParamNames = .description
     var website: URLRequestParamNames = .website
+    var avatar: URLRequestParamNames = .avatar
 }
 
 struct ProfileRequest: NetworkRequest {
@@ -67,6 +68,7 @@ enum URLRequestParamNames: String {
     case name = "name"
     case description = "description"
     case website = "website"
+    case avatar = "avatar"
 }
 
 enum RequestTypes {

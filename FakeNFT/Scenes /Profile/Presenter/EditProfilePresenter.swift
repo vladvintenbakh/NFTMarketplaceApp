@@ -13,6 +13,7 @@ protocol EditProfilePresenterProtocol: AnyObject {
     func passNewDescription(_ newDesc: String)
     func passNewName(_ newName: String)
     func passWebSite(_ newWebSite: String) 
+    func passAvatar(_ newAvatar: String)
 }
 
 final class EditProfilePresenter: ProfilePresenters {
@@ -40,7 +41,8 @@ final class EditProfilePresenter: ProfilePresenters {
     private func sendDataToStorage() {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
-                                      website: newWebSite)
+                                      website: newWebSite,
+                                      avatar: avatar)
         storage.updateDataAfterEditing(newData: newData)
     }
 
@@ -87,6 +89,10 @@ extension EditProfilePresenter: EditProfilePresenterProtocol {
 
     func passWebSite(_ newWebSite: String) {
         self.newWebSite = newWebSite
+    }
+
+    func passAvatar(_ newAvatar: String) {
+        self.avatar = newAvatar
     }
 
     func closeButtonTapped() {

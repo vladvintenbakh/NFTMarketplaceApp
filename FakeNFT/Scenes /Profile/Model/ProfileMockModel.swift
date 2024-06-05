@@ -22,7 +22,7 @@ struct ProfileMockModel: Codable {
 // MARK: - ProfileModel
 struct ProfileModel: Codable {
     var name: String?
-    let avatar: String?
+    var avatar: String?
     var description: String?
     var website: String?
     let nfts: [String]?

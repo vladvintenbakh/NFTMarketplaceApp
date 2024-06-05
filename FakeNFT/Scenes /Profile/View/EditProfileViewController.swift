@@ -99,9 +99,25 @@ final class EditProfileViewController: UIViewController {
     @objc private func changePhotoButtonTapped(sender: UIButton) {
         print("Why don't you like Hoakin?")
         loadNewPhoto.isHidden = false
+        showAlert()
     }
 
     // MARK: - Public methods
+    private func showAlert() {
+        let alert = UIAlertController(title: "Новое фото", message: nil, preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.textAlignment = .center
+            textField.placeholder = "Добавь новую ссылку на фото"
+        }
+        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Обновить", style: .default) {_ in 
+            guard let text = alert.textFields?.first?.text else { return }
+            self.presenter.passAvatar(text)
+        })
+
+        present(alert, animated: true)
+    }
+
     func updateName(_ name: String) {
         nameTextField.text = name
     }

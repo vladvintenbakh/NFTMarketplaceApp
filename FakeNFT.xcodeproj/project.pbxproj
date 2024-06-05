@@ -482,10 +482,10 @@
 				7304BD762C0F4B4800EDCD5E /* Onboarding */,
 				73E0BF7F2BFF7E2D00D2BC5F /* CustomCell */,
 				60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */,
-				73EA615C2BFF59860089BCFB /* EditProfileViewController.swift */,
 				73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */,
 				732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */,
 				73EA615E2BFF6EA80089BCFB /* WebViewController.swift */,
+				73EA615C2BFF59860089BCFB /* EditProfileViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";

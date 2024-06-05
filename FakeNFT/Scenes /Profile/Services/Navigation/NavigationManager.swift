@@ -16,10 +16,10 @@ enum Views {
 }
 
 class ProfilePresenters {
-    let storage: Storage
+    let storage: ProfileStorageProtocol
     let network: ProfileNetworkService
 
-    init(storage: Storage = ProfileStorage.shared, network: ProfileNetworkService = ProfileNetworkService()) {
+    init(storage: ProfileStorageProtocol = ProfileStorage.shared, network: ProfileNetworkService = ProfileNetworkService()) {
         self.storage = storage
         self.network = network
     }

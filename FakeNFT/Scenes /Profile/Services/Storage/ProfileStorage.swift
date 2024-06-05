@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol Storage: AnyObject {
+protocol ProfileStorageProtocol: AnyObject {
     var profile: ProfileModel? { get set }
     var favNFT: [NFTModel]? { get set }
     var myNFT: [NFTModel]? { get set }
@@ -17,7 +17,7 @@ protocol Storage: AnyObject {
     func updateDataAfterEditing(newData: EditedDataModel)
 }
 
-final class ProfileStorage: Storage {
+final class ProfileStorage: ProfileStorageProtocol {
 
     static let shared = ProfileStorage()
 
@@ -35,6 +35,7 @@ final class ProfileStorage: Storage {
         profile?.name = newData.name
         profile?.description = newData.description
         profile?.website = newData.website
+        profile?.avatar = newData.avatar
 
         Task { [weak self] in
             guard let self else { return }
