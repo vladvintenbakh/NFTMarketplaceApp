@@ -8,10 +8,18 @@
 import UIKit
 
 final class UserModel {
-    private var usersDB: [User] = []
-    private var storage: [String: UserData] = [:]
+    private var usersDB: [User] = [] {
+        didSet {
+        }
+    }
     
     private let defaults = UserDefaults.standard
+    
+    enum SortType: String {
+        case byName
+        case byRating
+    }
+    
     private let sortTypeKey = "SortType"
     
     func saveUsers(users: [UserData]) {
@@ -21,40 +29,51 @@ final class UserModel {
     }
     
     func getUsers() -> [User] {
-        if let sortType = defaults.string(forKey: sortTypeKey) {
-            switch sortType {
-            case "byName":
-                return sortUsersByName()
-            case "byRating":
-                return sortUsersByRating()
-            default:
-                return usersDB
-            }
+        guard let sortTypeString = defaults.string(forKey: sortTypeKey),
+              let sortType = SortType(rawValue: sortTypeString) else {
+            return usersDB
         }
-        return usersDB
+        
+        switch sortType {
+        case .byName:
+            return sortUsersByName()
+        case .byRating:
+            return sortUsersByRating()
+        }
     }
     
-    func sortUsersByName() -> [User] {
-        defaults.set("byName", forKey: sortTypeKey)
-        let sortedUsersList = usersDB.sorted {
-            $0.username < $1.username
+    func sortUsers(by sortType: SortType) -> [User] {
+        defaults.set(sortType.rawValue, forKey: sortTypeKey)
+        let sortedUsersList: [User]
+        
+        switch sortType {
+        case .byName:
+            sortedUsersList = usersDB.sorted { $0.username < $1.username }
+        case .byRating:
+            sortedUsersList = usersDB.sorted { $0.rating > $1.rating }
         }
+        
         return sortedUsersList
+    }
+
+    
+    func sortUsersByName() -> [User] {
+        return sortUsers(by: .byName)
     }
     
     func sortUsersByRating() -> [User] {
-        defaults.set("byRating", forKey: sortTypeKey)
-        let sortedUsersList = usersDB.sorted {
-            $0.rating < $1.rating
-        }
-        return sortedUsersList
+        return sortUsers(by: .byRating)
     }
 }
-     
+
 extension UserModel {
     func convert(userData: UserData) -> User {
+        guard let rating = Int(userData.rating) else {
+            return User(rating: 0, username: userData.name, nfts: userData.nfts, avatar: userData.avatar, description: userData.description, website: userData.website)
+        }
+        
         return User(
-            rating: Int(userData.rating) ?? 0,
+            rating: rating,
             username: userData.name,
             nfts: userData.nfts,
             avatar: userData.avatar,
