@@ -2,7 +2,11 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
-    var servicesAssembly: ServicesAssembly!
+    var servicesAssembly: ServicesAssembly! {
+        didSet {
+            setupViewControllers()
+        }
+    }
     
     private let profileTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.profile", comment: ""),
@@ -30,6 +34,11 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func setupViewControllers() {
+        guard servicesAssembly != nil else { return }
         
         let profileMainVC = ProfileMainVC()
         profileMainVC.tabBarItem = profileTabBarItem
@@ -50,7 +59,6 @@ final class TabBarController: UITabBarController {
         statisticVC.tabBarItem = statisticsTabBarItem
 
         viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
-        
-        view.backgroundColor = .systemBackground
     }
 }
+
