@@ -9,10 +9,27 @@ import UIKit
 
 final class OnboardingVC: UIPageViewController {
 
-    // MARK: - Properties
-    var pages = [UIViewController]()
-    let pageController = UIPageControl()
-    let initialPage = 0
+    // MARK: - UI Properties
+    private var pages = [UIViewController]()
+    private lazy var progressBar: UIProgressView = {
+        let bar = UIProgressView()
+        bar.progressViewStyle = .default
+        bar.progressTintColor = .white
+        bar.layer.cornerRadius = 16
+        bar.layer.masksToBounds = true
+        return bar
+    } ()
+
+    // MARK: - Other Properties
+    private var timer: Timer?
+    private var timerStep = Float(0.05)
+    private var currentIndex = 0
+    private var progress = Float(0.0)
+    private var elapsedTime = Float(0.0)
+    private var totalTime = Float(6.0)
+    private var timePerScreen: Float {
+        Float(totalTime) / Float(pages.count)
+    }
 
     // MARK: - Init
     init() {
@@ -23,23 +40,61 @@ final class OnboardingVC: UIPageViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        timer?.invalidate()
+    }
+
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPageVC()
+        setupProgressBar()
+        startTimer()
     }
 
     // MARK: - IB Actions
-    @objc private func pageControllerTapped(_ sender: UIPageControl) {
-        setViewControllers([pages[sender.currentPage]], direction: .forward, animated: true)
+    @objc private func timerNext() {
+        elapsedTime += timerStep
+
+        needToShowNextPage()
+        needToShowFirstPage()
+        showNextPage()
+
+        updateProgress()
     }
 
     // MARK: - Private methods
+    private func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerStep), target: self, selector: #selector(timerNext), userInfo: nil, repeats: true)
+    }
+
+    private func needToShowNextPage() {
+        if elapsedTime > timePerScreen {
+            currentIndex += 1
+            elapsedTime = 0
+        }
+    }
+
+    private func needToShowFirstPage() {
+        if currentIndex > pages.count - 1 {
+            currentIndex = 0
+        }
+    }
+
+    private func showNextPage() {
+        let nextVC = pages[currentIndex]
+        setViewControllers([nextVC], direction: .forward, animated: true)
+    }
+
+    private func updateProgress() {
+        let screenTime = Float(currentIndex) / Float(pages.count)
+        progress = screenTime + Float(elapsedTime / totalTime)
+        progressBar.progress = progress
+    }
+
     private func setupPageVC() {
         dataSource = self
         delegate = self
-
-        pageController.addTarget(self, action: #selector(pageControllerTapped), for: .valueChanged)
 
         let firstScreen = OnboardingCustomScreen(image: "image1", titleText: "Исследуйте", subTitleText: "Присоединяйтесь и откройте новый мир уникальных NFT для коллекционеров", isButtonHidden: true)
         let secondScreen = OnboardingCustomScreen(image: "image2", titleText: "Коллекционируйте", subTitleText: "Пополняйте свою коллекцию эксклюзивными картинками, созданными нейросетью!", isButtonHidden: true)
@@ -48,25 +103,15 @@ final class OnboardingVC: UIPageViewController {
         pages.append(firstScreen)
         pages.append(secondScreen)
         pages.append(thirdScreen)
+    }
 
-        setViewControllers([pages[initialPage]], direction: .forward, animated: true)
-
-        pageController.translatesAutoresizingMaskIntoConstraints = false
-        pageController.currentPageIndicatorTintColor = .white
-        pageController.pageIndicatorTintColor = .gray
-        pageController.numberOfPages = pages.count
-        pageController.currentPage = initialPage
-
-        if #available(iOS 14.0, *) {
-            guard let progressImage = UIImage(named: "paginator") else {return}
-            pageController.preferredIndicatorImage = progressImage
-        }
-
-        view.addSubview(pageController)
+    private func setupProgressBar() {
+        view.addSubViews([progressBar])
         NSLayoutConstraint.activate([
-            pageController.topAnchor.constraint(equalTo: view.topAnchor, constant: 44),
-            pageController.widthAnchor.constraint(equalTo: view.widthAnchor),
-            pageController.heightAnchor.constraint(equalToConstant: 28),
+            progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
+            progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            progressBar.heightAnchor.constraint(equalToConstant: 6),
         ])
     }
 }
@@ -75,9 +120,7 @@ final class OnboardingVC: UIPageViewController {
 extension OnboardingVC: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
-
         guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
-
         if currentIndex == 0 {
             return pages.last
         } else {
@@ -88,21 +131,10 @@ extension OnboardingVC: UIPageViewControllerDataSource, UIPageViewControllerDele
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
-
         if currentIndex == pages.count - 1 {
             return pages.first
         } else {
             return pages[currentIndex + 1]
-        }
-    }
-
-    func pageViewController(_ pageViewController: UIPageViewController,
-                            didFinishAnimating finished: Bool,
-                            previousViewControllers: [UIViewController],
-                            transitionCompleted completed: Bool) {
-        if let visibleViewController = pageViewController.viewControllers?.first,
-           let index = pages.firstIndex(of: visibleViewController) {
-            pageController.currentPage = index
         }
     }
 }
