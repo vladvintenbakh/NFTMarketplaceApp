@@ -56,6 +56,7 @@ final class OnboardingCustomScreen: UIViewController {
         self.titleLabel.text = titleText
         self.subTitleLabel.text = subTitleText
         self.doneButton.isHidden = isButtonHidden
+        self.closeButton.isHidden = !isButtonHidden
     }
 
     required init?(coder: NSCoder) {

@@ -10,23 +10,17 @@ import UIKit
 final class OnboardingVC: UIPageViewController {
 
     // MARK: - UI Properties
-    private var pages = [UIViewController]()
-    private lazy var progressBar: UIProgressView = {
-        let bar = UIProgressView()
-        bar.progressViewStyle = .default
-        bar.progressTintColor = .white
-        bar.layer.cornerRadius = 16
-        bar.layer.masksToBounds = true
-        return bar
-    } ()
+    private lazy var pages = [UIViewController]()
+    private lazy var firstProgressBar = setupProgressBar()
+    private lazy var secondProgressBar = setupProgressBar()
+    private lazy var thirdProgressBar = setupProgressBar()
 
     // MARK: - Other Properties
     private var timer: Timer?
     private var timerStep = Float(0.05)
     private var currentIndex = 0
-    private var progress = Float(0.0)
-    private var elapsedTime = Float(0.0)
-    private var totalTime = Float(6.0)
+    private var elapsedTime = Float(0)
+    private var totalTime = Float(6)
     private var timePerScreen: Float {
         Float(totalTime) / Float(pages.count)
     }
@@ -47,8 +41,7 @@ final class OnboardingVC: UIPageViewController {
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupPageVC()
-        setupProgressBar()
+        setupUI()
         startTimer()
     }
 
@@ -64,6 +57,26 @@ final class OnboardingVC: UIPageViewController {
     }
 
     // MARK: - Private methods
+    private func setupUI() {
+        setupPageVC()
+        setupProgressStack()
+    }
+
+    private func setupProgressStack() {
+        let progressStack = UIStackView(arrangedSubviews: [firstProgressBar, secondProgressBar, thirdProgressBar])
+        progressStack.axis = .horizontal
+        progressStack.spacing = 10
+        progressStack.distribution = .fillEqually
+
+        view.addSubViews([progressStack])
+        NSLayoutConstraint.activate([
+            progressStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
+            progressStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            progressStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            progressStack.heightAnchor.constraint(equalToConstant: 4),
+        ])
+    }
+
     private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerStep), target: self, selector: #selector(timerNext), userInfo: nil, repeats: true)
     }
@@ -78,6 +91,8 @@ final class OnboardingVC: UIPageViewController {
     private func needToShowFirstPage() {
         if currentIndex > pages.count - 1 {
             currentIndex = 0
+            secondProgressBar.progress = Float(0)
+            thirdProgressBar.progress = Float(0)
         }
     }
 
@@ -87,9 +102,23 @@ final class OnboardingVC: UIPageViewController {
     }
 
     private func updateProgress() {
-        let screenTime = Float(currentIndex) / Float(pages.count)
-        progress = screenTime + Float(elapsedTime / totalTime)
-        progressBar.progress = progress
+        var progress = Float(elapsedTime / timePerScreen)
+
+        switch currentIndex {
+        case 0: firstProgressBar.progress = progress
+        case 1: secondProgressBar.progress = progress
+        case 2: thirdProgressBar.progress = progress
+        default: break
+        }
+    }
+
+    private func setupProgressBar() -> UIProgressView {
+        let bar = UIProgressView()
+        bar.progressViewStyle = .default
+        bar.progressTintColor = .white
+        bar.layer.cornerRadius = 2
+        bar.layer.masksToBounds = true
+        return bar
     }
 
     private func setupPageVC() {
@@ -103,16 +132,6 @@ final class OnboardingVC: UIPageViewController {
         pages.append(firstScreen)
         pages.append(secondScreen)
         pages.append(thirdScreen)
-    }
-
-    private func setupProgressBar() {
-        view.addSubViews([progressBar])
-        NSLayoutConstraint.activate([
-            progressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
-            progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            progressBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            progressBar.heightAnchor.constraint(equalToConstant: 6),
-        ])
     }
 }
 
