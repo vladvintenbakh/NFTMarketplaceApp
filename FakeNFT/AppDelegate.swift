@@ -17,7 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func isNeedToShowOnboarding() {
-        if UserDefaults.standard.object(forKey: "onboardingButtonTapped3") == nil {
+        if UserDefaults.standard.object(forKey: "onboardingButtonTapped") == nil {
             window?.rootViewController = OnboardingVC()
         } else {
             let tabBarController = setupTabBar()

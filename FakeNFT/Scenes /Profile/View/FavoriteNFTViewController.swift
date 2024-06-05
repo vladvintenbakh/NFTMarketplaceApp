@@ -33,6 +33,7 @@ final class FavoriteNFTViewController: UIViewController {
         collection.backgroundColor = .clear
         return collection
     } ()
+    let searchController = UISearchController(searchResultsController: nil)
 
     // MARK: - Other properties
     var presenter: FavoriteNFTPresenterProtocol
@@ -84,6 +85,7 @@ final class FavoriteNFTViewController: UIViewController {
     // MARK: - Private properties
     private func setupLayout() {
         setupNavigation()
+        setupSearchController()
 
         view.backgroundColor = UIColor.backgroundActive
 
@@ -130,6 +132,26 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
     }
 }
 
+// MARK: - FavoriteNFTViewProtocol
 extension FavoriteNFTViewController: FavoriteNFTViewProtocol {
 
+}
+
+// MARK: - UISearchResultsUpdating
+extension FavoriteNFTViewController: UISearchResultsUpdating {
+
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = false
+    }
+
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchBarText = searchController.searchBar.text?.lowercased() else { return }
+        presenter.filterData(searchBarText)
+        favNFTCollection.reloadData()
+    }
 }

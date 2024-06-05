@@ -12,6 +12,7 @@ protocol FavoriteNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func removeNFTFromFav(_ nft: NFTModel)
     func getFavNFT(indexPath: IndexPath) -> NFTModel
+    func filterData(_ text: String)
 }
 
 final class FavoriteNFTPresenter: ProfilePresenters {
@@ -20,7 +21,9 @@ final class FavoriteNFTPresenter: ProfilePresenters {
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
-    private var arrayOfFavNFT = [NFTModel]()
+    var arrayOfFavNFT = [NFTModel]()
+    var filteredArrayOfFavNFT = [NFTModel]()
+    var isSearchMode = false
 
     // MARK: - Life cycle
     func viewDidLoad() {
@@ -31,6 +34,7 @@ final class FavoriteNFTPresenter: ProfilePresenters {
     private func getArrayOfFavFromStorage() {
         guard let arrayOfFavNFTFromStorage = storage.favNFT else { return }
         arrayOfFavNFT = arrayOfFavNFTFromStorage
+        filteredArrayOfFavNFT = arrayOfFavNFT
     }
 
     private func updateView() {
@@ -51,11 +55,28 @@ final class FavoriteNFTPresenter: ProfilePresenters {
 extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
     func getFavNFT(indexPath: IndexPath) -> NFTModel {
-        return arrayOfFavNFT[indexPath.row]
+        if isSearchMode {
+            return filteredArrayOfFavNFT[indexPath.row]
+        } else {
+            return arrayOfFavNFT[indexPath.row]
+        }
+    }
+
+    func filterData(_ text: String) {
+        isSearchMode = true
+        if !text.isEmpty {
+            filteredArrayOfFavNFT = arrayOfFavNFT.filter { $0.name?.lowercased().contains(text) ?? false }
+        } else {
+            filteredArrayOfFavNFT = arrayOfFavNFT
+        }
     }
 
     func getNumberOfRows() -> Int {
-        return arrayOfFavNFT.count
+        if isSearchMode {
+            return filteredArrayOfFavNFT.count
+        } else {
+            return arrayOfFavNFT.count
+        }
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {

@@ -113,7 +113,7 @@ final class MyNFTViewController: UIViewController {
             myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: tableConstraints),
             myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tableConstraints),
             myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tableConstraints),
-            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -tableConstraints)
+            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 

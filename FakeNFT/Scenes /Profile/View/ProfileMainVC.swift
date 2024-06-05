@@ -58,6 +58,15 @@ final class ProfileMainVC: UIViewController {
         return button
     } ()
 
+    private lazy var editButton: UIBarButtonItem = {
+        let editImage = UIImage(systemName: "square.and.pencil")
+        let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let boldImage = editImage?.withConfiguration(symbolConfiguration)
+        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
+        let button = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
+        return button
+    } ()
+
     // MARK: - Other Properties
     var presenter: ProfilePresenterProtocol
     let notification = NotificationCenter.default
@@ -73,7 +82,7 @@ final class ProfileMainVC: UIViewController {
     }
 
     deinit {
-           notification.removeObserver(self)
+        notification.removeObserver(self)
     }
 
     // MARK: - Life cycles
@@ -115,6 +124,7 @@ final class ProfileMainVC: UIViewController {
             guard let self else { return }
             ProgressIndicator.show()
             self.screenTable.isUserInteractionEnabled = false
+            self.screenTable.isHidden = true
         }
     }
 
@@ -123,6 +133,7 @@ final class ProfileMainVC: UIViewController {
             guard let self else { return }
             ProgressIndicator.succeed()
             self.screenTable.isUserInteractionEnabled = true
+            self.screenTable.isHidden = false
         }
     }
 
@@ -149,11 +160,7 @@ final class ProfileMainVC: UIViewController {
     }
 
     private func setupNavigation() {
-        let editImage = UIImage(systemName: "square.and.pencil")
-        let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-        let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
+        navigationItem.rightBarButtonItem = editButton
     }
 
     private func setupContentStack() {
@@ -245,7 +252,6 @@ extension ProfileMainVC: ProfileViewProtocol {
 
 // MARK: - AppRatingAlert
 extension ProfileMainVC {
-
     private func showAppReview() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             self.setupReview()
