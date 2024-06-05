@@ -129,14 +129,11 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         servicesAssembly.profileService.setLikes(
             nfts: NFTModel.likedNfts
         ) { [weak self] result in
-            switch result {
-            case .success(let profile):
+            if let profile = try? result.get() {
                 DispatchQueue.main.async {
                     self?.currentProfile = profile
                     self?.updateNFTCollection()
                 }
-            case .failure(let error):
-                self?.state = .failed(error)
             }
         }
     }
@@ -156,14 +153,12 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         servicesAssembly.profileService.setOrder(
             nfts: NFTModel.orderedNfts
         ) { [weak self] result in
-            switch result {
-            case .success(let orderData):
+            if let orderData = try? result.get() {
                 self?.updateCurrentOrder(orderData: orderData)
-            case .failure(let error):
-                self?.state = .failed(error)
             }
         }
     }
+
 
     private func updateNFTCollection() {
         userNFTCollection = NFTModel.getUserNFTCollection()
