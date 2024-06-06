@@ -110,8 +110,9 @@ final class EditProfileViewController: UIViewController {
             textField.placeholder = "Добавь новую ссылку на фото"
         }
         alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Обновить", style: .default) {_ in 
-            guard let text = alert.textFields?.first?.text else { return }
+        alert.addAction(UIAlertAction(title: "Обновить", style: .default) { [weak self] _ in
+            guard let self,
+                  let text = alert.textFields?.first?.text else { return }
             self.presenter.passAvatar(text)
         })
 

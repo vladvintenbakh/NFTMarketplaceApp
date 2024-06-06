@@ -13,9 +13,6 @@ protocol MyNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
     func isNFTInFav(_ nft: NFTModel) -> Bool
-//    func priceSorting()
-//    func ratingSorting()
-//    func nameSorting()
     func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
     func showOrHidePlaceholder()
     func filterData(_ text: String)

@@ -51,8 +51,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     } ()
 
     // MARK: - Other Properties
-//    private let cellHeight = CGFloat(140)
-
     var likeButtonAction: ( () -> Void )?
 
     // MARK: - Init
@@ -78,8 +76,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         let nameAndPriceStack = UIStackView(arrangedSubviews: [nameContainer, priceContainer])
         nameAndPriceStack.axis = .horizontal
         nameAndPriceStack.distribution = .fillEqually
-
-//        let contentStack = UIStackView(arrangedSubviews: [nftImageView, nameContainer, priceContainer])
 
         let contentStack = UIStackView(arrangedSubviews: [nftImageView, nameAndPriceStack])
         contentStack.axis = .horizontal
