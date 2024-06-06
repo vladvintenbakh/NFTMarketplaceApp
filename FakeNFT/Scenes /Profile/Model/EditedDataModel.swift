@@ -12,4 +12,5 @@ struct EditedDataModel {
     var name: String?
     var description: String?
     var website: String?
+    var avatar: String?
 }

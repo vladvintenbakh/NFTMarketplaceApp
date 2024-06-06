@@ -109,7 +109,7 @@ struct DefaultNetworkClient: NetworkClient {
 
     // MARK: - Private
 
-    private func create(request: NetworkRequest) -> URLRequest? {
+    func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
             return nil
@@ -117,10 +117,11 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.addValue(HTTPHeader.Value.json, forHTTPHeaderField:  HTTPHeader.Field.accept)
+        urlRequest.addValue(HTTPHeader.Value.token, forHTTPHeaderField: HTTPHeader.Field.tokenHeader)
 
         if let dto = request.dto,
            let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = dtoEncoded
         }
 

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
@@ -17,6 +18,8 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.setSquareSize(108)
+        imageView.layer.cornerRadius = 12
+        imageView.clipsToBounds = true
         return imageView
     } ()
     private lazy var nameView: UILabel = {
@@ -48,8 +51,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     } ()
 
     // MARK: - Other Properties
-    private let cellHeight = CGFloat(140)
-
     var likeButtonAction: ( () -> Void )?
 
     // MARK: - Init
@@ -72,9 +73,13 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         let nameContainer = setupNameView()
         let priceContainer = setupPriceView()
 
-        let contentStack = UIStackView(arrangedSubviews: [nftImageView, nameContainer, priceContainer])
+        let nameAndPriceStack = UIStackView(arrangedSubviews: [nameContainer, priceContainer])
+        nameAndPriceStack.axis = .horizontal
+        nameAndPriceStack.distribution = .fillEqually
+
+        let contentStack = UIStackView(arrangedSubviews: [nftImageView, nameAndPriceStack])
         contentStack.axis = .horizontal
-        contentStack.spacing = 20
+        contentStack.spacing = 10
 
         contentView.addSubViews([contentStack, likeButton])
 
@@ -119,12 +124,12 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
         let priceCurrencyStack = UIStackView(arrangedSubviews: [priceNumberLabel, currencyLabel, UIView()])
         priceCurrencyStack.axis = .horizontal
-        priceCurrencyStack.spacing = 7
-        priceCurrencyStack.distribution = .fill
+        priceCurrencyStack.spacing = 5
 
         let priceStack = UIStackView(arrangedSubviews: [priceLabel, priceCurrencyStack])
         priceStack.axis = .vertical
         priceStack.spacing = 2
+        priceStack.distribution = .fill
 
         view.addSubViews([priceStack])
         NSLayoutConstraint.activate([
@@ -146,13 +151,16 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - Public Methods
     func configureCell(_ nft: NFTModel, isNFTFav: Bool) {
-        guard let imageName = nft.imageName,
+        guard let imageName = nft.images?.first,
               let author = nft.author,
-              let rating = nft.rating else { print("Ooopsss"); return }
+              let rating = nft.rating,
+              let price = nft.price else { print("Ooopsss"); return }
 
         designFavNFTOrNot(isNFTFav)
 
-        nftImageView.image = UIImage(named: imageName)
+        let imageURL = URL(string: imageName)
+        nftImageView.kf.setImage(with: imageURL)
+       
         nameView.text = nft.name
 
         let ratingName = "rating"+"\(rating)"
@@ -160,6 +168,6 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         ratingImage.image = ratingStars
 
         authorLabel.text = "от "+"\(author)"
-        priceNumberLabel.text = nft.price
+        priceNumberLabel.text = "\(price)"
     }
 }

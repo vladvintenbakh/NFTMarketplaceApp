@@ -13,59 +13,73 @@ protocol MyNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
     func isNFTInFav(_ nft: NFTModel) -> Bool
-    func priceSorting()
-    func ratingSorting()
-    func nameSorting()
     func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
+    func showOrHidePlaceholder()
+    func filterData(_ text: String)
+    func sorting(_ sortingAttribute: SortingAttributes)
 }
 
-final class MyNFTPresenter {
+final class MyNFTPresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: MyNFTViewProtocol?
 
     // MARK: - Other properties
-    private var mockArrayOfNFT = [NFTModel]()
+    private var arrayOfMyNFT = [NFTModel]()
+    private var filteredArrayOfMyNFT = [NFTModel]()
+    private var isSearchMode = false
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let myNFT = data.nfts else { print("Ooops"); return }
-        mockArrayOfNFT = myNFT
+        guard let myNFT = storage.myNFT else { print("Ooops1"); return }
+        arrayOfMyNFT = myNFT
+        filteredArrayOfMyNFT = arrayOfMyNFT
     }
 
-    private func showOrHidePlaceholder() {
-        let isDataEmpty = isArrayOfNFTEmpty()
-        if isDataEmpty {
+    func showOrHidePlaceholder() {
+        if arrayOfMyNFT.isEmpty {
             view?.showPlaceholder()
         } else {
             view?.hideTableView()
         }
     }
 
-    private func isArrayOfNFTEmpty() -> Bool {
-        return mockArrayOfNFT.isEmpty
-    }
-
     private func addNFTToFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToAddToFav = nft
-        storage.addFavNFT(nftToAddToFav)
+        storage.addFavNFTToStorage(nft)
+        sendFavsToServer()
     }
 
     private func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
+        storage.removeFavNFTFromStorage(nft)
+        sendFavsToServer()
     }
 
+    private func sendFavsToServer() {
+        Task { [weak self] in
+            guard let self else { return }
+            await makeLikes()
+            view?.updateTableView()
+        }
+    }
+
+    private func makeLikes() async {
+        let favoriteNFT = storage.profile?.favoriteNFT
+        guard let listOfFavs = favoriteNFT else { return }
+        do {
+            try await network.putLikes(listOfLikes: listOfFavs)
+            print("✅ listOfFav successfully updated")
+        } catch {
+            print(error)
+        }
+    }
 }
+
 
 // MARK: - MyNFTPresenterProtocol
 extension  MyNFTPresenter: MyNFTPresenterProtocol {
+
     func viewDidLoad() {
         getDataFromStorage()
-        showOrHidePlaceholder()
     }
 
     func sortButtonTapped() {
@@ -73,46 +87,33 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func getNumberOfRows() -> Int {
-        return mockArrayOfNFT.count
+        if isSearchMode {
+            return filteredArrayOfMyNFT.count
+        } else {
+            return arrayOfMyNFT.count
+        }
+    }
+
+    func filterData(_ text: String) {
+        if !text.isEmpty {
+            isSearchMode = true
+            filteredArrayOfMyNFT = arrayOfMyNFT.filter { $0.name?.lowercased().contains(text) ?? false }
+        } else {
+            isSearchMode = false
+        }
     }
 
     func getNFT(with indexPath: IndexPath) -> NFTModel {
-        let nft = mockArrayOfNFT[indexPath.row]
-        return nft
-    }
-
-    func priceSorting() {
-        mockArrayOfNFT.sort {
-            guard let priceString1 = $0.price,
-                  let priceString2 = $1.price,
-                  let priceDouble1 = Double(priceString1),
-                  let priceDouble2 = Double(priceString2) else { print("Sorting problem"); return false}
-            return priceDouble1 > priceDouble2
+        if isSearchMode {
+            return filteredArrayOfMyNFT[indexPath.row]
+        } else {
+            return arrayOfMyNFT[indexPath.row]
         }
-        view?.updateTableView()
-    }
-
-    func ratingSorting() {
-        mockArrayOfNFT.sort {
-            guard let rating1 = $0.rating,
-                  let rating2 = $1.rating else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
-        view?.updateTableView()
-    }
-
-    func nameSorting() {
-        mockArrayOfNFT.sort {
-            guard let rating1 = $0.name,
-                  let rating2 = $1.name else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
-        view?.updateTableView()
     }
 
     func isNFTInFav(_ nft: NFTModel) -> Bool {
-        guard let listOfFav = MockDataStorage.mockData.favoriteNFT else { return false }
-        if listOfFav.contains(where: { $0.name == nft.name }) {
+        guard let listOfFav = storage.profile?.favoriteNFT else { return false }
+        if listOfFav.contains(where: { $0 == nft.id }) {
             return true
         } else {
             return false
@@ -126,4 +127,23 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
             addNFTToFav(nft)
         }
     }
+
+    func sorting(_ sortingAttribute: SortingAttributes) {
+        var array = isSearchMode ? filteredArrayOfMyNFT : arrayOfMyNFT
+
+        switch sortingAttribute {
+        case .name: array.sort { $0.name ?? "" > $1.name ?? "" }
+        case .price: array.sort { $0.price ?? 0.0 > $1.price ?? 0.0 }
+        case .rating: array.sort { $0.rating ?? 0 > $1.rating ?? 0 }
+        }
+
+        if isSearchMode {
+            filteredArrayOfMyNFT = array
+        } else {
+            arrayOfMyNFT = array
+        }
+
+        view?.updateTableView()
+    }
 }
+

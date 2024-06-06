@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol EditProfileViewProtocol: AnyObject {
     func dismiss(animated: Bool, completion: (() -> Void)?)
     func updateDescription(_ description: String)
     func updateWebsite(_ webSite: String)
-    func updatePhoto(_ photoName: String)
+    func updatePhoto(_ photoURL: URL)
     func updateName(_ name: String)
 }
 
@@ -98,9 +99,26 @@ final class EditProfileViewController: UIViewController {
     @objc private func changePhotoButtonTapped(sender: UIButton) {
         print("Why don't you like Hoakin?")
         loadNewPhoto.isHidden = false
+        showAlert()
     }
 
     // MARK: - Public methods
+    private func showAlert() {
+        let alert = UIAlertController(title: "Новое фото", message: nil, preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.textAlignment = .center
+            textField.placeholder = "Добавь новую ссылку на фото"
+        }
+        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Обновить", style: .default) { [weak self] _ in
+            guard let self,
+                  let text = alert.textFields?.first?.text else { return }
+            self.presenter.passAvatar(text)
+        })
+
+        present(alert, animated: true)
+    }
+
     func updateName(_ name: String) {
         nameTextField.text = name
     }
@@ -113,8 +131,8 @@ final class EditProfileViewController: UIViewController {
         webSiteTextField.text = webSite
     }
 
-    func updatePhoto(_ photoName: String) {
-        photoImage.image = UIImage(named: photoName)
+    func updatePhoto(_ photoURL: URL) {
+        photoImage.kf.setImage(with: photoURL)
     }
 
     // MARK: - Private methods

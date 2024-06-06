@@ -6,15 +6,19 @@
 //
 
 import UIKit
+import Kingfisher
+import StoreKit
 
 protocol ProfileViewProtocol: AnyObject {
-    func updateUIWithMockData(_ data: ProfileMockModel)
+    func updateUIWithNetworkData(_ profile: ProfileModel)
+    func showLoadingIndicator()
+    func hideLoadingIndicator()
 }
 
 final class ProfileMainVC: UIViewController {
 
     // MARK: - UI Properties
-    private lazy var nftTable: UITableView = {
+    private lazy var screenTable: UITableView = {
         let table = UITableView()
         table.separatorStyle = .none
         table.dataSource = self
@@ -22,6 +26,7 @@ final class ProfileMainVC: UIViewController {
         table.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         table.separatorInset = .zero
         table.backgroundColor = .clear
+        table.isScrollEnabled = false
         return table
     } ()
     private lazy var nameLabel: UILabel = {
@@ -53,6 +58,15 @@ final class ProfileMainVC: UIViewController {
         return button
     } ()
 
+    private lazy var editButton: UIBarButtonItem = {
+        let editImage = UIImage(systemName: "square.and.pencil")
+        let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let boldImage = editImage?.withConfiguration(symbolConfiguration)
+        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
+        let button = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
+        return button
+    } ()
+
     // MARK: - Other Properties
     var presenter: ProfilePresenterProtocol
     let notification = NotificationCenter.default
@@ -68,23 +82,23 @@ final class ProfileMainVC: UIViewController {
     }
 
     deinit {
-           notification.removeObserver(self)
+        notification.removeObserver(self)
     }
 
     // MARK: - Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+
         presenter.viewDidLoad()
+
         addObserver()
+
+        showAppReview()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        presenter.viewDidLoad()
-
-        DispatchQueue.main.async { [weak self] in
-            self?.nftTable.reloadData()
-        }
+        updateScreenTable()
     }
 
     // MARK: - IB Actions
@@ -96,29 +110,57 @@ final class ProfileMainVC: UIViewController {
         presenter.webSiteButtonTapped()
     }
 
-
     // MARK: - Public methods
-    func updateUIWithMockData(_ data: ProfileMockModel) {
-        nameLabel.text = data.name
-        guard let imageName = data.avatar else { return }
-        let image = UIImage(named: imageName)
-        photoImage.image = image
-        aboutMeLabel.text = data.description
-        webButton.setTitle(data.website, for: .normal)
+    func updateUIWithNetworkData(_ profile: ProfileModel) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.updateProfileUI(profile)
+            self.updateScreenTable()
+        }
+    }
+
+    func showLoadingIndicator() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            ProgressIndicator.show()
+            self.screenTable.isUserInteractionEnabled = false
+            self.screenTable.isHidden = true
+        }
+    }
+
+    func hideLoadingIndicator() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            ProgressIndicator.succeed()
+            self.screenTable.isUserInteractionEnabled = true
+            self.screenTable.isHidden = false
+        }
     }
 
     // MARK: - Private methods
+    private func updateScreenTable() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.screenTable.reloadData()
+        }
+    }
+
+    private func updateProfileUI(_ profile: ProfileModel) {
+        nameLabel.text = profile.name
+        guard let imageName = profile.avatar else { return }
+        let image = URL(string: imageName)
+        photoImage.kf.setImage(with: image)
+        aboutMeLabel.text = profile.description
+        webButton.setTitle(profile.website, for: .normal)
+    }
+
     private func setupLayout() {
         setupNavigation()
         setupContentStack()
     }
 
     private func setupNavigation() {
-        let editImage = UIImage(systemName: "square.and.pencil")
-        let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-        let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
+        navigationItem.rightBarButtonItem = editButton
     }
 
     private func setupContentStack() {
@@ -126,17 +168,17 @@ final class ProfileMainVC: UIViewController {
 
         let photoAndNameStack = setupPersonalDataStack()
 
-        view.addSubViews([photoAndNameStack, nftTable])
+        view.addSubViews([photoAndNameStack, screenTable])
 
         NSLayoutConstraint.activate([
             photoAndNameStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             photoAndNameStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             photoAndNameStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
 
-            nftTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
-            nftTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nftTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nftTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            screenTable.topAnchor.constraint(equalTo: photoAndNameStack.bottomAnchor, constant: 40),
+            screenTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            screenTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            screenTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 
@@ -153,8 +195,6 @@ final class ProfileMainVC: UIViewController {
         NSLayoutConstraint.activate([
             aboutMeLabel.topAnchor.constraint(equalTo: photoStack.bottomAnchor, constant: 20),
             webButton.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
-
-//            webSiteLabel.topAnchor.constraint(equalTo: aboutMeLabel.bottomAnchor, constant: 8),
         ])
 
         return dataStack
@@ -199,7 +239,8 @@ extension ProfileMainVC: UITableViewDataSource, UITableViewDelegate {
 extension ProfileMainVC {
     private func addObserver() {
         notification.addObserver(forName: .profileDidChange, object: nil, queue: .main) { [weak self] notification in
-            self?.presenter.viewDidLoad()
+            guard let self else { return }
+            self.presenter.viewHasGotNotification()
         }
     }
 }
@@ -207,4 +248,22 @@ extension ProfileMainVC {
 // MARK: - ProfileViewProtocol
 extension ProfileMainVC: ProfileViewProtocol {
 
+}
+
+// MARK: - AppRatingAlert
+extension ProfileMainVC {
+    private func showAppReview() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.setupReview()
+        }
+    }
+
+    private func setupReview() {
+        guard let scene = view.window?.windowScene else { return }
+        if #available(iOS 14.0, *) {
+            SKStoreReviewController.requestReview(in: scene)
+        } else {
+            SKStoreReviewController.requestReview()
+        }
+    }
 }

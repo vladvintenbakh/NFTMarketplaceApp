@@ -12,56 +12,94 @@ protocol FavoriteNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func removeNFTFromFav(_ nft: NFTModel)
     func getFavNFT(indexPath: IndexPath) -> NFTModel
+    func filterData(_ text: String)
 }
 
-final class FavoriteNFTPresenter {
+final class FavoriteNFTPresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
-    private var mockArrayOfNFT = [NFTModel]()
+    private var arrayOfFavNFT = [NFTModel]()
+    private var filteredArrayOfFavNFT = [NFTModel]()
+    private var isSearchMode = false
+
+    // MARK: - Life cycle
+    func viewDidLoad() {
+        getArrayOfFavFromStorage()
+    }
 
     // MARK: - Private methods
+    private func getArrayOfFavFromStorage() {
+        guard let arrayOfFavNFTFromStorage = storage.favNFT else { return }
+        arrayOfFavNFT = arrayOfFavNFTFromStorage
+        filteredArrayOfFavNFT = arrayOfFavNFT
+    }
+
+    private func updateView() {
+        view?.updateUI()
+        showOrHidePlaceholder()
+    }
+
     private func showOrHidePlaceholder() {
-        if mockArrayOfNFT.isEmpty {
+        if arrayOfFavNFT.isEmpty {
             view?.showPlaceholder()
         } else {
             view?.hideCollection()
         }
-    }
-
-    private func uploadDataFromStorage() {
-        let data = MockDataStorage.mockData
-        guard let favoriteNFT = data.favoriteNFT else { print("Jopa"); return }
-        mockArrayOfNFT = favoriteNFT
     }
 }
 
 // MARK: - FavoriteNFTPresenterProtocol
 extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
-    func viewDidLoad() {
-        uploadDataFromStorage()
-        showOrHidePlaceholder()
+    func getFavNFT(indexPath: IndexPath) -> NFTModel {
+        if isSearchMode {
+            return filteredArrayOfFavNFT[indexPath.row]
+        } else {
+            return arrayOfFavNFT[indexPath.row]
+        }
     }
 
-    func getFavNFT(indexPath: IndexPath) -> NFTModel {
-        return mockArrayOfNFT[indexPath.row]
+    func filterData(_ text: String) {
+        isSearchMode = true
+        if !text.isEmpty {
+            filteredArrayOfFavNFT = arrayOfFavNFT.filter { $0.name?.lowercased().contains(text) ?? false }
+        } else {
+            filteredArrayOfFavNFT = arrayOfFavNFT
+        }
     }
 
     func getNumberOfRows() -> Int {
-        return mockArrayOfNFT.count
+        if isSearchMode {
+            return filteredArrayOfFavNFT.count
+        } else {
+            return arrayOfFavNFT.count
+        }
     }
 
     func removeNFTFromFav(_ nft: NFTModel) {
-        let storage = MockDataStorage()
-        let nftToRemoveFromFav = nft
-        storage.removeFromFavNFT(nftToRemoveFromFav)
-
-        uploadDataFromStorage()
-
-        view?.updateUI()
+        storage.removeFavNFTFromStorage(nft)
+        getArrayOfFavFromStorage()
+        sendFavsToServer()
     }
 
+    private func sendFavsToServer() {
+        Task { [weak self] in
+            guard let self else { return }
+            await makeLikes()
+            updateView()
+        }
+    }
+
+    private func makeLikes() async {
+        guard let favoriteNFT = storage.profile?.favoriteNFT else { return }
+        do {
+            try await network.putLikes(listOfLikes: favoriteNFT)
+            print("✅ listOfFav successfully updated")
+        } catch {
+            print(error)
+        }
+    }
 }

@@ -13,16 +13,17 @@ protocol EditProfilePresenterProtocol: AnyObject {
     func passNewDescription(_ newDesc: String)
     func passNewName(_ newName: String)
     func passWebSite(_ newWebSite: String) 
+    func passAvatar(_ newAvatar: String)
 }
 
-final class EditProfilePresenter {
+final class EditProfilePresenter: ProfilePresenters {
 
     // MARK: - ViewController
     weak var view: EditProfileViewProtocol?
-    let notification = NotificationCenter.default
 
     // MARK: - Private Properties
-    private var data: ProfileMockModel?
+    private let notification = NotificationCenter.default
+
     private var newName: String?
     private var newDescription: String?
     private var newWebSite: String?
@@ -30,8 +31,7 @@ final class EditProfilePresenter {
 
     // MARK: - Private methods
     private func getDataFromStorage() {
-        let data = MockDataStorage.mockData
-        self.data = data
+        guard let data = storage.profile else { print("Oops"); return }
         newName = data.name
         newDescription = data.description
         newWebSite = data.website
@@ -41,8 +41,8 @@ final class EditProfilePresenter {
     private func sendDataToStorage() {
         let newData = EditedDataModel(name: newName,
                                       description: newDescription,
-                                      website: newWebSite)
-        let storage = MockDataStorage()
+                                      website: newWebSite,
+                                      avatar: avatar)
         storage.updateDataAfterEditing(newData: newData)
     }
 
@@ -52,15 +52,15 @@ final class EditProfilePresenter {
     }
 
     private func setPhoto() {
-        guard let avatar else { return }
-        view?.updatePhoto(avatar)
+        guard let avatar,
+              let imageURL = URL(string: avatar) else { return }
+        view?.updatePhoto(imageURL)
     }
 
     private func setName() {
         guard let newName else { return }
         view?.updateName(newName)
     }
-
 }
 
 // MARK: - EditProfilePresenterProtocol
@@ -89,6 +89,10 @@ extension EditProfilePresenter: EditProfilePresenterProtocol {
 
     func passWebSite(_ newWebSite: String) {
         self.newWebSite = newWebSite
+    }
+
+    func passAvatar(_ newAvatar: String) {
+        self.avatar = newAvatar
     }
 
     func closeButtonTapped() {

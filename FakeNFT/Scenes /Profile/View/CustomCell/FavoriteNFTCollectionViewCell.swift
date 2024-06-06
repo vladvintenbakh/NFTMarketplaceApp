@@ -5,6 +5,7 @@
 //  Created by Kirill Sklyarov on 14.05.2024.
 
 import UIKit
+import Kingfisher
 
 final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
 
@@ -17,6 +18,8 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
         imageView.contentMode = .scaleAspectFill
         imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        imageView.layer.cornerRadius = 12
+        imageView.clipsToBounds = true
         return imageView
     } ()
     lazy var nameView: UILabel = {
@@ -103,7 +106,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
 
         let priceCurrencyStack = UIStackView(arrangedSubviews: [priceNumberLabel, currencyLabel, UIView()])
         priceCurrencyStack.axis = .horizontal
-        priceCurrencyStack.spacing = 5
+        priceCurrencyStack.spacing = 3
 
         let nameStack = UIStackView(arrangedSubviews: [nameView, ratingImage, priceCurrencyStack])
         nameStack.axis = .vertical
@@ -123,16 +126,18 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
 
     // MARK: - Public methods
     func configureCell(_ nft: NFTModel) {
-        guard let imageName = nft.imageName,
-              let rating = nft.rating else { print("Ooopsss"); return }
+        guard let imageName = nft.images?.first,
+              let rating = nft.rating,
+              let price = nft.price else { print("Ooopsss"); return }
 
-        nftImageView.image = UIImage(named: imageName)
+        let imageURL = URL(string: imageName)
+        nftImageView.kf.setImage(with: imageURL)
         nameView.text = nft.name
 
         let ratingName = "rating"+"\(rating)"
         let ratingStars = UIImage(named: ratingName)
         ratingImage.image = ratingStars
 
-        priceNumberLabel.text = nft.price
+        priceNumberLabel.text = "\(price)"
     }
 }
