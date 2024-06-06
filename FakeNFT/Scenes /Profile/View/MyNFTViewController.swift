@@ -30,7 +30,8 @@ final class MyNFTViewController: UIViewController {
 
     // MARK: - Other properties
     var presenter: MyNFTPresenterProtocol
-
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     private let cellHeight = CGFloat(140)
     private let tableConstraints = CGFloat(20)
 
@@ -77,17 +78,18 @@ final class MyNFTViewController: UIViewController {
 
         alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.priceSorting()
+            self.presenter.sorting(.price)
         })
 
         alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.ratingSorting()
+            self.presenter.sorting(.rating)
+
         })
 
         alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.nameSorting()
+            self.presenter.sorting(.name)
         })
 
         present(alert, animated: true)
@@ -106,11 +108,12 @@ final class MyNFTViewController: UIViewController {
         view.backgroundColor = UIColor.backgroundActive
 
         setupNavigation()
+        setupSearchController()
 
         view.addSubViews([myNFTTable])
 
         NSLayoutConstraint.activate([
-            myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: tableConstraints),
+            myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tableConstraints),
             myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tableConstraints),
             myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -167,4 +170,23 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - MyNFTViewProtocol
 extension MyNFTViewController: MyNFTViewProtocol {
 
+}
+
+// MARK: - UISearchResultsUpdating
+extension MyNFTViewController: UISearchResultsUpdating {
+
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = false
+    }
+
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchBarText = searchController.searchBar.text?.lowercased() else { return }
+        presenter.filterData(searchBarText)
+        myNFTTable.reloadData()
+    }
 }

@@ -21,9 +21,9 @@ final class FavoriteNFTPresenter: ProfilePresenters {
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
-    var arrayOfFavNFT = [NFTModel]()
-    var filteredArrayOfFavNFT = [NFTModel]()
-    var isSearchMode = false
+    private var arrayOfFavNFT = [NFTModel]()
+    private var filteredArrayOfFavNFT = [NFTModel]()
+    private var isSearchMode = false
 
     // MARK: - Life cycle
     func viewDidLoad() {

@@ -13,11 +13,13 @@ protocol MyNFTPresenterProtocol {
     func getNumberOfRows() -> Int
     func getNFT(with indexPath: IndexPath) -> NFTModel
     func isNFTInFav(_ nft: NFTModel) -> Bool
-    func priceSorting()
-    func ratingSorting()
-    func nameSorting()
+//    func priceSorting()
+//    func ratingSorting()
+//    func nameSorting()
     func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
     func showOrHidePlaceholder()
+    func filterData(_ text: String)
+    func sorting(_ sortingAttribute: SortingAttributes)
 }
 
 final class MyNFTPresenter: ProfilePresenters {
@@ -27,11 +29,14 @@ final class MyNFTPresenter: ProfilePresenters {
 
     // MARK: - Other properties
     private var arrayOfMyNFT = [NFTModel]()
+    private var filteredArrayOfMyNFT = [NFTModel]()
+    private var isSearchMode = false
 
     // MARK: - Private methods
     private func getDataFromStorage() {
         guard let myNFT = storage.myNFT else { print("Ooops1"); return }
         arrayOfMyNFT = myNFT
+        filteredArrayOfMyNFT = arrayOfMyNFT
     }
 
     func showOrHidePlaceholder() {
@@ -75,7 +80,7 @@ final class MyNFTPresenter: ProfilePresenters {
 
 // MARK: - MyNFTPresenterProtocol
 extension  MyNFTPresenter: MyNFTPresenterProtocol {
-    
+
     func viewDidLoad() {
         getDataFromStorage()
     }
@@ -85,38 +90,28 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
     }
 
     func getNumberOfRows() -> Int {
-        return arrayOfMyNFT.count
+        if isSearchMode {
+            return filteredArrayOfMyNFT.count
+        } else {
+            return arrayOfMyNFT.count
+        }
+    }
+
+    func filterData(_ text: String) {
+        if !text.isEmpty {
+            isSearchMode = true
+            filteredArrayOfMyNFT = arrayOfMyNFT.filter { $0.name?.lowercased().contains(text) ?? false }
+        } else {
+            isSearchMode = false
+        }
     }
 
     func getNFT(with indexPath: IndexPath) -> NFTModel {
-        return arrayOfMyNFT[indexPath.row]
-    }
-
-    func priceSorting() {
-        arrayOfMyNFT.sort {
-            guard let price1 = $0.price,
-                  let price2 = $1.price else { print("Sorting problem"); return false }
-            return price1 > price2
+        if isSearchMode {
+            return filteredArrayOfMyNFT[indexPath.row]
+        } else {
+            return arrayOfMyNFT[indexPath.row]
         }
-        view?.updateTableView()
-    }
-
-    func ratingSorting() {
-        arrayOfMyNFT.sort {
-            guard let rating1 = $0.rating,
-                  let rating2 = $1.rating else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
-        view?.updateTableView()
-    }
-
-    func nameSorting() {
-        arrayOfMyNFT.sort {
-            guard let rating1 = $0.name,
-                  let rating2 = $1.name else { print("Sorting problem"); return false}
-            return rating1 > rating2
-        }
-        view?.updateTableView()
     }
 
     func isNFTInFav(_ nft: NFTModel) -> Bool {
@@ -135,4 +130,23 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
             addNFTToFav(nft)
         }
     }
+
+    func sorting(_ sortingAttribute: SortingAttributes) {
+        var array = isSearchMode ? filteredArrayOfMyNFT : arrayOfMyNFT
+
+        switch sortingAttribute {
+        case .name: array.sort { $0.name ?? "" > $1.name ?? "" }
+        case .price: array.sort { $0.price ?? 0.0 > $1.price ?? 0.0 }
+        case .rating: array.sort { $0.rating ?? 0 > $1.rating ?? 0 }
+        }
+
+        if isSearchMode {
+            filteredArrayOfMyNFT = array
+        } else {
+            arrayOfMyNFT = array
+        }
+
+        view?.updateTableView()
+    }
 }
+

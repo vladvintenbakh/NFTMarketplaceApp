@@ -33,7 +33,7 @@ final class FavoriteNFTViewController: UIViewController {
         collection.backgroundColor = .clear
         return collection
     } ()
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
 
     // MARK: - Other properties
     var presenter: FavoriteNFTPresenterProtocol
