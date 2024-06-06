@@ -102,7 +102,7 @@ final class OnboardingVC: UIPageViewController {
     }
 
     private func updateProgress() {
-        var progress = Float(elapsedTime / timePerScreen)
+        let progress = Float(elapsedTime / timePerScreen)
 
         switch currentIndex {
         case 0: firstProgressBar.progress = progress
