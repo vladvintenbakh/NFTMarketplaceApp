@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct CartItem {
+struct CartItem: Codable {
     let id: String
-    let nftName: String
-    let imageName: String
+    let name: String
+    let images: [String]
     let rating: Int
     let price: Double
 }

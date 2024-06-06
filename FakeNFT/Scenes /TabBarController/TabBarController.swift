@@ -37,9 +37,7 @@ final class TabBarController: UITabBarController {
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
-        let cartMainPresenter = CartMainPresenter()
-        let cartMainVC = CartMainVC(presenter: cartMainPresenter)
-        let cartNavigationVC = UINavigationController(rootViewController: cartMainVC)
+        let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
         cartNavigationVC.tabBarItem = cartTabBarItem
         
         let statisticsMainVC = StatisticsMainVC()
@@ -48,5 +46,12 @@ final class TabBarController: UITabBarController {
         viewControllers = [profileMainVC, catalogMainVC, cartNavigationVC, statisticsMainVC]
 
         view.backgroundColor = .systemBackground
+    }
+    
+    private func cartEntryPoint() -> CartMainVC {
+        let cartNetworkService = CartNetworkService(client: DefaultNetworkClient())
+        let cartMainPresenter = CartMainPresenter(cartNetworkService: cartNetworkService)
+        
+        return CartMainVC(presenter: cartMainPresenter)
     }
 }
