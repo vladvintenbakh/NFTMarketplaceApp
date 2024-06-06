@@ -63,6 +63,7 @@ extension CartNetworkService: CartNetworkServiceProtocol {
                     cartItems.append(cartItem)
                     dispatchGroup.leave()
                 case .failure(let error):
+                    dispatchGroup.leave()
                     completion(.failure(error))
                 }
             }
