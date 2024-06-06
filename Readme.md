@@ -3,6 +3,7 @@
 # Ссылки
 
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
+[Скринкаст эпика Корзина](https://drive.google.com/file/d/1rH5SiKdIJebqTArYWPf5ZiDH5bc0-6mQ/view?usp=drive_link)
 
 # Назначение и цели приложения
 
