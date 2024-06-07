@@ -6,6 +6,8 @@
 
 [Скринкаст эпика Корзина](https://drive.google.com/file/d/1rH5SiKdIJebqTArYWPf5ZiDH5bc0-6mQ/view?usp=drive_link)
 
+[Скринкаст эпика Профиль](https://disk.yandex.ru/d/VBJpdjzsO60YTQ)
+
 # Назначение и цели приложения
 
 Приложение помогает пользователям просматривать и покупать NFT (Non-Fungible Token). Функционал покупки иммитируется с помощью мокового сервера.
