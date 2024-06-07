@@ -115,7 +115,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
         let view = UIView()
 
         let priceLabel = UILabel()
-        priceLabel.text = "Цена"
+        priceLabel.text = SGen.price
         priceLabel.font = UIFont.caption2
 
         let currencyLabel = UILabel()

@@ -72,22 +72,22 @@ final class MyNFTViewController: UIViewController {
     }
 
     func showAlert() {
-        let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: SGen.sorting, message: nil, preferredStyle: .actionSheet)
 
-        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+        alert.addAction(UIAlertAction(title: SGen.close, style: .cancel))
 
-        alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: SGen.price, style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.presenter.sorting(.price)
         })
 
-        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: SGen.rating, style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.presenter.sorting(.rating)
 
         })
 
-        alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: SGen.byName, style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.presenter.sorting(.name)
         })
@@ -121,7 +121,8 @@ final class MyNFTViewController: UIViewController {
     }
 
     private func setupNavigation() {
-        title = "Мои NFT"
+        title = SGen.myNFT
+//        "Мои NFT"
 
         // Убираем тут Back в стрелке обратно
         navigationController?.navigationBar.topItem?.title = ""

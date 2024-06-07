@@ -185,7 +185,7 @@ final class EditProfileViewController: UIViewController {
 
         let changePhotoButton: UIButton = {
             let button = UIButton()
-            button.setTitle("Сменить фото", for: .normal)
+            button.setTitle(SGen.changePhoto, for: .normal)
             button.addTarget(self, action: #selector(changePhotoButtonTapped), for: .touchUpInside)
             let color = UIColor.yaBlackLight.withAlphaComponent(0.6)
             button.backgroundColor = color
@@ -209,7 +209,7 @@ final class EditProfileViewController: UIViewController {
 
     private func nameStack() -> UIStackView {
         let nameLabel = UILabel()
-        nameLabel.text = "Имя"
+        nameLabel.text = SGen.name
         nameLabel.font = UIFont.headline3
 
         let rightPaddingView = UIView()
@@ -244,7 +244,7 @@ final class EditProfileViewController: UIViewController {
 
     private func descriptionStack() -> UIStackView {
         let descriptionLabel = UILabel()
-        descriptionLabel.text = "Описание"
+        descriptionLabel.text = SGen.description
         descriptionLabel.font = UIFont.headline3
 
         let stack = UIStackView(arrangedSubviews: [descriptionLabel, descriptionTextView])
@@ -256,7 +256,7 @@ final class EditProfileViewController: UIViewController {
 
     private func siteStack() -> UIStackView {
         let siteStack = UILabel()
-        siteStack.text = "Сайт"
+        siteStack.text = SGen.website
         siteStack.font = UIFont.headline3
 
         let stack = UIStackView(arrangedSubviews: [siteStack, webSiteTextField])

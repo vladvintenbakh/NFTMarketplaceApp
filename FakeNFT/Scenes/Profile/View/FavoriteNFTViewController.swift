@@ -100,7 +100,7 @@ final class FavoriteNFTViewController: UIViewController {
     }
 
     private func setupNavigation() {
-        title = "Избранные NFT"
+        title = SGen.favoritesNFT
         // Убираем тут Back в стрелке обратно
         navigationController?.navigationBar.topItem?.title = ""
         navigationController?.navigationBar.tintColor = UIColor.segmentActive
