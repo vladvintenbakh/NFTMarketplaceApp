@@ -59,10 +59,8 @@ final class ProfileMainVC: UIViewController {
     } ()
 
     private lazy var editButton: UIBarButtonItem = {
-        let editImage = UIImage(systemName: "square.and.pencil")
-        let symbolConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-        let boldImage = editImage?.withConfiguration(symbolConfiguration)
-        let colorImage = boldImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
+        let newImage = UIImage(named: "editButton")
+        let colorImage = newImage?.withTintColor(UIColor.segmentActive, renderingMode: .alwaysOriginal)
         let button = UIBarButtonItem(image: colorImage, landscapeImagePhone: nil, style: .done, target: self, action: #selector(editButtonTapped))
         return button
     } ()

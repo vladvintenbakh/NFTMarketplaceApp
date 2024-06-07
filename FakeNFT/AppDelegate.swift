@@ -16,7 +16,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func isNeedToShowOnboarding() {
+    private func isNeedToShowOnboarding() {
         if UserDefaults.standard.object(forKey: Constants.onboardingKey) == nil {
             window?.rootViewController = OnboardingVC()
         } else {
