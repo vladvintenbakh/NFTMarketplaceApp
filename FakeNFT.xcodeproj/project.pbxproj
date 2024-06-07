@@ -71,6 +71,7 @@
 		7304BD772C0F4B4800EDCD5E /* OnboardingCustomScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD742C0F4B4800EDCD5E /* OnboardingCustomScreen.swift */; };
 		7304BD782C0F4B4800EDCD5E /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD752C0F4B4800EDCD5E /* OnboardingVC.swift */; };
 		7304BD7A2C0F7F2600EDCD5E /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD792C0F7F2600EDCD5E /* UIImage+Ext.swift */; };
+		731655082C13049F00606CD4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731655072C13049F00606CD4 /* Constants.swift */; };
 		731DE6F22C0512DD00F00EEF /* EditProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731DE6F12C0512DD00F00EEF /* EditProfilePresenter.swift */; };
 		731DE6F42C051C5C00F00EEF /* EditedDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731DE6F32C051C5C00F00EEF /* EditedDataModel.swift */; };
 		732134942BFFB07000CBC9A7 /* FavoriteNFTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */; };
@@ -184,6 +185,7 @@
 		7304BD742C0F4B4800EDCD5E /* OnboardingCustomScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCustomScreen.swift; sourceTree = "<group>"; };
 		7304BD752C0F4B4800EDCD5E /* OnboardingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		7304BD792C0F7F2600EDCD5E /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Ext.swift"; sourceTree = "<group>"; };
+		731655072C13049F00606CD4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		731DE6F12C0512DD00F00EEF /* EditProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfilePresenter.swift; sourceTree = "<group>"; };
 		731DE6F32C051C5C00F00EEF /* EditedDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedDataModel.swift; sourceTree = "<group>"; };
 		732134932BFFB07000CBC9A7 /* FavoriteNFTViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteNFTViewController.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 		3F6806C629CBBC4E00B4F915 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				731655062C13048A00606CD4 /* Constants */,
 				3FC8C38F29D245250081F015 /* Requests */,
 				0C79EE6B2A76DE2E00EE90EA /* ServicesAssemly.swift */,
 				0CFCB73F2A78002A0009A829 /* NftService.swift */,
@@ -370,6 +373,7 @@
 		3F6806C729CBBC5B00B4F915 /* Scenes  */ = {
 			isa = PBXGroup;
 			children = (
+				7304BD762C0F4B4800EDCD5E /* Onboarding */,
 				60F7C1EF2BF9D81100DEC56C /* Statistics */,
 				60F7C1EE2BF9D80B00DEC56C /* Profile */,
 				60F7C1ED2BF9D80000DEC56C /* Cart */,
@@ -548,6 +552,14 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		731655062C13048A00606CD4 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				731655072C13049F00606CD4 /* Constants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
 		7365264B2C087FB700C993EA /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -601,7 +613,6 @@
 		73F3901B2C04DCBD00A2671B /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7304BD762C0F4B4800EDCD5E /* Onboarding */,
 				73E0BF7F2BFF7E2D00D2BC5F /* CustomCell */,
 				60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */,
 				73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */,
@@ -881,6 +892,7 @@
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				60133D1E2C0B1AD4008F102E /* CartNetworkService.swift in Sources */,
+				731655082C13049F00606CD4 /* Constants.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
 				7304BD782C0F4B4800EDCD5E /* OnboardingVC.swift in Sources */,
 				73BCD1602C0CDBCB0027578C /* ProgressIndicator.swift in Sources */,

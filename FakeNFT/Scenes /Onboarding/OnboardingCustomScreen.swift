@@ -76,7 +76,7 @@ final class OnboardingCustomScreen: UIViewController {
 
     // MARK: - IB Actions
     @objc private func onboardingButtonTapped2(_ sender: UIButton) {
-        userDefaults.set(true, forKey: "onboardingButtonTapped")
+        userDefaults.set(true, forKey: Constants.onboardingKey)
         showTabBarController()
     }
 
