@@ -18,7 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func isNeedToShowOnboarding() {
         if UserDefaults.standard.object(forKey: ConstantsCatalog.onboardingKey) == nil {
-            window?.rootViewController = setupTabBar()
+            window?.rootViewController = OnboardingVC()
         } else {
             let tabBarController = setupTabBar()
             window?.rootViewController = tabBarController

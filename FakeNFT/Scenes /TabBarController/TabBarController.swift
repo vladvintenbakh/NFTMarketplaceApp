@@ -61,4 +61,3 @@ final class TabBarController: UITabBarController {
         viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
     }
 }
-
