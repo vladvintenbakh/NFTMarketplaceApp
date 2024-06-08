@@ -8,8 +8,8 @@
 import UIKit
 
 protocol NFTModelProtocol: AnyObject {
-    func getUserNFTCollection() -> [NFT]
-    func saveNfts(nfts: [NFTData])
+    func getUserNFTCollection() -> [NFTTest2]
+    func saveNfts(nfts: [NFTTest])
     func saveLikesInfo(nftIds: [String])
     func removeFromLiked(nftIds: [String])
     func setLikesInfo(nftIds: [String])
@@ -21,13 +21,13 @@ protocol NFTModelProtocol: AnyObject {
 }
 
 final class NFTModel: NFTModelProtocol {
-    private var nftsDB: [String: NFT] = [:]
+    private var nftsDB: [String: NFTTest2] = [:]
 
     private(set) var likedNfts: [String] = []
 
     private(set) var orderedNfts: [String] = []
 
-    func getUserNFTCollection() -> [NFT] {
+    func getUserNFTCollection() -> [NFTTest2] {
         updateLikesInNftDB()
         let nfts = Array(nftsDB.values).sorted {
             $0.name > $1.name
@@ -52,7 +52,7 @@ final class NFTModel: NFTModelProtocol {
         updateOrdersInNftDB()
     }
 
-    func saveNfts(nfts: [NFTData]) {
+    func saveNfts(nfts: [NFTTest]) {
         nfts.forEach {
             nftsDB[$0.id] = convert(nftData: $0)
         }
@@ -78,14 +78,14 @@ final class NFTModel: NFTModelProtocol {
     }
 
     func updateLikesInNftDB() {
-        let db: [String: NFT] = nftsDB
+        let db: [String: NFTTest2] = nftsDB
         db.forEach { id, _ in
             nftsDB[id]?.isLiked = likedNfts.contains(id)
         }
     }
 
     func updateOrdersInNftDB() {
-        let db: [String: NFT] = nftsDB
+        let db: [String: NFTTest2] = nftsDB
         db.forEach { id, _ in
             nftsDB[id]?.isOrdered = orderedNfts.contains(id)
         }
@@ -93,8 +93,8 @@ final class NFTModel: NFTModelProtocol {
 }
 
 extension NFTModel {
-    func convert(nftData: NFTData) -> NFT {
-        return NFT(
+    func convert(nftData: NFTTest) -> NFTTest2 {
+        return NFTTest2(
             id: nftData.id,
             image: nftData.images,
             name: String(nftData.name.split(separator: " ")[0]),

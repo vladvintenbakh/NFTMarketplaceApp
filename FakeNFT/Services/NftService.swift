@@ -1,7 +1,7 @@
 import Foundation
 
-typealias NftCompletion = (Result<NFTData, Error>) -> Void
-typealias AllNFTsCompletion = (Result<[NFTData], Error>) -> Void
+typealias NftCompletion = (Result<NFTTest, Error>) -> Void
+typealias AllNFTsCompletion = (Result<[NFTTest], Error>) -> Void
 
 protocol NftService {
     func loadNft(id: String, completion: @escaping NftCompletion)
@@ -21,7 +21,7 @@ final class NftServiceImpl: NftService {
         Task {
             let results = await loadNftsSequentially(ids: nftIDS)
 
-            var loadedNfts: [NFTData] = []
+            var loadedNfts: [NFTTest] = []
 
             for result in results {
                 switch result {
@@ -38,8 +38,8 @@ final class NftServiceImpl: NftService {
         }
     }
 
-    func loadNftsSequentially(ids: [String]) async -> [Result<NFTData, Error>] {
-        var results: [Result<NFTData, Error>] = []
+    func loadNftsSequentially(ids: [String]) async -> [Result<NFTTest, Error>] {
+        var results: [Result<NFTTest, Error>] = []
 
         for id in ids {
             let result = await withCheckedContinuation { continuation in
@@ -60,7 +60,7 @@ final class NftServiceImpl: NftService {
         }
 
         let request = NFTRequest(id: id)
-        networkClient.send(request: request, type: NFTData.self) { [weak storage] result in
+        networkClient.send(request: request, type: NFTTest.self) { [weak storage] result in
             switch result {
             case .success(let nft):
                 storage?.saveNft(nft)

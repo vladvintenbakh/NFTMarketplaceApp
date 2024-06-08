@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct NFT {
+struct NFTTest2 {
     let id: String
     let image: [URL]
     let name: String

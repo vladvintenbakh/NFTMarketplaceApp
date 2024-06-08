@@ -97,7 +97,7 @@ final class NFTCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setupCell(using nft: NFT) {
+    func setupCell(using nft: NFTTest2) {
         nftRating = nft.rating
         nftImageView.kf.setImage(with: nft.image.first)
         nftPriceLabel.text = nft.price + " ETH"

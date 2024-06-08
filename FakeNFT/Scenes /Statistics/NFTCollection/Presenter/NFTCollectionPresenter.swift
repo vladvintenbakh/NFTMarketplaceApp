@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NFTCollectionPresenterProtocol: AnyObject, NFTCellProtocol {
-    var userNFTCollection: [NFT] { get }
+    var userNFTCollection: [NFTTest2] { get }
     var onLoadingState: (() -> Void)? { get set }
     var onDataState: (() -> Void)? { get set }
     var onErrorState: ((ErrorModel) -> Void)? { get set }
@@ -18,7 +18,7 @@ protocol NFTCollectionPresenterProtocol: AnyObject, NFTCellProtocol {
 }
 
 enum NFTCollectionDetailState {
-    case initial, loading, failed(Error), data([NFTData])
+    case initial, loading, failed(Error), data([NFTTest])
 }
 
 final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
@@ -29,7 +29,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
 
     var servicesAssembly: ServicesAssembly
 
-    private(set) var userNFTCollection: [NFT] = [] {
+    private(set) var userNFTCollection: [NFTTest2] = [] {
         didSet {
             onNFTCollectionChange?()
         }
