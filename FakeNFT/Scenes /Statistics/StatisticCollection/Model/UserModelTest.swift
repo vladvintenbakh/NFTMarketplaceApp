@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class UserModel {
+final class UserModelTest {
     private var usersDB: [User] = [] {
         didSet {
         }
@@ -66,7 +66,7 @@ final class UserModel {
     }
 }
 
-extension UserModel {
+extension UserModelTest {
     func convert(userData: UserData) -> User {
         guard let rating = Int(userData.rating) else {
             return User(rating: 0, username: userData.name, nfts: userData.nfts, avatar: userData.avatar, description: userData.description, website: userData.website)

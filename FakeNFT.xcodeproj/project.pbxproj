@@ -44,7 +44,7 @@
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
 		60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */; };
-		C50F978F2BFB65B600C575C8 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F978E2BFB65B600C575C8 /* UserModel.swift */; };
+		C50F978F2BFB65B600C575C8 /* UserModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F978E2BFB65B600C575C8 /* UserModelTest.swift */; };
 		C50F97912BFB670A00C575C8 /* StatisticPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */; };
 		C50F97952BFB6C6D00C575C8 /* RatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97942BFB6C6D00C575C8 /* RatingCell.swift */; };
 		C50F97A32BFF3BF500C575C8 /* StatisticProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50F97A22BFF3BF500C575C8 /* StatisticProfileVC.swift */; };
@@ -131,7 +131,7 @@
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogMainVC.swift; sourceTree = "<group>"; };
-		C50F978E2BFB65B600C575C8 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		C50F978E2BFB65B600C575C8 /* UserModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModelTest.swift; sourceTree = "<group>"; };
 		C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticPresenterProtocol.swift; sourceTree = "<group>"; };
 		C50F97942BFB6C6D00C575C8 /* RatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingCell.swift; sourceTree = "<group>"; };
 		C50F97A22BFF3BF500C575C8 /* StatisticProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticProfileVC.swift; sourceTree = "<group>"; };
@@ -450,7 +450,7 @@
 		C50F978C2BFB658200C575C8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C50F978E2BFB65B600C575C8 /* UserModel.swift */,
+				C50F978E2BFB65B600C575C8 /* UserModelTest.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -720,7 +720,7 @@
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
-				C50F978F2BFB65B600C575C8 /* UserModel.swift in Sources */,
+				C50F978F2BFB65B600C575C8 /* UserModelTest.swift in Sources */,
 				60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* NftData.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,

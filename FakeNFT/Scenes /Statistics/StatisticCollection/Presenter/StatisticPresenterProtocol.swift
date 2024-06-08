@@ -49,9 +49,9 @@ final class StatisticPresenter: StatisticPresenterProtocol {
         }
     }
 
-    private let userModel: UserModel
+    private let userModel: UserModelTest
 
-    init(for model: UserModel, servicesAssembly: ServicesAssembly) {
+    init(for model: UserModelTest, servicesAssembly: ServicesAssembly) {
         userModel = model
         self.servicesAssembly = servicesAssembly
     }

@@ -49,7 +49,7 @@ final class TabBarController: UITabBarController {
         let cartMainVC = CartMainVC()
         cartMainVC.tabBarItem = cartTabBarItem
         
-        let userModel = UserModel()
+        let userModel = UserModelTest()
         let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
         let statisticVC = UINavigationController(
             rootViewController: StatisticsMainVC(
