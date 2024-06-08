@@ -58,11 +58,12 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
 
     private func loadNft() {
         service.loadNft(id: input.id) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let nft):
-                self?.state = .data(nft)
+                self.state = .data(nft)
             case .failure(let error):
-                self?.state = .failed(error)
+                self.state = .failed(error)
             }
         }
     }
@@ -78,7 +79,8 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
 
         let actionText = NSLocalizedString("Error.repeat", comment: "")
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
-            self?.state = .loading
+            guard let self else { return }
+            self.state = .loading
         }
     }
 }
