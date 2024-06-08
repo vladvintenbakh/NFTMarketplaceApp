@@ -2,7 +2,11 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
-    var servicesAssembly: ServicesAssembly!
+    var servicesAssembly: ServicesAssembly! {
+        didSet {
+            setupViewControllers()
+        }
+    }
     
     private let profileTabBarItem = UITabBarItem(
         title: SGen.profile,
@@ -30,6 +34,12 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func setupViewControllers() {
+        guard servicesAssembly != nil else { return }
+        
         let presenter = ProfilePresenter()
         let profileView = ProfileMainVC(presenter: presenter)
         let profileViewNavController = UINavigationController(rootViewController: profileView)
@@ -44,11 +54,13 @@ final class TabBarController: UITabBarController {
         let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
         cartNavigationVC.tabBarItem = cartTabBarItem
         
-        let statisticsMainVC = StatisticsMainVC()
-        statisticsMainVC.tabBarItem = statisticsTabBarItem
+        let userModel = UserModel()
+        let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
+        let statisticVC = UINavigationController(
+            rootViewController: StatisticsMainVC(
+                presenter: statisticPresenter
+            ))
         viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticsMainVC]
-
-        view.backgroundColor = .systemBackground
     }
     
     private func cartEntryPoint() -> CartMainVC {
