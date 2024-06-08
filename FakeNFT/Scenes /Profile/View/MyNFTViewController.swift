@@ -158,7 +158,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         cellHeight
     }
 
-    private func addOrRemoveNFTFromFav(cell: MyNFTTableViewCell, nft: NFTModel, isNFTInFav: Bool) {
+    private func addOrRemoveNFTFromFav(cell: MyNFTTableViewCell, nft: NFTModelData, isNFTInFav: Bool) {
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
             self.presenter.addOrRemoveNFTFromFav(nft: nft, isNFTFav: isNFTInFav)

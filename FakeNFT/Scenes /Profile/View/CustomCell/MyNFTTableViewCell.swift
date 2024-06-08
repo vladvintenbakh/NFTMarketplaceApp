@@ -150,7 +150,7 @@ final class MyNFTTableViewCell: UITableViewCell, ReuseIdentifying {
     }
 
     // MARK: - Public Methods
-    func configureCell(_ nft: NFTModel, isNFTFav: Bool) {
+    func configureCell(_ nft: NFTModelData, isNFTFav: Bool) {
         guard let imageName = nft.images?.first,
               let author = nft.author,
               let rating = nft.rating,

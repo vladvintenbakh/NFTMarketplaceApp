@@ -124,7 +124,7 @@ extension FavoriteNFTViewController: UICollectionViewDataSource, UICollectionVie
         return cell
     }
 
-    private func removeNFTFromFav(cell: FavoriteNFTCollectionViewCell, nft: NFTModel) {
+    private func removeNFTFromFav(cell: FavoriteNFTCollectionViewCell, nft: NFTModelData) {
         cell.likeButtonAction = { [weak self] in
             guard let self = self else { return }
             self.presenter.removeNFTFromFav(nft)

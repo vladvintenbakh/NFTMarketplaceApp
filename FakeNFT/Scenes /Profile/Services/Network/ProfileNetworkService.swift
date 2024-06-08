@@ -19,13 +19,13 @@ final class ProfileNetworkService {
 
     func getFavNFTFromNetwork() async {
         guard let listOfFav = storage.profile?.favoriteNFT else { return }
-        var favNFT = [NFTModel]()
+        var favNFT = [NFTModelData]()
 
         for nftID in listOfFav {
             let request = nftGETRequestWithID(id: nftID)
 
             do {
-                let data = try await sendNew(request: request, type: NFTModel.self)
+                let data = try await sendNew(request: request, type: NFTModelData.self)
                 guard let data else { return }
                 favNFT.append(data)
             } catch {
@@ -38,13 +38,13 @@ final class ProfileNetworkService {
 
     func getMyNFTFromNetwork() async {
         guard let listOfMyNFT = storage.profile?.nfts else { return }
-        var myNFT = [NFTModel]()
+        var myNFT = [NFTModelData]()
 
         for nftID in listOfMyNFT {
             let request = nftGETRequestWithID(id: nftID)
 
             do {
-                let data = try await sendNew(request: request, type: NFTModel.self)
+                let data = try await sendNew(request: request, type: NFTModelData.self)
                 guard let data else { return }
                 myNFT.append(data)
             } catch {

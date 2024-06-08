@@ -13,8 +13,8 @@ struct ProfileMockModel: Codable {
     let avatar: String?
     var description: String?
     var website: String?
-    let nfts: [NFTModel]?
-    var favoriteNFT: [NFTModel]?
+    let nfts: [NFTModelData]?
+    var favoriteNFT: [NFTModelData]?
     let id: String?
 }
 

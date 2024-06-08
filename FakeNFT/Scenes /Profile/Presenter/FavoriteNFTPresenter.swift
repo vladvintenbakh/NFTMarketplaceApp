@@ -10,8 +10,8 @@ import Foundation
 protocol FavoriteNFTPresenterProtocol {
     func viewDidLoad()
     func getNumberOfRows() -> Int
-    func removeNFTFromFav(_ nft: NFTModel)
-    func getFavNFT(indexPath: IndexPath) -> NFTModel
+    func removeNFTFromFav(_ nft: NFTModelData)
+    func getFavNFT(indexPath: IndexPath) -> NFTModelData
     func filterData(_ text: String)
 }
 
@@ -21,8 +21,8 @@ final class FavoriteNFTPresenter: ProfilePresenters {
     weak var view: FavoriteNFTViewProtocol?
 
     // MARK: - Private properties
-    private var arrayOfFavNFT = [NFTModel]()
-    private var filteredArrayOfFavNFT = [NFTModel]()
+    private var arrayOfFavNFT = [NFTModelData]()
+    private var filteredArrayOfFavNFT = [NFTModelData]()
     private var isSearchMode = false
 
     // MARK: - Life cycle
@@ -54,7 +54,7 @@ final class FavoriteNFTPresenter: ProfilePresenters {
 // MARK: - FavoriteNFTPresenterProtocol
 extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
 
-    func getFavNFT(indexPath: IndexPath) -> NFTModel {
+    func getFavNFT(indexPath: IndexPath) -> NFTModelData {
         if isSearchMode {
             return filteredArrayOfFavNFT[indexPath.row]
         } else {
@@ -79,7 +79,7 @@ extension FavoriteNFTPresenter: FavoriteNFTPresenterProtocol {
         }
     }
 
-    func removeNFTFromFav(_ nft: NFTModel) {
+    func removeNFTFromFav(_ nft: NFTModelData) {
         storage.removeFavNFTFromStorage(nft)
         getArrayOfFavFromStorage()
         sendFavsToServer()

@@ -9,11 +9,11 @@ import Foundation
 
 protocol ProfileStorageProtocol: AnyObject {
     var profile: ProfileModel? { get set }
-    var favNFT: [NFTModel]? { get set }
-    var myNFT: [NFTModel]? { get set }
+    var favNFT: [NFTModelData]? { get set }
+    var myNFT: [NFTModelData]? { get set }
 
-    func addFavNFTToStorage(_ nftToAddToStorage: NFTModel)
-    func removeFavNFTFromStorage(_ nftToRemoveFromStorage: NFTModel)
+    func addFavNFTToStorage(_ nftToAddToStorage: NFTModelData)
+    func removeFavNFTFromStorage(_ nftToRemoveFromStorage: NFTModelData)
     func updateDataAfterEditing(newData: EditedDataModel)
 }
 
@@ -25,9 +25,9 @@ final class ProfileStorage: ProfileStorageProtocol {
 
     var profile: ProfileModel?
 
-    var favNFT: [NFTModel]?
+    var favNFT: [NFTModelData]?
 
-    var myNFT: [NFTModel]?
+    var myNFT: [NFTModelData]?
 
     lazy var network = ProfileNetworkService()
 
@@ -48,14 +48,14 @@ final class ProfileStorage: ProfileStorageProtocol {
         }
     }
 
-    func addFavNFTToStorage(_ nftToAddToStorage: NFTModel) {
+    func addFavNFTToStorage(_ nftToAddToStorage: NFTModelData) {
         guard let nftToAdd = nftToAddToStorage.id else { return }
         profile?.favoriteNFT?.append(nftToAdd)
         favNFT?.append(nftToAddToStorage)
         print("✅ NFT successfully added to storage")
     }
 
-    func removeFavNFTFromStorage(_ nftToRemoveFromStorage: NFTModel) {
+    func removeFavNFTFromStorage(_ nftToRemoveFromStorage: NFTModelData) {
         guard let nftToRemove = nftToRemoveFromStorage.id else { return }
         profile?.favoriteNFT?.removeAll { $0 == nftToRemove }
         favNFT?.removeAll { $0.id == nftToRemove }
