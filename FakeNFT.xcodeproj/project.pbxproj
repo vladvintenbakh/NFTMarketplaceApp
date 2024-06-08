@@ -309,6 +309,7 @@
 		3F6806C629CBBC4E00B4F915 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,
 				0CFCB73F2A78002A0009A829 /* NftService.swift */,
 				C5B34FC72C0D2CBC00F20D88 /* ProfileServices.swift */,
 				0C79EE6B2A76DE2E00EE90EA /* ServicesAssemly.swift */,
@@ -389,7 +390,6 @@
 			children = (
 				3FC8C39029D2453B0081F015 /* ExampleRequest.swift */,
 				0C79EE602A76DCD600EE90EA /* NftByIdRequest.swift */,
-				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,
 				C5EE0A362C0F95A1000AEC2C /* UserGetRequest.swift */,
 				C5EE0A382C0F95B3000AEC2C /* UserGetNftRequest.swift */,
 				C5EE0A3A2C0F95C6000AEC2C /* UserGetProfileId.swift */,
