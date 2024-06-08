@@ -2,11 +2,7 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
-    var servicesAssembly: ServicesAssembly! {
-        didSet {
-            setupViewControllers()
-        }
-    }
+    var servicesAssembly: ServicesAssembly!
     
     private let profileTabBarItem = UITabBarItem(
         title: SGen.profile,
@@ -34,12 +30,6 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-    }
-    
-    private func setupViewControllers() {
-        guard servicesAssembly != nil else { return }
-        
         let presenter = ProfilePresenter()
         let profileView = ProfileMainVC(presenter: presenter)
         let profileViewNavController = UINavigationController(rootViewController: profileView)
@@ -47,21 +37,18 @@ final class TabBarController: UITabBarController {
         presenter.view = profileView
         presenter.navigation = navigationService
         profileViewNavController.tabBarItem = profileTabBarItem
-      
+
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
         let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
         cartNavigationVC.tabBarItem = cartTabBarItem
         
-        let userModel = UserModel()
-        let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
-        let statisticVC = UINavigationController(
-            rootViewController: StatisticsMainVC(
-                presenter: statisticPresenter
-            ))
-        
-        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticsMainV]
+        let statisticsMainVC = StatisticsMainVC()
+        statisticsMainVC.tabBarItem = statisticsTabBarItem
+        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticsMainVC]
+
+        view.backgroundColor = .systemBackground
     }
     
     private func cartEntryPoint() -> CartMainVC {
