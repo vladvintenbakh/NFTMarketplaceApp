@@ -17,10 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func isNeedToShowOnboarding() {
-      
-        if UserDefaults.standard.object(forKey: ConstantsCatalog.onboardingKey) == nil {
         if UserDefaults.standard.object(forKey: Constants.onboardingKey) == nil {
-          
             window?.rootViewController = OnboardingVC()
         } else {
             let tabBarController = setupTabBar()
@@ -39,4 +36,3 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return tabBarController
     }
 }
- 
