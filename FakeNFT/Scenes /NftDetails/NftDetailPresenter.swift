@@ -9,7 +9,7 @@ protocol NftDetailPresenter {
 // MARK: - State
 
 enum NftDetailState {
-    case initial, loading, failed(Error), data(NFTTest)
+    case initial, loading, failed(Error), data(Nft)
 }
 
 final class NftDetailPresenterImpl: NftDetailPresenter {
