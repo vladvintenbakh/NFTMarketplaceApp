@@ -18,3 +18,4 @@ public final class NftDetailAssembly {
         return viewController
     }
 }
+

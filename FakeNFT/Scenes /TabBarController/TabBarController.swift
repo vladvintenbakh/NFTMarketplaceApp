@@ -2,7 +2,11 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
-    var servicesAssembly: ServicesAssembly!
+    var servicesAssembly: ServicesAssembly! {
+        didSet {
+            setupViewControllers()
+        }
+    }
     
     private let profileTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.profile", comment: ""),
@@ -30,6 +34,11 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func setupViewControllers() {
+        guard servicesAssembly != nil else { return }
         
         let profileMainVC = ProfileMainVC()
         profileMainVC.tabBarItem = profileTabBarItem
@@ -40,24 +49,16 @@ final class TabBarController: UITabBarController {
         let cartMainVC = CartMainVC()
         cartMainVC.tabBarItem = cartTabBarItem
         
-        /*let statisticsMainVC = StatisticsMainVC(viewModel: StatisticsMainVC)
-         statisticsMainVC.tabBarItem = statisticsTabBarItem
-         
-         viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticsMainVC]
-         
-         view.backgroundColor = .systemBackground
-         }
-         }*/
-        
         let userModel = UserModel()
-        let statisticsMainVC = StatisticPresenter(for: userModel)
-        let statisticVC = UINavigationController(rootViewController: StatisticsMainVC(
-            presenter: statisticsMainVC
-        ))
+        let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
+        let statisticVC = UINavigationController(
+            rootViewController: StatisticsMainVC(
+                presenter: statisticPresenter
+            ))
+        
         statisticVC.tabBarItem = statisticsTabBarItem
 
         viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
-        
-        view.backgroundColor = .systemBackground
     }
 }
+

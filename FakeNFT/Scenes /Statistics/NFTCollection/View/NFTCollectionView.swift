@@ -7,16 +7,14 @@
 
 import UIKit
 
-protocol NFTCollectionViewProtocol: AnyObject {
-    func reloadData()
-}
+final class NFTCollectionViewController: UIViewController, LoadingView, ErrorView {
+    internal lazy var activityIndicator = UIActivityIndicatorView()
 
-final class NFTCollectionViewController: UIViewController, NFTCollectionViewProtocol {
-    var presenter: NFTCollectionPresenterProtocol?
+    private let presenter: NFTCollectionPresenterProtocol
 
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
-    init(presenter: NFTCollectionPresenterProtocol?) {
+    init(presenter: NFTCollectionPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -31,7 +29,25 @@ final class NFTCollectionViewController: UIViewController, NFTCollectionViewProt
 
         setupNavBar()
         setupCollectionView()
-        presenter?.viewDidLoad()
+        setupView()
+
+        presenter.viewDidLoad()
+    }
+
+    private func setupView() {
+        presenter.onLoadingState = { [weak self] in
+            self?.showLoading()
+        }
+        presenter.onDataState = { [weak self] in
+            self?.hideLoading()
+        }
+        presenter.onErrorState = { [weak self] error in
+            self?.hideLoading()
+            self?.showError(error)
+        }
+        presenter.onNFTCollectionChange = { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
 
     private func setupNavBar() {
@@ -47,6 +63,9 @@ final class NFTCollectionViewController: UIViewController, NFTCollectionViewProt
         collectionView.delegate = self
         collectionView.register(NFTCollectionCell.self, forCellWithReuseIdentifier: "NFTCell")
 
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.addSubview(activityIndicator)
+
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(
@@ -61,27 +80,26 @@ final class NFTCollectionViewController: UIViewController, NFTCollectionViewProt
                 equalTo: view.trailingAnchor,
                 constant: -Constants.defaultInset
             ),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-    }
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
-    func reloadData() {
-        collectionView.reloadData()
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
 }
 
 // MARK: - UICollectionViewDataSource
 extension NFTCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter?.userNFTCollection.count ?? 0
+        return presenter.userNFTCollection.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NFTCell", for: indexPath) as? NFTCollectionCell
 
-        if let nft = presenter?.userNFTCollection[indexPath.row] {
-            cell?.setupCell(using: nft)
-        }
+        let nft = presenter.userNFTCollection[indexPath.row]
+        cell?.setupCell(using: nft)
+        cell?.delegate = presenter
 
         guard let cell = cell else {
             return NFTCollectionCell()
@@ -108,4 +126,3 @@ private enum Constants {
     static let nftsPerLine: CGFloat = 3
     static let nftCardHeight: CGFloat = 192
 }
-

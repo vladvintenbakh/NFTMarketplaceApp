@@ -8,81 +8,77 @@
 import UIKit
 
 final class UserModel {
-
-    static let shared = UserModel()
-    let defaults = UserDefaults.standard
+    private var usersDB: [User] = [] {
+        didSet {
+        }
+    }
+    
+    private let defaults = UserDefaults.standard
+    
+    enum SortType: String {
+        case byName
+        case byRating
+    }
+    
     private let sortTypeKey = "SortType"
     
-    init() {
-        if defaults.string(forKey: sortTypeKey) == nil {
-            defaults.set("byRating", forKey: sortTypeKey)
+    func saveUsers(users: [UserData]) {
+        usersDB = users.map {
+            convert(userData: $0)
         }
     }
-
+    
     func getUsers() -> [User] {
-        let sortType = defaults.string(forKey: sortTypeKey) ?? "byRating"
+        guard let sortTypeString = defaults.string(forKey: sortTypeKey),
+              let sortType = SortType(rawValue: sortTypeString) else {
+            return usersDB
+        }
+        
         switch sortType {
-        case "byName":
+        case .byName:
             return sortUsersByName()
-        case "byRating":
+        case .byRating:
             return sortUsersByRating()
-        default:
-            return UserModel.mockUsersStatisticDB
         }
     }
+    
+    func sortUsers(by sortType: SortType) -> [User] {
+        defaults.set(sortType.rawValue, forKey: sortTypeKey)
+        let sortedUsersList: [User]
+        
+        switch sortType {
+        case .byName:
+            sortedUsersList = usersDB.sorted { $0.username < $1.username }
+        case .byRating:
+            sortedUsersList = usersDB.sorted { $0.rating > $1.rating }
+        }
+        
+        return sortedUsersList
+    }
 
+    
     func sortUsersByName() -> [User] {
-        defaults.set("byName", forKey: sortTypeKey)
-        return UserModel.mockUsersStatisticDB.sorted { $0.username < $1.username }
+        return sortUsers(by: .byName)
     }
-
+    
     func sortUsersByRating() -> [User] {
-        defaults.set("byRating", forKey: sortTypeKey)
-        return UserModel.mockUsersStatisticDB.sorted { $0.rating < $1.rating }
-    }
-
-    func changeSortOrder(to sortOrder: String) {
-        defaults.set(sortOrder, forKey: sortTypeKey)
+        return sortUsers(by: .byRating)
     }
 }
 
 extension UserModel {
-    static let mockUsersStatisticDB = [
-        User(rating: "1",
-             username: "Alex",
-             nftNum: "112",
-             avatar: UIImage(named: "ImageAlex")!,
-             description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "2",
-             username: "Bill",
-             nftNum: "98",
-             avatar: UIImage(named: "noImage")!,
-             description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "3",
-             username: "Alla",
-             nftNum: "72",
-             avatar: UIImage(named: "noImage")!,
-             description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "4",
-             username: "Mads",
-             nftNum: "71",
-             avatar: UIImage(named: "ImageMads")!, description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "5",
-             username: "Timothèe",
-             nftNum: "51",
-             avatar: UIImage(named: "ImageTimon")!,
-             description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "6",
-             username: "Lea",
-             nftNum: "23",
-             avatar: UIImage(named: "ImageLea")!, description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "7",
-             username: "Eric",
-             nftNum: "11",
-             avatar: UIImage(named: "ImageEric")!, description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-        User(rating: "8",
-             username: "Serhio",
-             nftNum: "0",
-             avatar: UIImage(named: "noImage")!, description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."),
-    ]
+    func convert(userData: UserData) -> User {
+        guard let rating = Int(userData.rating) else {
+            return User(rating: 0, username: userData.name, nfts: userData.nfts, avatar: userData.avatar, description: userData.description, website: userData.website)
+        }
+        
+        return User(
+            rating: rating,
+            username: userData.name,
+            nfts: userData.nfts,
+            avatar: userData.avatar,
+            description: userData.description,
+            website: userData.website
+        )
+    }
 }
