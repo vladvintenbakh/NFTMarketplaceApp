@@ -1,0 +1,25 @@
+/* 
+  Localizable.strings
+  FakeNFT
+
+  Created by Kirill Sklyarov on 07.06.2024.
+  
+*/
+
+
+"catalog" = "Catalog";
+"myNFT" = "My NFT";
+"favoritesNFT" = "Favorites NFT";
+"aboutAuthor" = "About author";
+"changePhoto" = "Change photo";
+"name" = "Name";
+"description" = "Description";
+"website" = "Website";
+"price" = "Price";
+"sorting" = "Sorting by";
+"close" = "Cancel";
+"price" = "Price";
+"rating" = "Rating";
+"byName" = "Name";
+"profile" = "Profile";
+

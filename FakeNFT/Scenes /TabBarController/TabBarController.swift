@@ -9,7 +9,7 @@ final class TabBarController: UITabBarController {
     }
     
     private let profileTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.profile", comment: ""),
+        title: SGen.profile,
         image: UIImage(named: "ProfileTabBarItem"),
         tag: 0
     )
@@ -40,14 +40,19 @@ final class TabBarController: UITabBarController {
     private func setupViewControllers() {
         guard servicesAssembly != nil else { return }
         
-        let profileMainVC = ProfileMainVC()
-        profileMainVC.tabBarItem = profileTabBarItem
-        
+        let presenter = ProfilePresenter()
+        let profileView = ProfileMainVC(presenter: presenter)
+        let profileViewNavController = UINavigationController(rootViewController: profileView)
+        let navigationService = NavigationManager(navigation: profileViewNavController, rootVC: profileView)
+        presenter.view = profileView
+        presenter.navigation = navigationService
+        profileViewNavController.tabBarItem = profileTabBarItem
+
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
-        let cartMainVC = CartMainVC()
-        cartMainVC.tabBarItem = cartTabBarItem
+        let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
+        cartNavigationVC.tabBarItem = cartTabBarItem
         
         let userModel = UserModel()
         let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
@@ -55,9 +60,13 @@ final class TabBarController: UITabBarController {
             rootViewController: StatisticsMainVC(
                 presenter: statisticPresenter
             ))
-        
-        statisticVC.tabBarItem = statisticsTabBarItem
+        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticsMainVC]
+    }
+    
+    private func cartEntryPoint() -> CartMainVC {
+        let cartNetworkService = CartNetworkService(client: DefaultNetworkClient())
+        let cartMainPresenter = CartMainPresenter(cartNetworkService: cartNetworkService)
 
-        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
+        return CartMainVC(presenter: cartMainPresenter)
     }
 }
