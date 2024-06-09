@@ -396,7 +396,7 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
-		603CEC042C157D4600B9B34F /* Models */ = {
+		603CEC042C157D4600B9B34F /* StatsModels */ = {
 			isa = PBXGroup;
 			children = (
 				C5EE0A462C0F999D000AEC2C /* User.swift */,
@@ -405,7 +405,7 @@
 				C5EE0A422C0F9957000AEC2C /* UserData.swift */,
 				C5EE0A442C0F997B000AEC2C /* ProfileData.swift */,
 			);
-			path = Models;
+			path = StatsModels;
 			sourceTree = "<group>";
 		};
 		60F7C1ED2BF9D80000DEC56C /* Cart */ = {
@@ -427,7 +427,7 @@
 		60F7C1EF2BF9D81100DEC56C /* Statistics */ = {
 			isa = PBXGroup;
 			children = (
-				603CEC042C157D4600B9B34F /* Models */,
+				603CEC042C157D4600B9B34F /* StatsModels */,
 				C5B34FD72C0DE82600F20D88 /* Network */,
 				C50F978B2BFB656200C575C8 /* StatisticCollection */,
 				C50F97A12BFF3BE100C575C8 /* StatisticUserProfile */,
