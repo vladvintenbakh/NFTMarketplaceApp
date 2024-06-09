@@ -40,6 +40,7 @@
 		3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */; };
 		3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39029D2453B0081F015 /* ExampleRequest.swift */; };
 		3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */; };
+		603CEC062C157D7900B9B34F /* Nft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603CEC052C157D7900B9B34F /* Nft.swift */; };
 		60F7C1F12BF9D82900DEC56C /* CartMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F02BF9D82900DEC56C /* CartMainVC.swift */; };
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
@@ -126,6 +127,7 @@
 		3FC8C38A29D242E90081F015 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		3FC8C39029D2453B0081F015 /* ExampleRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleRequest.swift; sourceTree = "<group>"; };
 		3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatters+Presets.swift"; sourceTree = "<group>"; };
+		603CEC052C157D7900B9B34F /* Nft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nft.swift; sourceTree = "<group>"; };
 		60F7C1F02BF9D82900DEC56C /* CartMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
@@ -373,11 +375,7 @@
 		3F6806D829CC979D00B4F915 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				C5EE0A462C0F999D000AEC2C /* User.swift */,
-				0CFCB7412A78013E0009A829 /* NftData.swift */,
-				C5B34FCF2C0D2D3B00F20D88 /* OrderData.swift */,
-				C5EE0A422C0F9957000AEC2C /* UserData.swift */,
-				C5EE0A442C0F997B000AEC2C /* ProfileData.swift */,
+				603CEC052C157D7900B9B34F /* Nft.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -396,6 +394,18 @@
 				C5EE0A402C0F95F2000AEC2C /* OrderGeetRequest.swift */,
 			);
 			path = Requests;
+			sourceTree = "<group>";
+		};
+		603CEC042C157D4600B9B34F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C5EE0A462C0F999D000AEC2C /* User.swift */,
+				0CFCB7412A78013E0009A829 /* NftData.swift */,
+				C5B34FCF2C0D2D3B00F20D88 /* OrderData.swift */,
+				C5EE0A422C0F9957000AEC2C /* UserData.swift */,
+				C5EE0A442C0F997B000AEC2C /* ProfileData.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		60F7C1ED2BF9D80000DEC56C /* Cart */ = {
@@ -417,6 +427,7 @@
 		60F7C1EF2BF9D81100DEC56C /* Statistics */ = {
 			isa = PBXGroup;
 			children = (
+				603CEC042C157D4600B9B34F /* Models */,
 				C5B34FD72C0DE82600F20D88 /* Network */,
 				C50F978B2BFB656200C575C8 /* StatisticCollection */,
 				C50F97A12BFF3BE100C575C8 /* StatisticUserProfile */,
@@ -756,6 +767,7 @@
 				C5EE0A3D2C0F95D7000AEC2C /* LikesPutRequest.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				C5EE0A372C0F95A1000AEC2C /* UserGetRequest.swift in Sources */,
+				603CEC062C157D7900B9B34F /* Nft.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				C50F97A52BFF3C0D00C575C8 /* UserInfo.swift in Sources */,
 				C5EE0A392C0F95B3000AEC2C /* UserGetNftRequest.swift in Sources */,
