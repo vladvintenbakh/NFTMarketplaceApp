@@ -34,20 +34,20 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-    }
-    
-    private func setupViewControllers() {
-        guard servicesAssembly != nil else { return }
-        
-        let profileMainVC = ProfileMainVC()
-        profileMainVC.tabBarItem = profileTabBarItem
-        
+
+        let presenter = ProfilePresenter()
+        let profileView = ProfileMainVC(presenter: presenter)
+        let profileViewNavController = UINavigationController(rootViewController: profileView)
+        let navigationService = NavigationManager(navigation: profileViewNavController, rootVC: profileView)
+        presenter.view = profileView
+        presenter.navigation = navigationService
+        profileViewNavController.tabBarItem = profileTabBarItem
+
         let catalogMainVC = CatalogMainVC()
         catalogMainVC.tabBarItem = catalogTabBarItem
         
-        let cartMainVC = CartMainVC()
-        cartMainVC.tabBarItem = cartTabBarItem
+        let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
+        cartNavigationVC.tabBarItem = cartTabBarItem
         
         let userModel = UserModel()
         let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
@@ -58,7 +58,14 @@ final class TabBarController: UITabBarController {
         
         statisticVC.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileMainVC, catalogMainVC, cartMainVC, statisticVC]
+        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticVC]
+    }
+    
+    private func cartEntryPoint() -> CartMainVC {
+        let cartNetworkService = CartNetworkService(client: DefaultNetworkClient())
+        let cartMainPresenter = CartMainPresenter(cartNetworkService: cartNetworkService)
+
+        return CartMainVC(presenter: cartMainPresenter)
     }
 }
 
