@@ -307,6 +307,7 @@
 		3F6806C629CBBC4E00B4F915 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				3FC8C38F29D245250081F015 /* Requests */,
 				0CFCB73F2A78002A0009A829 /* NftService.swift */,
 				C5B34FC72C0D2CBC00F20D88 /* ProfileServices.swift */,
 				0C79EE6B2A76DE2E00EE90EA /* ServicesAssemly.swift */,
@@ -508,7 +509,6 @@
 		C5B34FD72C0DE82600F20D88 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				3FC8C38F29D245250081F015 /* Requests */,
 			);
 			path = Network;
 			sourceTree = "<group>";
