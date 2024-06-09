@@ -11,7 +11,7 @@ import ProgressHUD
 struct ProgressIndicator {
 
     static func show() {
-        ProgressHUD.animationType = .systemActivityIndicator
+        //ProgressHUD.animationType = .systemActivityIndicator
         ProgressHUD.colorAnimation = UIColor.yaBlue
         ProgressHUD.show()
     }

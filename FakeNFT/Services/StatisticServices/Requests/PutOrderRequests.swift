@@ -1,18 +1,18 @@
 //
-//  OrderOutRequest.swift
+//  PutOrderRequest.swift
 //  FakeNFT
 //
-//  Created by Сергей Ващенко on 04.06.24.
+//  Created by Сергей Ващенко on 09.06.24.
 //
-/*
+
 import Foundation
 
-struct PutOrderRequest: NetworkRequest {
+struct PutOrderReq: NetworkRequest {
   // MARK: - Properties:
   var httpMethod: HttpMethod = .put
   var dto: Encodable?
   var endpoint: URL? {
-    URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
+    URL(string: "\(RequestConstants.baseURL)")
   }
   // MARK: - Methods:
   init(nfts: [String]) {
@@ -20,4 +20,3 @@ struct PutOrderRequest: NetworkRequest {
     self.dto = queryString
   }
 }
-*/

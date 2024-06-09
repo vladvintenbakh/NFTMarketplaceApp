@@ -4,7 +4,7 @@
 //
 //  Created by Сергей Ващенко on 04.06.24.
 //
-
+/*
 import Foundation
 
 struct GetOrderRequest: NetworkRequest {
@@ -12,4 +12,4 @@ struct GetOrderRequest: NetworkRequest {
         URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
     }
 }
-
+*/

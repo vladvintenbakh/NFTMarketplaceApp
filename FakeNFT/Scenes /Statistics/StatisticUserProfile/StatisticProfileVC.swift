@@ -216,7 +216,7 @@ final class StatisticProfileVC: UIViewController {
 
     private func pushNFTColletionViewController() {
         let presenter = NFTCollectionPresenter(
-            for: NFTModelData(),
+            for: NFTModel(),
             user: presenter.currentUser,
             servicesAssembly: presenter.servicesAssembly
         )

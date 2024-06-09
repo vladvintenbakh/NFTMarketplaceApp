@@ -12,7 +12,7 @@ struct PutLikesRequest: NetworkRequest {
   var httpMethod: HttpMethod = .put
   var dto: Encodable?
   var endpoint: URL? {
-    URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
+    URL(string: "\(RequestConstants.baseURL)/profile/1")
   }
   // MARK: - Methods:
   init(nfts: [String]) {
