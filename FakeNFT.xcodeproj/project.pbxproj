@@ -68,8 +68,6 @@
 		60F7C1F32BF9DA9200DEC56C /* StatisticsMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */; };
 		60F7C1F52BF9DABB00DEC56C /* ProfileMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */; };
 		60F7C1F72BF9DADB00DEC56C /* CatalogMainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */; };
-		7304BD772C0F4B4800EDCD5E /* OnboardingCustomScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD742C0F4B4800EDCD5E /* OnboardingCustomScreen.swift */; };
-		7304BD782C0F4B4800EDCD5E /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD752C0F4B4800EDCD5E /* OnboardingVC.swift */; };
 		7304BD7A2C0F7F2600EDCD5E /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7304BD792C0F7F2600EDCD5E /* UIImage+Ext.swift */; };
 		731DE6F22C0512DD00F00EEF /* EditProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731DE6F12C0512DD00F00EEF /* EditProfilePresenter.swift */; };
 		731DE6F42C051C5C00F00EEF /* EditedDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731DE6F32C051C5C00F00EEF /* EditedDataModel.swift */; };
@@ -181,8 +179,6 @@
 		60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainVC.swift; sourceTree = "<group>"; };
 		60F7C1F62BF9DADB00DEC56C /* CatalogMainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogMainVC.swift; sourceTree = "<group>"; };
-		7304BD742C0F4B4800EDCD5E /* OnboardingCustomScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCustomScreen.swift; sourceTree = "<group>"; };
-		7304BD752C0F4B4800EDCD5E /* OnboardingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		7304BD792C0F7F2600EDCD5E /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Ext.swift"; sourceTree = "<group>"; };
 		731DE6F12C0512DD00F00EEF /* EditProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfilePresenter.swift; sourceTree = "<group>"; };
 		731DE6F32C051C5C00F00EEF /* EditedDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedDataModel.swift; sourceTree = "<group>"; };
@@ -334,7 +330,6 @@
 				3F6806CE29CBBD1B00B4F915 /* Foundation */,
 				3F6806C929CBBCAF00B4F915 /* Models */,
 				3F6806C729CBBC5B00B4F915 /* Scenes  */,
-				73BF333A2BFF426C00D0AF25 /* Presenters */,
 				3F6806C629CBBC4E00B4F915 /* Services */,
 				3F6806A429CBBAF200B4F915 /* Info.plist */,
 			);
@@ -539,15 +534,6 @@
 			path = Statistics;
 			sourceTree = "<group>";
 		};
-		7304BD762C0F4B4800EDCD5E /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				7304BD742C0F4B4800EDCD5E /* OnboardingCustomScreen.swift */,
-				7304BD752C0F4B4800EDCD5E /* OnboardingVC.swift */,
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
 		7365264B2C087FB700C993EA /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -582,13 +568,6 @@
 			path = ProgressIndicator;
 			sourceTree = "<group>";
 		};
-		73BF333A2BFF426C00D0AF25 /* Presenters */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Presenters;
-			sourceTree = "<group>";
-		};
 		73E0BF7F2BFF7E2D00D2BC5F /* CustomCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -601,7 +580,6 @@
 		73F3901B2C04DCBD00A2671B /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7304BD762C0F4B4800EDCD5E /* Onboarding */,
 				73E0BF7F2BFF7E2D00D2BC5F /* CustomCell */,
 				60F7C1F42BF9DABB00DEC56C /* ProfileMainVC.swift */,
 				73E0BF7B2BFF7E0A00D2BC5F /* MyNFTViewController.swift */,
@@ -851,7 +829,6 @@
 				73E254D22C0916E10048FEB8 /* ProfileStorage.swift in Sources */,
 				604418CE2BFC6D450046664E /* CartMainTableViewCell.swift in Sources */,
 				0C79EE662A76DDFF00EE90EA /* NftDetailViewController.swift in Sources */,
-				7304BD772C0F4B4800EDCD5E /* OnboardingCustomScreen.swift in Sources */,
 				73F3901F2C04DD6800A2671B /* ProfileMockModel.swift in Sources */,
 				73BF333C2BFF428A00D0AF25 /* ProfilePresenter.swift in Sources */,
 				E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */,
@@ -882,7 +859,6 @@
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				60133D1E2C0B1AD4008F102E /* CartNetworkService.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
-				7304BD782C0F4B4800EDCD5E /* OnboardingVC.swift in Sources */,
 				73BCD1602C0CDBCB0027578C /* ProgressIndicator.swift in Sources */,
 				73C6653A2C11B59300335E12 /* SortingAttibutes.swift in Sources */,
 				73EA615F2BFF6EA80089BCFB /* WebViewController.swift in Sources */,
