@@ -2,7 +2,11 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
-    var servicesAssembly: ServicesAssembly!
+    var servicesAssembly: ServicesAssembly! {
+        didSet {
+            setupViewControllers()
+        }
+    }
     
     private let profileTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.profile", comment: ""),
@@ -30,6 +34,7 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+      
         let presenter = ProfilePresenter()
         let profileView = ProfileMainVC(presenter: presenter)
         let profileViewNavController = UINavigationController(rootViewController: profileView)
@@ -44,11 +49,17 @@ final class TabBarController: UITabBarController {
         let cartNavigationVC = UINavigationController(rootViewController: cartEntryPoint())
         cartNavigationVC.tabBarItem = cartTabBarItem
         
-        let statisticsMainVC = StatisticsMainVC()
-        statisticsMainVC.tabBarItem = statisticsTabBarItem
-        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticsMainVC]
 
-        view.backgroundColor = .systemBackground
+        let userModel = UserModel()
+        let statisticPresenter = StatisticPresenter(for: userModel, servicesAssembly: servicesAssembly)
+        let statisticVC = UINavigationController(
+            rootViewController: StatisticsMainVC(
+                presenter: statisticPresenter
+            ))
+        
+        statisticVC.tabBarItem = statisticsTabBarItem
+
+        viewControllers = [profileViewNavController, catalogMainVC, cartNavigationVC, statisticVC]
     }
     
     private func cartEntryPoint() -> CartMainVC {
@@ -58,3 +69,4 @@ final class TabBarController: UITabBarController {
         return CartMainVC(presenter: cartMainPresenter)
     }
 }
+
