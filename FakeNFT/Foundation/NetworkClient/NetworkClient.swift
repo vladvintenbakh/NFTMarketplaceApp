@@ -109,7 +109,7 @@ struct DefaultNetworkClient: NetworkClient {
 
     // MARK: - Private
 
-    private func create(request: NetworkRequest) -> URLRequest? {
+    func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
             return nil
@@ -117,7 +117,10 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
-        urlRequest.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue("232360ee-fcae-41be-af04-73a3cac05157", forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
         if let dtoString = request.dto as? String {
             urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Accept")
