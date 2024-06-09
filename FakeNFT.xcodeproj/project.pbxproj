@@ -436,39 +436,39 @@
 			path = Statistics;
 			sourceTree = "<group>";
 		};
-		C50F97882BFA6DA000C575C8 /* View */ = {
+		C50F97882BFA6DA000C575C8 /* SCView */ = {
 			isa = PBXGroup;
 			children = (
 				60F7C1F22BF9DA9200DEC56C /* StatisticsMainVC.swift */,
 				C50F97942BFB6C6D00C575C8 /* RatingCell.swift */,
 			);
-			path = View;
+			path = SCView;
 			sourceTree = "<group>";
 		};
 		C50F978B2BFB656200C575C8 /* StatisticCollection */ = {
 			isa = PBXGroup;
 			children = (
-				C50F978C2BFB658200C575C8 /* Model */,
-				C50F97882BFA6DA000C575C8 /* View */,
-				C50F978D2BFB659200C575C8 /* Presenter */,
+				C50F978C2BFB658200C575C8 /* SCModel */,
+				C50F97882BFA6DA000C575C8 /* SCView */,
+				C50F978D2BFB659200C575C8 /* SCPresenter */,
 			);
 			path = StatisticCollection;
 			sourceTree = "<group>";
 		};
-		C50F978C2BFB658200C575C8 /* Model */ = {
+		C50F978C2BFB658200C575C8 /* SCModel */ = {
 			isa = PBXGroup;
 			children = (
 				C50F978E2BFB65B600C575C8 /* UserModel.swift */,
 			);
-			path = Model;
+			path = SCModel;
 			sourceTree = "<group>";
 		};
-		C50F978D2BFB659200C575C8 /* Presenter */ = {
+		C50F978D2BFB659200C575C8 /* SCPresenter */ = {
 			isa = PBXGroup;
 			children = (
 				C50F97902BFB670A00C575C8 /* StatisticPresenterProtocol.swift */,
 			);
-			path = Presenter;
+			path = SCPresenter;
 			sourceTree = "<group>";
 		};
 		C50F97A12BFF3BE100C575C8 /* StatisticUserProfile */ = {
@@ -484,37 +484,37 @@
 		C50F97EA2C038FD900C575C8 /* NFTCollection */ = {
 			isa = PBXGroup;
 			children = (
-				C50F97ED2C03921700C575C8 /* Model */,
-				C50F97EE2C03921F00C575C8 /* View */,
-				C50F97EF2C03922200C575C8 /* Presenter */,
+				C50F97ED2C03921700C575C8 /* NFTCModel */,
+				C50F97EE2C03921F00C575C8 /* NFTCView */,
+				C50F97EF2C03922200C575C8 /* NFTCPresenter */,
 			);
 			path = NFTCollection;
 			sourceTree = "<group>";
 		};
-		C50F97ED2C03921700C575C8 /* Model */ = {
+		C50F97ED2C03921700C575C8 /* NFTCModel */ = {
 			isa = PBXGroup;
 			children = (
 				C50F97EB2C03900B00C575C8 /* NFTModel.swift */,
 				C5EE0A482C0F9FA3000AEC2C /* NFT.swift */,
 			);
-			path = Model;
+			path = NFTCModel;
 			sourceTree = "<group>";
 		};
-		C50F97EE2C03921F00C575C8 /* View */ = {
+		C50F97EE2C03921F00C575C8 /* NFTCView */ = {
 			isa = PBXGroup;
 			children = (
 				C50F97F22C03945000C575C8 /* NFTCollectionCell.swift */,
 				C50F97F42C03946300C575C8 /* NFTCollectionView.swift */,
 			);
-			path = View;
+			path = NFTCView;
 			sourceTree = "<group>";
 		};
-		C50F97EF2C03922200C575C8 /* Presenter */ = {
+		C50F97EF2C03922200C575C8 /* NFTCPresenter */ = {
 			isa = PBXGroup;
 			children = (
 				C50F97F02C03942B00C575C8 /* NFTCollectionPresenter.swift */,
 			);
-			path = Presenter;
+			path = NFTCPresenter;
 			sourceTree = "<group>";
 		};
 		C5B34FD72C0DE82600F20D88 /* Network */ = {
