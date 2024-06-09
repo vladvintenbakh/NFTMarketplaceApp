@@ -9,7 +9,7 @@ protocol NftDetailPresenter {
 // MARK: - State
 
 enum NftDetailState {
-    case initial, loading, failed(Error), data(Nft)
+    case initial, loading, failed(Error), data(NFTTest)
 }
 
 final class NftDetailPresenterImpl: NftDetailPresenter {
@@ -58,12 +58,11 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
 
     private func loadNft() {
         service.loadNft(id: input.id) { [weak self] result in
-            guard let self else { return }
             switch result {
             case .success(let nft):
-                self.state = .data(nft)
+                self?.state = .data(nft)
             case .failure(let error):
-                self.state = .failed(error)
+                self?.state = .failed(error)
             }
         }
     }

@@ -123,6 +123,7 @@ final class ProfileMainVC: UIViewController {
             ProgressIndicator.show()
             self.screenTable.isUserInteractionEnabled = false
             self.screenTable.isHidden = true
+            self.tabBarController?.view.isUserInteractionEnabled = false
         }
     }
 
@@ -132,6 +133,7 @@ final class ProfileMainVC: UIViewController {
             ProgressIndicator.succeed()
             self.screenTable.isUserInteractionEnabled = true
             self.screenTable.isHidden = false
+            self.tabBarController?.view.isUserInteractionEnabled = true
         }
     }
 

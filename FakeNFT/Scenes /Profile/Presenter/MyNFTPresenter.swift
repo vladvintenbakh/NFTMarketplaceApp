@@ -11,9 +11,9 @@ protocol MyNFTPresenterProtocol {
     func viewDidLoad()
     func sortButtonTapped()
     func getNumberOfRows() -> Int
-    func getNFT(with indexPath: IndexPath) -> NFTModel
-    func isNFTInFav(_ nft: NFTModel) -> Bool
-    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool)
+    func getNFT(with indexPath: IndexPath) -> NFTModelData
+    func isNFTInFav(_ nft: NFTModelData) -> Bool
+    func addOrRemoveNFTFromFav(nft: NFTModelData, isNFTFav: Bool)
     func showOrHidePlaceholder()
     func filterData(_ text: String)
     func sorting(_ sortingAttribute: SortingAttributes)
@@ -25,8 +25,8 @@ final class MyNFTPresenter: ProfilePresenters {
     weak var view: MyNFTViewProtocol?
 
     // MARK: - Other properties
-    private var arrayOfMyNFT = [NFTModel]()
-    private var filteredArrayOfMyNFT = [NFTModel]()
+    private var arrayOfMyNFT = [NFTModelData]()
+    private var filteredArrayOfMyNFT = [NFTModelData]()
     private var isSearchMode = false
 
     // MARK: - Private methods
@@ -44,12 +44,12 @@ final class MyNFTPresenter: ProfilePresenters {
         }
     }
 
-    private func addNFTToFav(_ nft: NFTModel) {
+    private func addNFTToFav(_ nft: NFTModelData) {
         storage.addFavNFTToStorage(nft)
         sendFavsToServer()
     }
 
-    private func removeNFTFromFav(_ nft: NFTModel) {
+    private func removeNFTFromFav(_ nft: NFTModelData) {
         storage.removeFavNFTFromStorage(nft)
         sendFavsToServer()
     }
@@ -103,7 +103,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
         }
     }
 
-    func getNFT(with indexPath: IndexPath) -> NFTModel {
+    func getNFT(with indexPath: IndexPath) -> NFTModelData {
         if isSearchMode {
             return filteredArrayOfMyNFT[indexPath.row]
         } else {
@@ -111,7 +111,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
         }
     }
 
-    func isNFTInFav(_ nft: NFTModel) -> Bool {
+    func isNFTInFav(_ nft: NFTModelData) -> Bool {
         guard let listOfFav = storage.profile?.favoriteNFT else { return false }
         if listOfFav.contains(where: { $0 == nft.id }) {
             return true
@@ -120,7 +120,7 @@ extension  MyNFTPresenter: MyNFTPresenterProtocol {
         }
     }
 
-    func addOrRemoveNFTFromFav(nft: NFTModel, isNFTFav: Bool) {
+    func addOrRemoveNFTFromFav(nft: NFTModelData, isNFTFav: Bool) {
         if isNFTFav {
             removeNFTFromFav(nft)
         } else {

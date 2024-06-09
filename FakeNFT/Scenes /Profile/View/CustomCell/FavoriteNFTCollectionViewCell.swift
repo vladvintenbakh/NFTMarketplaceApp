@@ -125,7 +125,7 @@ final class FavoriteNFTCollectionViewCell: UICollectionViewCell, ReuseIdentifyin
     }
 
     // MARK: - Public methods
-    func configureCell(_ nft: NFTModel) {
+    func configureCell(_ nft: NFTModelData) {
         guard let imageName = nft.images?.first,
               let rating = nft.rating,
               let price = nft.price else { print("Ooopsss"); return }
