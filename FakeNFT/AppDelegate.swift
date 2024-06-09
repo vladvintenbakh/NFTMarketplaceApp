@@ -10,19 +10,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
 
         window = UIWindow()
-        isNeedToShowOnboarding()
+        
+        let tabBarController = setupTabBar()
+        window?.rootViewController = tabBarController
+        
         window?.makeKeyAndVisible()
 
         return true
-    }
-
-    private func isNeedToShowOnboarding() {
-        if UserDefaults.standard.object(forKey: ConstantsCatalog.onboardingKey) == nil {
-            window?.rootViewController = OnboardingVC()
-        } else {
-            let tabBarController = setupTabBar()
-            window?.rootViewController = tabBarController
-        }
     }
 
     func setupTabBar() -> UITabBarController {
