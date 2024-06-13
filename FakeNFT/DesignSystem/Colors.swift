@@ -25,8 +25,6 @@ extension UIColor {
         )
     }
 
-    // Ниже приведены примеры цветов, настоящие цвета надо взять из фигмы
-
     // Primary Colors
     static let primary = UIColor(red: 0 / 255, green: 122 / 255, blue: 255 / 255, alpha: 1.0)
 
@@ -42,10 +40,25 @@ extension UIColor {
     static let textOnPrimary = UIColor.white
     static let textOnSecondary = UIColor.black
 
-    private static let yaBlackLight = UIColor(hexString: "1A1B22")
-    private static let yaBlackDark = UIColor.white
-    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
-    private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
+    static let yaBlackLight = UIColor(hexString: "1A1B22")
+    static let yaBlackDark = UIColor.white
+    static let yaWhiteLight = UIColor.white
+    static let yaWhiteDark = UIColor(hexString: "1A1B22")
+    static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
+    static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
+    static let yaDarkGray = UIColor(hexString: "8E8E93")
+
+    static let yaGray = UIColor(hexString: "625C5C")
+    static let yaRed = UIColor(hexString: "F56B6C")
+    static let yaGreen = UIColor(hexString: "1C9F00")
+    static let yaBlue = UIColor(hexString: "0A84FF")
+    static let yaYellow = UIColor(hexString: "FEEF0D")
+
+    static let backgroundActive = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? .yaWhiteDark
+        : .background
+    }
 
     static let segmentActive = UIColor { traits in
         return traits.userInterfaceStyle == .dark

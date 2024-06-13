@@ -9,7 +9,7 @@ protocol NftDetailPresenter {
 // MARK: - State
 
 enum NftDetailState {
-    case initial, loading, failed(Error), data(Nft)
+    case initial, loading, failed(Error), data(NFTTest)
 }
 
 final class NftDetailPresenterImpl: NftDetailPresenter {
@@ -78,7 +78,8 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
 
         let actionText = NSLocalizedString("Error.repeat", comment: "")
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
-            self?.state = .loading
+            guard let self else { return }
+            self.state = .loading
         }
     }
 }
