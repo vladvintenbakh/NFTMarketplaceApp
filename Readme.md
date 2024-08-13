@@ -4,6 +4,12 @@
 
 [Figma Design](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
 
+[Profile Screencast](https://disk.yandex.ru/d/VBJpdjzsO60YTQ)
+
+https://github.com/user-attachments/assets/ff8fcb63-90cc-4d2c-954e-fdfab369f926
+
+https://github.com/user-attachments/assets/e2108c83-8f26-4278-a90e-e62df9e64e2c
+
 # Purpose
 
 The app allows its users to view and purchase NFTs (Non-Fungible Tokens). The purchase functionality is simulated with a mock server.
