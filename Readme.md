@@ -1,4 +1,4 @@
-# FakeNFT
+# NFT Marketplace App
 
 # Links
 
